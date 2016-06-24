@@ -29,14 +29,15 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -71,12 +72,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)..\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\include\SFML\libs\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(ProjectDir)..\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\include\SFML\libs\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -87,12 +92,18 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;SFML_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>winmm.lib;opengl32.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\openal32.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\vorbisenc.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\vorbisfile.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\vorbis.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\ogg.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\flac.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\freetype.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\jpeg.lib;$(ProjectDir)..\libs\Debug\sfml-audio-s-d.lib;$(ProjectDir)..\libs\Debug\sfml-graphics-s-d.lib;$(ProjectDir)..\libs\Debug\sfml-window-s-d.lib;$(ProjectDir)..\libs\Debug\sfml-system-s-d.lib;$(ProjectDir)..\libs\Debug\sfml-network-s-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -115,13 +126,16 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;SFML_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\openal32.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\vorbisenc.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\vorbisfile.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\vorbis.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\ogg.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\flac.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\freetype.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\jpeg.lib;winmm.lib;opengl32.lib;$(ProjectDir)..\libs\Release\sfml-audio-s.lib;$(ProjectDir)..\libs\Release\sfml-graphics-s.lib;$(ProjectDir)..\libs\Release\sfml-window-s.lib;$(ProjectDir)..\libs\Release\sfml-system-s.lib;$(ProjectDir)..\libs\Release\sfml-network-s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -142,6 +156,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="obj_gobject.cpp" />
+    <ClCompile Include="obj_writer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Effect.hpp" />
+    <ClInclude Include="Global.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="obj_gobject.h" />
+    <ClInclude Include="obj_writer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
