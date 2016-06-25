@@ -84,7 +84,7 @@ void LoadAllTextures() {
 void OBJ_WRITER::LoadAllFonts() {
 	if (!loaded) {
 		loaded = true;
-		LoadAllTextures();
+	//	LoadAllTextures();
 		if (textures[6] == nullptr) {
 			sf::Texture* texture = new sf::Texture();
 			if (!texture->loadFromFile("resources/textures/texture_6.png")) {
@@ -109,18 +109,28 @@ void OBJ_WRITER::LoadAllFonts() {
 				auto rect = sf::IntRect(glyph["x"], glyph["y"], glyph["width"], glyph["height"]);
 				// glyph["offset"] // kind of important
 				g.textureRect = rect;
+			
+				g.bounds = FloatRect(0, 0, rect.width, rect.height);
 				g.textureRect.top += frameRect.top;
 				g.textureRect.left += frameRect.left;
-				g.bounds = FloatRect(0, 0, rect.width, rect.height);
 				// g.bounds ignore for now
 				info.glyphs[glyph["ch"]] = std::move(g);
 			}
-			fonts.insert(std::pair<int, FontInfo>((int)font["index"], info));
+			int index = (int)font["index"];
+			printf("Font loaded (%i)'%s'\n", index, info.name.c_str());
+			fonts.insert(std::pair<int, FontInfo>(index, info));
 		}
-		printf("Fonts loaded\n");
 	}
 	
 }
+struct SoundInfo {
+	std::string filename;
+	std::string name;
+	float volume;
+	float pan;
+	int index;
+};
+std::map<int, SoundInfo> _audiofiles;
 
 namespace Undertale {
 	const std::map<int, sf::Glyph>& GetFontGlyphs(int font_index) {
@@ -131,6 +141,24 @@ namespace Undertale {
 	}
 	const sf::Texture* GetFontTexture(int font_index) {
 		return fonts[font_index].texture;
+	}
+	const std::string& LookupSound(int index) {
+		if (_audiofiles.empty()) {
+			std::fstream file("resources\\sounds.json", std::ios::in);
+			json j;
+			file >> j;
+			for (auto sound : j) {
+				SoundInfo si;
+				int index = (int)sound["index"];
+				si.index = index;
+				si.filename = "resources\\sounds\\" + sound["filename"].get<std::string>();
+					si.name = sound["name"].get<std::string>();
+				si.volume = (float)sound["volume"];
+				si.pan = (float)sound["pan"];
+				_audiofiles.emplace(std::pair<int, SoundInfo>(index, std::move(si)));
+			}
+		}
+		return _audiofiles[index].filename;
 	}
 }
 
@@ -166,9 +194,16 @@ struct TextSetup {
 };
 */
 void  OBJ_WRITER::SetTextType(int type) {
+	_texture = Undertale::GetFontTexture(6);
 	auto pos = getPosition();
-	setup = { 1, Color::White, FloatRect(pos.x + 20, pos.y + 20, pos.x + 200 - 55, 0), 1,1,94,16,32 };
+	setup = { 1, Color::White, FloatRect(pos.x + 20, pos.y + 20, 290, 0), 1,1,94,16,32 };
 	Reset();
+	if (!_textSoundBuffer.loadFromFile(Undertale::LookupSound(setup.txtsound))) {
+		printf("Could not load sound");
+	}
+	else {
+		_textSound.setBuffer(_textSoundBuffer);
+	}
 	/*
 	if (global.typer == 1) script_execute(149, 1, 16777215, self.x + 20, self.y + 20, self.x + global.idealborder[1] - 55, 1, 1, 94, 16, 32);
 	if (global.typer == 2) script_execute(149, 4, 0, self.x, self.y, self.x + 190, 43, 2, 95, 9, 20);
@@ -279,7 +314,8 @@ void  OBJ_WRITER::SetTextType(int type) {
 void OBJ_WRITER::RefreshQuads() {
 	_quads.clear();
 	Vector2f my = _writing;
-	Color color = Color::White;
+	Vector2f start;
+	Color color = setup.color;
 	auto glyphs = Undertale::GetFontGlyphs(setup.myfont);
 	for (int n = 0; n < _pos; n++) {
 		char ch = _text[n];
@@ -321,8 +357,8 @@ void OBJ_WRITER::RefreshQuads() {
 			case 'z': break; // what the hell is Z? OOOH its a shaking infinity sign for the asriel dremo fight
 
 			}
-
 			n++;
+			break;
 		case '/':
 			if (nch == '%') _halt = 2;
 			else if (nch == '^' && _text[n + 2] != '0') _halt = 4;
@@ -335,9 +371,12 @@ void OBJ_WRITER::RefreshQuads() {
 				Reset(); // next line
 				_stringno++;
 				_text = _lines[_stringno++];
-				return;
+				_quads.clear();
+				n = -1; // reset
+				continue;
 			}
 		default:
+		{
 			if (my.x > setup.writing.width) {
 				my.x = _writing.x;
 				my.y += setup.vspacing;
@@ -355,7 +394,6 @@ void OBJ_WRITER::RefreshQuads() {
 				}
 			}
 			auto& g = glyphs[ch];
-			Vector2f start;
 			switch (setup.shake) {
 			case 0:
 				addGlyphQuad(_quads, my, color, g);
@@ -393,28 +431,30 @@ void OBJ_WRITER::RefreshQuads() {
 				}
 			}
 			if (setup.myfont == 9) {
-				if (ch == 'D') my.x+=1;
+				if (ch == 'D') my.x += 1;
 				if (ch == 'Q') my.x += 3;
-				if (ch == 'M') my.x+=1;
-				if (ch == 'L') my.x-=1;
-				if (ch == 'K') my.x-=1;
-				if (ch == 'C') my.x+=1;
+				if (ch == 'M') my.x += 1;
+				if (ch == 'L') my.x -= 1;
+				if (ch == 'K') my.x -= 1;
+				if (ch == 'C') my.x += 1;
 				if (ch == '.') my.x -= 3;
 				if (ch == '!') my.x -= 3;
 				if (ch == 'O' || ch == 'W') my.x += 2;
 				if (ch == 'I') my.x -= 6;
-				if (ch == 'T') my.x-=1;
+				if (ch == 'T') my.x -= 1;
 				if (ch == 'P') my.x -= 2;
 				if (ch == 'R') my.x -= 2;
-				if (ch == 'A') my.x+=1;
-				if (ch == 'H') my.x+=1;
-				if (ch == 'B') my.x+=1;
-				if (ch == 'G') my.x+=1;
-				if (ch == 'F') my.x-=1;
+				if (ch == 'A') my.x += 1;
+				if (ch == 'H') my.x += 1;
+				if (ch == 'B') my.x += 1;
+				if (ch == 'G') my.x += 1;
+				if (ch == 'F') my.x -= 1;
 				if (ch == '?') my.x -= 3;
 				if (ch == '\'') my.x -= 6;
-				if (ch == 'J') my.x-=1;
+				if (ch == 'J') my.x -= 1;
 			}
+			break;
+		}
 		}
 		
 	}
@@ -447,7 +487,11 @@ void  OBJ_WRITER::frame() {
 					}
 					_pos += 2;
 				}
-				if (ch == '&') _pos++;
+				else {
+					_textSound.stop();
+					_textSound.play();
+				}
+				if(ch == '&') _pos++;
 				if (ch == '\\') _pos += 2;
 			}
 		}
@@ -457,9 +501,7 @@ void  OBJ_WRITER::frame() {
 
 
 void OBJ_WRITER::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	//if (_quads.() > 0) {
-		states.transform *= getTransform();
-		states.texture = _texture;
-		target.draw(_quads, states);
-	//}
+	states.transform *= getTransform();
+	states.texture = _texture;
+	target.draw(_quads, states);
 }

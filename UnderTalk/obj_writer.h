@@ -17,6 +17,9 @@ class OBJ_WRITER : public sf::Drawable, public sf::Transformable {
 	mutable sf::VertexArray _quads;           ///< Vertex array containing the fill geometry
 	mutable std::vector<sf::Sprite> _sprites;
 	mutable const sf::Texture* _texture;
+	sf::SoundBuffer _textSoundBuffer;
+	sf::Sound _textSound;
+
 	std::string _text;
 	std::vector<std::string> _lines;
 	int _size;

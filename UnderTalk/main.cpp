@@ -143,7 +143,7 @@ int main()
 	window.setVerticalSyncEnabled(true);
 
 	OBJ_WRITER writer;
-	writer.AddText("*This is a test&* and another");
+	writer.AddText("*This is a \\Ytest\\W&* and another%%");
 	writer.SetTextType(1);
 	// Start the game loop
 	sf::Clock clock;
