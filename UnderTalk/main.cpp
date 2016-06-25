@@ -5,6 +5,8 @@
 #include <vector>
 #include <cmath>
 #include "obj_writer.h"
+#include <UndertaleLib.h>
+
 
 
 const sf::Font* Effect::s_font = NULL;
@@ -136,7 +138,14 @@ int old_main() {
 
 int main()
 {
-	OBJ_WRITER::LoadAllFonts();
+	Undertale::UndertaleFile dataWin;
+	if (!dataWin.loadFromFilename("D:\\Undertale\\New\\data.win")) {
+		printf("Could not load data win");
+		return -1;
+	}
+	auto spr_icewolf = dataWin.LookupSprite(1302);
+
+	Undertale::LoadAllFonts();
 	// Create the main window
 	sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Shader",
 		sf::Style::Titlebar | sf::Style::Close);

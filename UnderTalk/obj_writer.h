@@ -2,12 +2,6 @@
 #include "Global.h"
 
 
-namespace Undertale {
-
-	const std::map<int,sf::Glyph>& GetFontGlyphs(int font_index);
-	const sf::Texture* GetFontTexture(int font_index);
-	int GetFontSize(int font_index);
-}
 struct obj_face {
 	virtual void changeEmotion(int i) = 0;
 	virtual void changeFace(int i) = 0;
@@ -44,7 +38,6 @@ class OBJ_WRITER : public sf::Drawable, public sf::Transformable {
 	// text position
 public:
 	obj_face* face;
-	static void LoadAllFonts();
 	OBJ_WRITER() : _text(""), _texture(nullptr), _quads(sf::PrimitiveType::Triangles) , _size(0), _stringno(0), _pos(0), _lineno(0), _halt(0), face(nullptr) {}
 	void AddText(const std::string& text) { _lines.push_back(text); _text = _lines[0];  }
 	void Reset() {

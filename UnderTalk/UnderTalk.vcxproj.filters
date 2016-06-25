@@ -24,6 +24,12 @@
     <ClCompile Include="obj_gobject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UndertaleResources.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gsprites.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Effect.hpp">
@@ -39,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gsprites.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

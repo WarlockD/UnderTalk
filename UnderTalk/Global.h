@@ -67,3 +67,13 @@ inline float getCurrentAngle(sf::Transformable* node)
 	// positive angle means node is facing to its right
 	return rotAng;
 }
+
+
+namespace Undertale {
+	const std::map<int, sf::Glyph>& GetFontGlyphs(int font_index);
+	const sf::Texture* GetFontTexture(int font_index);
+	int GetFontSize(int font_index);
+	const sf::Texture& GetTexture(int index);
+	const std::string& LookupSound(int index);
+	void LoadAllFonts();
+}

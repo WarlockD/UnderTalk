@@ -36,7 +36,10 @@ struct IPostStep {
 	virtual ~IPostStep() {}
 };
 
-class GObject : public sf::Transformable {
+
+
+class GObject : public sf::Transformable , public sf::Drawable  {
+	sf::IntRect _frames;
 	sf::Vector2f _movment;
 	float _direction;
 	sf::Vector2f _speed;
@@ -46,4 +49,5 @@ public:
 	inline virtual void setSpeed(float s) { _movment = CreateMovementVector(_direction, _speed= sf::Vector2f(s,s)); }
 	inline virtual void setSpeed(sf::Vector2f s) { _movment = CreateMovementVector(_direction, _speed = s); }
 	inline virtual sf::Vector2f getSpeed() const { return _speed; }
+	
 };
