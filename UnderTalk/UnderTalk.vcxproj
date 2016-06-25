@@ -99,7 +99,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>winmm.lib;opengl32.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\openal32.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\vorbisenc.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\vorbisfile.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\vorbis.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\ogg.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\flac.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\freetype.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\jpeg.lib;$(ProjectDir)..\libs\sfml-audio-s-d.lib;$(ProjectDir)..\libs\sfml-graphics-s-d.lib;$(ProjectDir)..\libs\sfml-window-s-d.lib;$(ProjectDir)..\libs\sfml-system-s-d.lib;$(ProjectDir)..\libs\sfml-network-s-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;opengl32.lib;$(ProjectDir)..\libs\openal32.lib;$(ProjectDir)..\libs\vorbisenc.lib;$(ProjectDir)..\libs\vorbisfile.lib;$(ProjectDir)..\libs\vorbis.lib;$(ProjectDir)..\libs\ogg.lib;$(ProjectDir)..\libs\flac.lib;$(ProjectDir)..\libs\freetype.lib;$(ProjectDir)..\libs\jpeg.lib;$(ProjectDir)..\libs\sfml-audio-s-d.lib;$(ProjectDir)..\libs\sfml-graphics-s-d.lib;$(ProjectDir)..\libs\sfml-window-s-d.lib;$(ProjectDir)..\libs\sfml-system-s-d.lib;$(ProjectDir)..\libs\sfml-network-s-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
@@ -135,7 +135,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\openal32.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\vorbisenc.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\vorbisfile.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\vorbis.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\ogg.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\flac.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\freetype.lib;$(ProjectDir)..\libs\extlibs\libs-msvc-universal\x86\jpeg.lib;winmm.lib;opengl32.lib;$(ProjectDir)..\libs\sfml-audio-s.lib;$(ProjectDir)..\libs\sfml-graphics-s.lib;$(ProjectDir)..\libs\sfml-window-s.lib;$(ProjectDir)..\libs\sfml-system-s.lib;$(ProjectDir)..\libs\sfml-network-s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(ProjectDir)..\libs\openal32.lib;$(ProjectDir)..\libs\vorbisenc.lib;$(ProjectDir)..\libs\vorbisfile.lib;$(ProjectDir)..\libs\vorbis.lib;$(ProjectDir)..\libs\ogg.lib;$(ProjectDir)..\libs\flac.lib;$(ProjectDir)..\libs\freetype.lib;$(ProjectDir)..\libs\jpeg.lib;winmm.lib;opengl32.lib;$(ProjectDir)..\libs\sfml-audio-s.lib;$(ProjectDir)..\libs\sfml-graphics-s.lib;$(ProjectDir)..\libs\sfml-window-s.lib;$(ProjectDir)..\libs\sfml-system-s.lib;$(ProjectDir)..\libs\sfml-network-s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
