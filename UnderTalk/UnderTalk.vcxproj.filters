@@ -30,6 +30,9 @@
     <ClCompile Include="gsprites.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="obj_vaporized_new.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Effect.hpp">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gsprites.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="obj_vaporized_new.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

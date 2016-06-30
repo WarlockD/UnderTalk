@@ -12,6 +12,9 @@ namespace {
 	};
 }
 
+static GSprite LoadUndertaleSprite(int index) {
+
+}
 /*
 
 GSprite GSprite::LoadUndertaleSprite(int index) {
