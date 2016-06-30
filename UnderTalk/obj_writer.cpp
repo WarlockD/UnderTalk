@@ -1,4 +1,5 @@
 #include "obj_writer.h"
+#include "gsprites.h"
 
 
 using namespace sf;
@@ -200,6 +201,7 @@ void  OBJ_WRITER::SetTextType(int type) {
 
 void OBJ_WRITER::RefreshQuads() {
 	_quads.clear();
+	_sprites.clear();
 	Vector2f my = _writing;
 	Vector2f start;
 	Color color = setup.color;
@@ -241,11 +243,18 @@ void OBJ_WRITER::RefreshQuads() {
 				}
 				n++;
 				break;
-			case 'z': break; // what the hell is Z? OOOH its a shaking infinity sign for the asriel dremo fight
-
+			case 'z':
+			{
+				GSprite inf_sprite(837, 0);
+				Vector2f shake = Vector2f((std::rand() % setup.shake) - setup.shake / 2, (std::rand() % setup.shake) - setup.shake / 2) + Vector2f(0, 10);
+				inf_sprite.setPosition(my+shake);
+				inf_sprite.setScale(2, 2);
+				_sprites.emplace_back(inf_sprite);
+			}
+			break;
 			}
 			n++;
-			break;
+			break; // what the hell is Z? OOOH its a shaking infinity sign for the asriel dremo fight
 		case '/':
 			if (nch == '%') _halt = 2;
 			else if (nch == '^' && _text[n + 2] != '0') _halt = 4;
@@ -391,4 +400,5 @@ void OBJ_WRITER::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
 	states.texture = _texture;
 	target.draw(_quads, states);
+	if (_sprites.size() > 0) for(auto& s :_sprites) target.draw(s, states);
 }

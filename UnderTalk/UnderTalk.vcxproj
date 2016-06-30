@@ -59,6 +59,7 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="Debug.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -77,6 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\UndertaleLib;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -100,6 +102,8 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>winmm.lib;opengl32.lib;$(ProjectDir)..\libs\openal32.lib;$(ProjectDir)..\libs\vorbisenc.lib;$(ProjectDir)..\libs\vorbisfile.lib;$(ProjectDir)..\libs\vorbis.lib;$(ProjectDir)..\libs\ogg.lib;$(ProjectDir)..\libs\flac.lib;$(ProjectDir)..\libs\freetype.lib;$(ProjectDir)..\libs\jpeg.lib;$(ProjectDir)..\libs\sfml-audio-s-d.lib;$(ProjectDir)..\libs\sfml-graphics-s-d.lib;$(ProjectDir)..\libs\sfml-window-s-d.lib;$(ProjectDir)..\libs\sfml-system-s-d.lib;$(ProjectDir)..\libs\sfml-network-s-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OptimizeReferences>
+      </OptimizeReferences>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>

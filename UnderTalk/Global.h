@@ -10,6 +10,7 @@
 #include "json.hpp"
 #include <fstream>
 #include <map>
+#include <UndertaleLib.h>
 
 // interfaces used when you need to run before or after the main step
 inline float lengthdir_x(float len, float dir) {
@@ -67,11 +68,20 @@ inline float getCurrentAngle(sf::Transformable* node)
 	// positive angle means node is facing to its right
 	return rotAng;
 }
+void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Vector2f& offset=sf::Vector2f());
+void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Color& color, const sf::Vector2f& offset = sf::Vector2f());
+
+
+void LoadUndertaleResources(const std::string& filename);
+Undertale::UndertaleFile& GetUndertale();
+const sf::Sprite& GetUndertaleSprite(int index,int frame=0);
+
 
 
 namespace Undertale {
 	const std::map<int, sf::Glyph>& GetFontGlyphs(int font_index);
 	const sf::Texture* GetFontTexture(int font_index);
+	const sf::Texture* GetCachedTexture(int index);
 	int GetFontSize(int font_index);
 	const sf::Texture& GetTexture(int index);
 	const std::string& LookupSound(int index);

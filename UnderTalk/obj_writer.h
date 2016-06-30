@@ -1,6 +1,6 @@
 #pragma once
 #include "Global.h"
-
+#include "gsprites.h"
 
 struct obj_face {
 	virtual void changeEmotion(int i) = 0;
@@ -9,7 +9,7 @@ struct obj_face {
 };
 class OBJ_WRITER : public sf::Drawable, public sf::Transformable {
 	mutable sf::VertexArray _quads;           ///< Vertex array containing the fill geometry
-	mutable std::vector<sf::Sprite> _sprites;
+	mutable std::vector<GSprite> _sprites;
 	mutable const sf::Texture* _texture;
 	sf::SoundBuffer _textSoundBuffer;
 	sf::Sound _textSound;
@@ -44,7 +44,7 @@ public:
 		_pos = 0;
 		_lineno = 0;
 		_halt = 0;
-		_writing = sf::Vector2f(std::roundf(setup.writing.left), std::roundf(setup.writing.top));
+		_writing = sf::Vector2f(setup.writing.left, setup.writing.top);
 		_stringno = 0;
 		_textpause = setup.textspeed;
 	}

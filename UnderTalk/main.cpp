@@ -1,11 +1,12 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#include "Global.h"
 #include "Effect.hpp"
 #include <vector>
 #include <cmath>
 #include "obj_writer.h"
-#include <UndertaleLib.h>
+
 
 
 
@@ -136,14 +137,14 @@ int old_main() {
 ////////////////////////////////////////////////////////////
 
 
-int main()
+int main(int argc, const char* argv[])
 {
+	
 	Undertale::UndertaleFile dataWin;
-	if (!dataWin.loadFromFilename("D:\\Undertale\\New\\data.win")) {
-		printf("Could not load data win");
-		return -1;
-	}
-	auto spr_icewolf = dataWin.LookupSprite(1302);
+	if (argc == 0) exit(-1);
+	LoadUndertaleResources(argv[1]);
+
+	//auto spr_icewolf = dataWin.LookupSprite(1302);
 
 	Undertale::LoadAllFonts();
 	// Create the main window
@@ -152,7 +153,7 @@ int main()
 	window.setVerticalSyncEnabled(true);
 
 	OBJ_WRITER writer;
-	writer.AddText("*This is a \\Ytest\\W&* and another%%");
+	writer.AddText("*This is a \\Ytest\\W&* and anot\\zher%%");
 	writer.SetTextType(1);
 	// Start the game loop
 	sf::Clock clock;
