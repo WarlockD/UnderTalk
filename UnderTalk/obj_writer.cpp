@@ -81,7 +81,6 @@ struct TextSetup {
 };
 */
 void  OBJ_WRITER::SetTextType(int type) {
-	_texture = Undertale::GetFontTexture(6);
 	auto pos = getPosition();
 	setup = { 1, Color::White, FloatRect(pos.x + 20, pos.y + 20, 290, 0), 1,1,94,16,32 };
 	Reset();
@@ -398,7 +397,7 @@ void  OBJ_WRITER::frame() {
 
 void OBJ_WRITER::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
-	states.texture = _texture;
+	states.texture = &Undertale::GetFontTexture(6);
 	target.draw(_quads, states);
 	if (_sprites.size() > 0) for(auto& s :_sprites) target.draw(s, states);
 }

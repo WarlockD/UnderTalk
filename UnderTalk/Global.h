@@ -21,6 +21,12 @@ inline float lengthdir_y(float len, float dir) {
 	const float rad = 0.01745329252f;
 	return -std::sinf(dir* rad) * len;
 }
+inline sf::Vector2f CreateDirectionVector(float dir) {
+	const float rad = 0.01745329252f;
+	float x = std::cosf(dir* rad);
+	float y = std::sinf(dir* rad);
+	return sf::Vector2f(x, y);
+}
 inline sf::Vector2f CreateMovementVector(float dir, float speed) {
 	const float rad = 0.01745329252f;
 	float x = std::cosf(dir* rad) * speed;
@@ -68,8 +74,20 @@ inline float getCurrentAngle(sf::Transformable* node)
 	// positive angle means node is facing to its right
 	return rotAng;
 }
-void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Vector2f& offset=sf::Vector2f());
-void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Color& color, const sf::Vector2f& offset = sf::Vector2f());
+void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Color& color, const sf::Vector2f& offset, const sf::Vector2f& scale = sf::Vector2f(1.0f,1.0f));
+
+void AppendSpriteTriangles(sf::VertexArray& vertices, const sf::IntRect& textRect, const sf::Color& color, const sf::Vector2f& offset, const sf::Vector2f& scale = sf::Vector2f(1.0f, 1.0f));
+void AppendSpriteTriangles(std::vector<sf::Vertex>& vertices, const sf::IntRect& textRect, const sf::Color& color, const sf::Vector2f& offset, const sf::Vector2f& scale = sf::Vector2f(1.0f, 1.0f));
+
+inline void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Vector2f& offset, const sf::Vector2f& scale = sf::Vector2f(1.0f, 1.0f)) {
+	MakeSpriteTriangles(vertices, textRect, sf::Color::White, offset, scale);
+}
+inline void AppendSpriteTriangles(sf::VertexArray& vertices, const sf::IntRect& textRect, const sf::Vector2f& offset, const sf::Vector2f& scale = sf::Vector2f(1.0f, 1.0f)) {
+	AppendSpriteTriangles(vertices, textRect, sf::Color::White, offset, scale);
+}
+inline void AppendSpriteTriangles(std::vector<sf::Vertex>& vertices, const sf::IntRect& textRect, const sf::Vector2f& offset, const sf::Vector2f& scale = sf::Vector2f(1.0f, 1.0f)) {
+	AppendSpriteTriangles(vertices, textRect, sf::Color::White, offset, scale);
+}
 
 
 void LoadUndertaleResources(const std::string& filename);
@@ -80,10 +98,32 @@ const sf::Sprite& GetUndertaleSprite(int index,int frame=0);
 
 namespace Undertale {
 	const std::map<int, sf::Glyph>& GetFontGlyphs(int font_index);
-	const sf::Texture* GetFontTexture(int font_index);
-	const sf::Texture* GetCachedTexture(int index);
+	const sf::Texture& GetFontTexture(int font_index);
 	int GetFontSize(int font_index);
-	const sf::Texture& GetTexture(int index);
+	const sf::Texture* GetTexture(int index);
+	const sf::Image* GetTextureImage(int index);
 	const std::string& LookupSound(int index);
 	void LoadAllFonts();
 }
+
+// I have always liked these macros from cocos2d
+
+#define CC_SYNTHESIZE(varType, varName, funName)\
+protected: varType varName;\
+public: inline varType get##funName(void) const { return varName; }\
+public: inline void set##funName(varType var){ varName = var; }
+
+#define CC_SYNTHESIZE_REF(varType, varName, funName)\
+protected: varType varName;\
+public: inline const varType& get##funName(void) const { return varName; }\
+public: inline varType& get##funName(void) { return varName; }\
+public: inline void set##funName(varType var){ varName = var; }
+
+#define CC_SYNTHESIZE_READONLY(varType, varName, funName)\
+protected: varType varName;\
+public: inline varType get##funName(void) const { return varName; }
+
+
+#define CC_SYNTHESIZE_REF_READONLY(varType, varName, funName)\
+protected: varType varName;\
+public: inline const varType& get##funName(void) const { return varName; }

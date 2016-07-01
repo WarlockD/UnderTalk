@@ -5,8 +5,12 @@
 
 
 class obj_vaporized_new : public sf::Drawable, public sf::Transformable {
-	std::vector<GSprite> _sprites; // slow but eh
+	sf::VertexArray _vertexes;
+	std::vector <std::vector<TimeTransformableVertexArray>> _particles;
 public:
-	obj_vaporized_new(const std::string& str);
+	// spec true makes evey pixel independent of one another
+	//
+	obj_vaporized_new(uint32_t index,bool spec);
+	obj_vaporized_new(const GSprite& sprite, bool spec);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };

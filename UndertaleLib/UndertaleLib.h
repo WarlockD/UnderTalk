@@ -233,7 +233,7 @@ namespace Undertale {
 		int charSet() const { return (_raw->flags >> 16) & 0xFF; }
 		uint16_t firstChar() const { return (_raw->flags) & 0xFFFF; }
 		uint16_t lastChar() const { return _raw->lastChar; }
-		const SpriteFrame& frame() const { return *_frame; }
+		const SpriteFrame* frame() const { return _frame; }
 		float scaleWidth() const { return _raw->scale_width; }
 		float scaleHeight() const { return _raw->scale_height; }
 		const std::vector<const Glyph*>& glyphs() const { return _glyphs; }

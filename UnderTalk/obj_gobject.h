@@ -37,7 +37,6 @@ struct IPostStep {
 };
 
 
-
 class GObject : public sf::Transformable , public sf::Drawable  {
 	sf::IntRect _frames;
 	sf::Vector2f _movment;

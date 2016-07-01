@@ -1,14 +1,16 @@
 #include "Global.h"
 #include "json.hpp"
 #include <UndertaleLib.h>
+#include "gsprites.h"
+
 using json = nlohmann::json;
 
 using namespace sf;
-void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Vector2f& offset) {
+void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Color& color, const const sf::Vector2f& offset, const sf::Vector2f& scale) {
 	float left = offset.x;
 	float top = offset.y;
-	float right = left + textRect.width;
-	float bottom = top + textRect.height;
+	float right = (left + textRect.width) * scale.x;
+	float bottom = (top + textRect.height)* scale.y;
 
 	float u1 = static_cast<float>(textRect.left);
 	float v1 = static_cast<float>(textRect.top);
@@ -28,10 +30,6 @@ void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, cons
 	vertices[3].texCoords = sf::Vector2f(u1, v2);
 	vertices[4].texCoords = sf::Vector2f(u2, v1);
 	vertices[5].texCoords = sf::Vector2f(u2, v2);
-}
-
-void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Color& color, const sf::Vector2f& offset) {
-	MakeSpriteTriangles(vertices, textRect, offset);
 
 	vertices[0].color = color;
 	vertices[1].color = color;
@@ -40,13 +38,29 @@ void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, cons
 	vertices[4].color = color;
 	vertices[5].color = color;
 }
+void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Color& color, const sf::Vector2f& offset) {
+	MakeSpriteTriangles(vertices, textRect, color, offset, Vector2f(1.0f, 1.0f));
+}
+
+void AppendSpriteTriangles(sf::VertexArray& vertices, const sf::IntRect& textRect, const sf::Color& color, const const sf::Vector2f& offset, const sf::Vector2f& scale) {
+	size_t pos = vertices.getVertexCount();
+	vertices.resize(pos + 6);
+	MakeSpriteTriangles(&vertices[pos], textRect, color, offset,scale);
+}
+
+void AppendSpriteTriangles(std::vector<sf::Vertex>& vertices, const sf::IntRect& textRect, const sf::Color& color, const const sf::Vector2f& offset, const sf::Vector2f& scale) {
+	size_t pos = vertices.size();
+	vertices.resize(pos + 6);
+	MakeSpriteTriangles(&vertices[pos], textRect, color, offset, scale);
+}
 
 struct FontInfo {
 	std::string name;
 	int size;
 	std::map<int, sf::Glyph> glyphs;
-	sf::Texture* texture;
+	GSpriteFrame frame;
 };
+
 struct SoundInfo {
 	std::string filename;
 	std::string name;
@@ -56,10 +70,12 @@ struct SoundInfo {
 };
 
 Undertale::UndertaleFile* res = nullptr;
-std::map<int, SoundInfo> _audiofiles;
+std::map<int, SoundInfo> _audiofiles; 
+
+static std::unique_ptr<sf::Image> images[20];
 static std::map<int, FontInfo> fonts;
-static sf::Texture* textures[15] = { nullptr, nullptr };
-static sf::Image* images[15] = { nullptr, nullptr };
+static std::unordered_map<size_t, Texture*> textures;
+
 static bool loaded = false;
 std::unordered_map<uint32_t, sf::Sprite> _spriteCache;
 
@@ -94,51 +110,16 @@ const sf::Sprite& GetUndertaleSprite(int index, int frame ) {
 	return _spriteCache[index];
 }
 
-//const char* filepath = "C:\\Users\\Paul\\Documents\\GitHub\\SFML\\examples\\pong\\resources\\textures\\texture_";
-void LoadAllTextures() {
-	if (textures[0] == nullptr) {
-		for (int i = 0; i < 15; i++) {
-			if (textures[i] != nullptr) continue;
-			std::string filename("resources/textures/texture_");
-			filename += std::to_string(i);
-			filename += ".png";
 
-			Image* image = new Image;
-			auto utexture = GetUndertale().LookupTexture(i);
-			if(image->loadFromMemory(utexture.data(), utexture.len())){
-				images[i] = image;
-				sf::Texture* texture = new sf::Texture();
-				if (!texture->loadFromImage(*image)) {
-					printf("Cannot load texture '%s'", filename.c_str());
-					exit(1);
-				}
-			}
-			else {
-				printf("Cannot load image '%s'", filename.c_str());
-				exit(1);
-			}
-		}
-	}
-}
 
 void Undertale::LoadAllFonts() {
 	if (!loaded) {
 		loaded = true;
-		LoadAllTextures();
-		if (textures[6] == nullptr) {
-			sf::Texture* texture = new sf::Texture();
-			auto utexture = GetUndertale().LookupTexture(6);
-			if (!texture->loadFromMemory(utexture.data(), utexture.len())) {//"resources/textures/texture_6.png")) {
-				printf("Cannot load font texture");
-				exit(1);
-			}
-			textures[6] = texture;
-		}
 		for (auto font : GetUndertale().ReadAllfonts()) {
 			FontInfo info;
 			info.size = font->size();
 			info.name = font->name().string();
-			info.texture = textures[font->frame().texture_index];
+			info.frame.setFrame(font->frame());// = Undertale::GetTexture(font->frame().texture_index);
 			for (auto glyph : font->glyphs()) {
 				sf::Glyph g;
 				g.advance = glyph->shift;
@@ -146,8 +127,8 @@ void Undertale::LoadAllFonts() {
 				// glyph["offset"] // kind of important, but not sure where it goes
 				g.textureRect = rect;
 				g.bounds = FloatRect(0, 0, rect.width, rect.height);
-				g.textureRect.top += font->frame().y;
-				g.textureRect.left += font->frame().x;
+			//	g.textureRect.top += font->frame().y;
+			//	g.textureRect.left += font->frame().x;
 				// g.bounds ignore for now
 				info.glyphs[glyph->ch] = std::move(g);
 			}
@@ -158,22 +139,45 @@ void Undertale::LoadAllFonts() {
 	}
 }
 
-
+void Debug_PreloadAllImages() {
+	for (size_t i = 0; i < 16; i++) Undertale::GetTextureImage(i);
+}
 namespace Undertale {
-	const sf::Texture& GetTexture(int index) {
-		return *textures[index];
+	
+	const sf::Image* GetTextureImage(int index) {
+		if (!images[index]) {
+			sf::Image* image = new sf::Image;
+			auto utexture = GetUndertale().LookupTexture(index);
+			if (!image->loadFromMemory(utexture.data(), utexture.len())) {
+				printf("Cannot load texture index %i", index);
+				exit(1);
+			}
+			images[index] = std::unique_ptr<Image>(image);
+		}
+		return images[index].get();
 	}
-	const sf::Texture* GetCachedTexture(int index) {
-		return textures[index];
+	const sf::Texture* GetTexture(int index) {
+		auto it = textures.find(index);
+		if (it != textures.end()) return it->second;
+		const sf::Image* image = Undertale::GetTextureImage(index);
+		assert(image != nullptr);
+		sf::Texture* texture = new sf::Texture;
+		if (!texture->loadFromImage(*image) || texture->getSize() != image->getSize()) {
+			printf("Cannot load texture index %i", index);
+			exit(1);
+		}
+		textures.emplace(index, texture);
+		return texture;
 	}
+
 	const std::map<int, sf::Glyph>& GetFontGlyphs(int font_index) {
 		return fonts[font_index].glyphs;
 	}
 	int GetFontSize(int font_index) {
 		return fonts[font_index].size;
 	}
-	const sf::Texture* GetFontTexture(int font_index) {
-		return fonts[font_index].texture;
+	const sf::Texture& GetFontTexture(int font_index) {
+		return fonts[font_index].frame.getTexture();
 	}
 	const std::string& LookupSound(int index) {
 		if (_audiofiles.empty()) {

@@ -6,7 +6,7 @@
 #include <vector>
 #include <cmath>
 #include "obj_writer.h"
-
+#include "obj_vaporized_new.h"
 
 
 
@@ -135,25 +135,37 @@ int old_main() {
 /// \return Application exit code
 ///
 ////////////////////////////////////////////////////////////
-
-
+void Debug_PreloadAllImages();
 int main(int argc, const char* argv[])
 {
-	
+
 	Undertale::UndertaleFile dataWin;
-	if (argc == 0) exit(-1);
+	if (argc != 2) exit(-1);
 	LoadUndertaleResources(argv[1]);
+	Undertale::LoadAllFonts();
+	Debug_PreloadAllImages();
+
+	
 
 	//auto spr_icewolf = dataWin.LookupSprite(1302);
 
-	Undertale::LoadAllFonts();
+
 	// Create the main window
 	sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Shader",
 		sf::Style::Titlebar | sf::Style::Close);
 	window.setVerticalSyncEnabled(true);
 
+
+	
+
+	GSprite test_head(230);
+	test_head.setPosition(200, 200);
+//	obj_vaporized_new vtest(test_head,true);
+	obj_vaporized_new vtest(10, false);
+	vtest.setPosition(100, 100);
+
 	OBJ_WRITER writer;
-	writer.AddText("*This is a \\Ytest\\W&* and anot\\zher%%");
+	writer.AddText("*This is a \\Ytest\\W&* and another \\z%%");
 	writer.SetTextType(1);
 	// Start the game loop
 	sf::Clock clock;
@@ -187,8 +199,9 @@ int main(int argc, const char* argv[])
 		// Clear the window
 		window.clear(sf::Color(0, 0, 0));
 		//effects[current]->update(clock.getElapsedTime().asSeconds(), x, y);
-		
+		window.draw(vtest);
 		window.draw(writer);
+		window.draw(test_head);
 		// Finally, display the rendered frame on screen
 		window.display();
 	}
