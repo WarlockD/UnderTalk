@@ -127,8 +127,8 @@ void Undertale::LoadAllFonts() {
 				// glyph["offset"] // kind of important, but not sure where it goes
 				g.textureRect = rect;
 				g.bounds = FloatRect(0, 0, rect.width, rect.height);
-			//	g.textureRect.top += font->frame().y;
-			//	g.textureRect.left += font->frame().x;
+				g.textureRect.top += info.frame.getTextureRect().top;
+				g.textureRect.left += info.frame.getTextureRect().left;
 				// g.bounds ignore for now
 				info.glyphs[glyph->ch] = std::move(g);
 			}
@@ -176,7 +176,7 @@ namespace Undertale {
 	int GetFontSize(int font_index) {
 		return fonts[font_index].size;
 	}
-	const sf::Texture& GetFontTexture(int font_index) {
+	const sf::Texture* GetFontTexture(int font_index) {
 		return fonts[font_index].frame.getTexture();
 	}
 	const std::string& LookupSound(int index) {

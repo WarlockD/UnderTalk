@@ -98,7 +98,7 @@ const sf::Sprite& GetUndertaleSprite(int index,int frame=0);
 
 namespace Undertale {
 	const std::map<int, sf::Glyph>& GetFontGlyphs(int font_index);
-	const sf::Texture& GetFontTexture(int font_index);
+	const sf::Texture* GetFontTexture(int font_index);
 	int GetFontSize(int font_index);
 	const sf::Texture* GetTexture(int index);
 	const sf::Image* GetTextureImage(int index);

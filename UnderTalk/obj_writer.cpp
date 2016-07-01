@@ -397,7 +397,7 @@ void  OBJ_WRITER::frame() {
 
 void OBJ_WRITER::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
-	states.texture = &Undertale::GetFontTexture(6);
+	states.texture = Undertale::GetFontTexture(6);
 	target.draw(_quads, states);
 	if (_sprites.size() > 0) for(auto& s :_sprites) target.draw(s, states);
 }

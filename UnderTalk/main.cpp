@@ -205,4 +205,6 @@ int main(int argc, const char* argv[])
 		// Finally, display the rendered frame on screen
 		window.display();
 	}
+	printf("All done\r\n");
+	return 0;
 }

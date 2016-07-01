@@ -8,27 +8,25 @@
 // within sf::Sprite as those functions are private 
 
 class GSpriteFrame : public sf::Drawable {
-	
 	sf::Vertex  _vertices[6]; ///< Vertices defining the sprite's geometry, should we use quads?
 	struct SpriteFrameCache {
 		sf::IntRect rect;
-		sf::Texture texture;
+		sf::Texture* texture;
+		sf::Vertex  vertices[6];
+		~SpriteFrameCache();
 	};
-	static std::unordered_map <size_t, std::weak_ptr<GSpriteFrame::SpriteFrameCache>> spriteFrameCache;
 	std::shared_ptr<SpriteFrameCache> _frame;
+	friend class SpriteFrameCacheHelper;
 public:
 	GSpriteFrame(const Undertale::SpriteFrame* frame, sf::Color color = sf::Color::White);
 	GSpriteFrame()  {}
 	void setColor(const sf::Color& color);
 	void setFrame(const Undertale::SpriteFrame* frame);
-
-	
-
 	void insertIntoVertexList(sf::VertexArray& list) const;
 	inline void insertIntoVertexList(sf::Vertex* dist) const { std::memcpy(dist, _vertices, sizeof(sf::Vertex) * 6); }
 
 	const sf::IntRect& getTextureRect() const;
-	const sf::Texture& getTexture() const;
+	const sf::Texture* getTexture() const;
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
@@ -105,7 +103,7 @@ public:
 	sf::Vector2f getSize() const { return sf::Vector2f(_sprite->width()*getScale().x, _sprite->height()*getScale().y); }
 	sf::FloatRect getBounds() const { return sf::FloatRect(getPosition(), getSize()); }
 	const sf::IntRect& getTextureRect() const { return _frame.getTextureRect(); }
-	const sf::Texture& getTexture() const { return _frame.getTexture(); }
+	const sf::Texture* getTexture() const { return _frame.getTexture(); }
 
 	void setImageIndex(int index) { _frame.setFrame(_sprite->frames()->at(_image_index = _sprite ? index % _sprite->frames()->size() : 0)); }
 	const char* getName() const { return _sprite->name().c_str(); }

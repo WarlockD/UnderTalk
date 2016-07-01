@@ -66,7 +66,7 @@ static const sf::VertexArray& cacheVertexes(const GSprite& sprite, bool spec) {
 	sf::VertexArray verts;
 	const Texture* texture = getPixelTexture();
 	IntRect pixelRect(0, 0, texture->getSize().x, texture->getSize().y);
-	Image image = sprite.getTexture().copyToImage();
+	Image image = sprite.getTexture()->copyToImage();
 	IntRect imageRect = sprite.getTextureRect();
 	Image ima;
 	auto size = image.getSize();
