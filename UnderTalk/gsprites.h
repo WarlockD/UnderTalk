@@ -81,6 +81,9 @@ public:
 		}
 		TimeTransformable::moveStep(dt);
 	}
+	void setColor(const sf::Color& color) {
+		for (size_t i = _index; i < _count; i++) _array[i].color = color;
+	}
 };
 
 class GSprite : public sf::Drawable, public TimeTransformable {

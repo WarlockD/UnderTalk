@@ -97,16 +97,41 @@ static const sf::VertexArray& cacheVertexes(const GSprite& sprite, bool spec) {
 	assert(ret.second);
 	return ret.first->second;
 }
-obj_vaporized_new::obj_vaporized_new(const GSprite& sprite, bool spec) : _vertexes(cacheVertexes(sprite,spec)) {
+obj_vaporized_new::obj_vaporized_new(const GSprite& sprite, bool spec) : _vertexes(cacheVertexes(sprite,spec)), _cooldown(0) {
 	// need to find each line of particals
-	size_t line = 0;
+	
 	Vector2f last = _vertexes[0].position;
-	for (size_t i = 0; i < _vertexes.getVertexCount(); i++) {
+	std::vector<std::vector<TimeTransformableVertexArray >> particles;
+	particles.resize(sprite.getSize().y);
+	for (size_t i = 0; i < _vertexes.getVertexCount(); i+=6) {
 		auto& v = _vertexes[i];
-
+		size_t y = (size_t)v.position.y;
+		auto& line = particles.at(y);
+		TimeTransformableVertexArray move(_vertexes, i);
+		move.setGravity(((std::rand() % 10) * 0.1) + 0.2);
+		move.setGravityDirection(90);
+		move.setHSpeed(std::rand() % 4 - 2);
+		line.emplace_back(move);
 	}
+	_particles = std::move(particles);
 }
-obj_vaporized_new::obj_vaporized_new(uint32_t index,bool spec) : _vertexes(PrimitiveType::Triangles) {
+void obj_vaporized_new::step(float dt) {
+	if (_cooldown == 0) {
+		for (size_t i = 0; i < 4; i++) {
+			if (_particles.empty()) break;
+			auto& line = _particles.front();
+			for (auto& s : line) _active.emplace_back(s);
+			_particles.erase(_particles.begin());
+			_cooldown++;
+		}
+	}
+	for (auto& s : _active) {
+		s.moveStep(dt);
+		if(s.ge)
+	}
+//	for(auto& s : _)
+}
+obj_vaporized_new::obj_vaporized_new(uint32_t index,bool spec) : _vertexes(PrimitiveType::Triangles), _cooldown(0) {
 	const std::string& str = newvapordata.at(index);
 	const Texture* texture = getPixelTexture();
 	IntRect pixelRect(0, 0, texture->getSize().x, texture->getSize().y);
