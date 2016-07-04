@@ -48,8 +48,8 @@ std::map<uint32_t, std::string> newvapordata = {
 
 using namespace sf;
 sf::Texture* whitePixel = nullptr;
-const sf::Uint8 pixelData[] = { 255,2555,255,255 };
-
+const sf::Uint8 pixelData[] = { 0xFF, 0xFF, 0xFF, 0xFF };
+static const IntRect pixelTextureRect(0, 0, 1, 1);
 const sf::Texture* getPixelTexture() {
 	if (!whitePixel) {
 		whitePixel = new Texture();
@@ -58,11 +58,94 @@ const sf::Texture* getPixelTexture() {
 	}
 	return whitePixel;
 }
-static std::unordered_map<size_t, sf::VertexArray> s_vaporizedCache;
 
-static const sf::VertexArray& cacheVertexes(const GSprite& sprite, bool spec) {
+
+VertexSprite PixelArray::at(size_t x, size_t y) { return VertexSprite(_vertices.data() + x + (y * _width), 6); }
+VertexSprite PixelArray::lineAt( size_t y) { return VertexSprite(_vertices.data() + (y * _width), _width); }
+
+
+PixelArray::PixelArray(size_t width, size_t height) : _pixelTexture(getPixelTexture()) ,_width(0), _height(0) { resize(width, height); }
+PixelArray::PixelArray(const sf::Image& image) : _pixelTexture(getPixelTexture()), _width(0), _height(0) { setPixels(image); }
+PixelArray::PixelArray(const sf::Image& image, const sf::IntRect& rect):_pixelTexture(getPixelTexture()), _width(0), _height(0) { setPixels(image, rect); }
+PixelArray::PixelArray(const sf::Texture& texture):_pixelTexture(getPixelTexture()), _width(0), _height(0) { setPixels(texture); }
+PixelArray::PixelArray(const sf::Texture& texture, const sf::IntRect& rect):_pixelTexture(getPixelTexture()), _width(0), _height(0) { setPixels(texture, rect); }
+
+void PixelArray::resize(size_t width, size_t height) {
+	if ((width == 0 || height == 0) || (_width != width && _height != height)) {
+		if ((width == 0 || height == 0)) {
+			_width = _height = 0;
+		}
+		else {
+			_width = width; _height = height;
+			_vertices.resize(_width*_height * 6);
+			for (size_t y = 0; y < _height; y++) {
+				for (size_t x = 0; x < _width; x++) {
+					size_t index = x + (y*_width);
+					Vertex* vertex = _vertices.data() + (index * 6);
+					MakeSpriteTriangles(vertex, pixelTextureRect, sf::Vector2f((float)x, (float)y)); // clear and fix the positions
+				}
+			}
+		}
+	}
+}
+void PixelArray::resize(const sf::Vector2i& size) { resize(size.x, size.y); }
+void PixelArray::resize(const sf::Vector2u& size) { resize(size.x, size.y); }
+
+void PixelArray::setPixels(const sf::Image& image) {
+	IntRect imageRect(0, 0, image.getSize().x, image.getSize().y);
+	setPixels(image, imageRect);
+}
+void PixelArray::setPixels(const sf::Image& image, const sf::IntRect& rect) {
+	resize(rect.width, rect.height);
+	Vertex* vertex = _vertices.data();
+	for (size_t y = 0; y < _height; y++) {
+		for (size_t x = 0; x < _width; x++) {
+			size_t index = x + (y*_width);
+			sf::Color color = image.getPixel(rect.left + x, rect.top + y);
+			vertex->color = color; vertex++;
+			vertex->color = color; vertex++;
+			vertex->color = color; vertex++;
+			vertex->color = color; vertex++;
+			vertex->color = color; vertex++;
+			vertex->color = color; vertex++;
+		}
+	}
+}
+void PixelArray::setPixels(const sf::Texture& texture) {
+	IntRect textureRect(0, 0, texture.getSize().x, texture.getSize().y);
+	setPixels(texture, textureRect);
+}
+void PixelArray::setPixels(const sf::Texture& texture, const sf::IntRect& rect) {
+	setPixels(texture.copyToImage(), rect);
+}
+
+
+std::vector<VertexSprite> PixelArray::allFilledAt(size_t y) {
+	std::vector<VertexSprite> sprites;
+	Vertex* start = nullptr;
+	size_t count = 0;
+	for (size_t i = y * _width; i < ((y + 1)*_width); i+=6) {
+		Vertex* vertex = _vertices.data() + i;
+		if (vertex[0].color == Color::Black) {
+			if (start != nullptr) {
+				sprites.emplace_back(start, count*6);
+				start = nullptr; 
+			}
+			else {
+				if (start == nullptr) { start = vertex; count = 0; }
+				count++;
+			}
+		}
+	}
+	return std::move(sprites);
+}
+
+static std::unordered_map<size_t, std::vector<std::vector<sf::Sprite>>> s_vaporizedCache;
+
+static const std::vector<std::vector<sf::Sprite>>& cacheVertexes(const GSprite& sprite, bool spec) {
 	auto it = s_vaporizedCache.find(sprite.getIndex());
 	if (it != s_vaporizedCache.end()) return it->second;
+	std::vector<std::vector<sf::Sprite>> cache;
 	sf::VertexArray verts;
 	const Texture* texture = getPixelTexture();
 	IntRect pixelRect(0, 0, texture->getSize().x, texture->getSize().y);
@@ -72,66 +155,86 @@ static const sf::VertexArray& cacheVertexes(const GSprite& sprite, bool spec) {
 	auto size = image.getSize();
 	
 	if (sprite.getSize().x <= 120 || spec) {
-		for (size_t line = 0; line < imageRect.height; line++)
-			for (size_t x = 0; x < imageRect.width; x++) {
+		for (size_t line = 0; line < (size_t)imageRect.height; line++) {
+			std::vector<sf::Sprite> sprites;
+			for (size_t x = 0; x < (size_t)imageRect.width; x++) {
 				sf::Color color = image.getPixel(imageRect.left + x, imageRect.top + line);
-				if (color == Color::White) AppendSpriteTriangles(verts, pixelRect, Vector2f(x, line));
+				if (color == Color::White) {
+					Sprite sprite(*texture);
+					sprite.setPosition((float)x, (float)line);
+					sprites.emplace_back(sprite);
+				}
 			}
+			cache.emplace_back(sprites);
+		}
 	}
 	else {
-		for (size_t line = 0; line < imageRect.height; line++) {
+		for (size_t line = 0; line < (size_t)imageRect.height; line++) {
 			int pixelCount = 0;
-			for (size_t x = 0; x < imageRect.width; x++) {
+			std::vector<sf::Sprite> sprites;
+			for (size_t x = 0; x < (size_t)imageRect.width; x++) {
 				sf::Color color = image.getPixel(imageRect.left + x, imageRect.top + line);
 				if (color == Color::White) pixelCount++;
 				else {
 					if (pixelCount > 0) { // we find the largest pixel size then make THAT the vertex
-						AppendSpriteTriangles(verts, pixelRect, Vector2f(x - pixelCount, line), Vector2f(pixelCount, 1.0f));
+						Sprite sprite(*texture);
+						sprite.setPosition((float)(x - pixelCount), (float)line);
+						sprite.setScale((float)pixelCount, 1.0f);
+						sprites.emplace_back(sprite);
 						pixelCount = 0;
 					}
 				}
 			}
+			cache.emplace_back(sprites);
 		}
 	}
-	auto ret = s_vaporizedCache.emplace(sprite.getIndex(), verts);
+	auto ret = s_vaporizedCache.emplace(sprite.getIndex(), cache);
 	assert(ret.second);
 	return ret.first->second;
 }
-obj_vaporized_new::obj_vaporized_new(const GSprite& sprite, bool spec) : _vertexes(cacheVertexes(sprite,spec)), _cooldown(0) {
-	// need to find each line of particals
-	
-	Vector2f last = _vertexes[0].position;
-	std::vector<std::vector<TimeTransformableVertexArray >> particles;
-	particles.resize(sprite.getSize().y);
-	for (size_t i = 0; i < _vertexes.getVertexCount(); i+=6) {
-		auto& v = _vertexes[i];
-		size_t y = (size_t)v.position.y;
-		auto& line = particles.at(y);
-		TimeTransformableVertexArray move(_vertexes, i);
-		move.setGravity(((std::rand() % 10) * 0.1) + 0.2);
-		move.setGravityDirection(90);
-		move.setHSpeed(std::rand() % 4 - 2);
-		line.emplace_back(move);
-	}
-	_particles = std::move(particles);
-}
-void obj_vaporized_new::step(float dt) {
-	if (_cooldown == 0) {
-		for (size_t i = 0; i < 4; i++) {
-			if (_particles.empty()) break;
-			auto& line = _particles.front();
-			for (auto& s : line) _active.emplace_back(s);
-			_particles.erase(_particles.begin());
-			_cooldown++;
+#include <functional>
+
+namespace std {
+	template<typename T> void splice_if(std::list<T> from, std::list<T> to, std::function<bool(T&)> func) {
+		auto it = from.begin();
+		while (it != from.end()) {
+			if (func(*it)) {
+				auto copy = it;
+				it++;
+				to.splice(to.end(), from, copy);
+			}
+			else it++;
 		}
 	}
-	for (auto& s : _active) {
-		s.moveStep(dt);
-		if(s.ge)
+	template<typename T> void splice_if(std::list<T> from, std::list<T> to, std::function<bool(const T&)> func) {
+		auto it = from.begin();
+		while (it != from.end()) {
+			if (func(*it)) {
+				auto copy = it;
+				it++;
+				to.splice(to.end(), from, copy);
+			}
+			else it++;
+		}
 	}
-//	for(auto& s : _)
+};
+
+obj_vaporized_new::obj_vaporized_new(const GSprite& sprite, bool spec) : _pixels(*sprite.getTexture(), sprite.getTextureRect()), _cooldown(0) {
+
 }
-obj_vaporized_new::obj_vaporized_new(uint32_t index,bool spec) : _vertexes(PrimitiveType::Triangles), _cooldown(0) {
+
+void obj_vaporized_new::step(float dt) {
+	if (!_doStep) return;
+	sf::Vector2f pos = getPosition();
+	pos.x += 0.5*dt;
+	setPosition(pos);
+
+}
+/*
+obj_vaporized_new::obj_vaporized_new(uint32_t index,bool spec) :  _cooldown(0) {
+	_doStep = true;
+	
+	
 	const std::string& str = newvapordata.at(index);
 	const Texture* texture = getPixelTexture();
 	IntRect pixelRect(0, 0, texture->getSize().x, texture->getSize().y);
@@ -139,7 +242,7 @@ obj_vaporized_new::obj_vaporized_new(uint32_t index,bool spec) : _vertexes(Primi
 	int ww = 0;
 	int wd = 200;
 	int line = 0;
-	for (int i = 0; i < str.length(); i++) {
+	for (size_t i = 0; i < str.length(); i++) {
 		ch = str[i];
 		if (ch == '~')
 			break; // we drop here
@@ -168,8 +271,8 @@ obj_vaporized_new::obj_vaporized_new(uint32_t index,bool spec) : _vertexes(Primi
 	}
 	
 }
+*/
 void obj_vaporized_new::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
-	states.texture = getPixelTexture();
-	target.draw(_vertexes, states);
+	target.draw(_pixels, states);
 }

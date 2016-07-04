@@ -30,9 +30,9 @@ class OBJ_WRITER : public sf::Drawable, public sf::Transformable {
 	TextSetup setup;
 	sf::Vector2f _writing;
 	int _typer;
-	int _stringno;
-	int _pos;
-	int _lineno;
+	size_t _stringno;
+	size_t _pos;
+	size_t _lineno;
 	int _halt;
 	int _textpause;
 	// text position

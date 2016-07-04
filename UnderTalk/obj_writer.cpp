@@ -205,7 +205,7 @@ void OBJ_WRITER::RefreshQuads() {
 	Vector2f start;
 	Color color = setup.color;
 	auto glyphs = Undertale::GetFontGlyphs(setup.myfont);
-	for (int n = 0; n < _pos; n++) {
+	for (size_t n = 0; n < _pos; n++) {
 		char ch = _text[n];
 		char nch = (n + 1) < _text.length() ? _text[n + 1] : 0;
 		switch (ch) {
@@ -245,7 +245,8 @@ void OBJ_WRITER::RefreshQuads() {
 			case 'z':
 			{
 				GSprite inf_sprite(837, 0);
-				Vector2f shake = Vector2f((std::rand() % setup.shake) - setup.shake / 2, (std::rand() % setup.shake) - setup.shake / 2) + Vector2f(0, 10);
+				Vector2f shake((float)fast::random(setup.shake) - (float)setup.shake / 2.0f, (float)fast::random(setup.shake) - (float)setup.shake / 2.0f);
+				shake += Vector2f(0, 10);
 				inf_sprite.setPosition(my+shake);
 				inf_sprite.setScale(2, 2);
 				_sprites.emplace_back(inf_sprite);
@@ -314,7 +315,7 @@ void OBJ_WRITER::RefreshQuads() {
 				break;
 			default:
 				assert(setup.shake > 0);
-				start = Vector2f((std::rand() % setup.shake) - setup.shake / 2, (std::rand() % setup.shake) - setup.shake / 2);
+				start = Vector2f((float)fast::random(setup.shake) - (float)setup.shake / 2.0f, (float)fast::random(setup.shake) - (float)setup.shake / 2.0f);
 				addGlyphQuad(_quads, start + my, color, g);
 				break;
 			}

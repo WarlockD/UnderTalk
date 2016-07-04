@@ -35,7 +35,7 @@ namespace Undertale {
 		}
 		return hash;
 	}
-#pragma pack(1)
+#pragma pack(push, 1)
 	struct UndertaleString {
 		uint32_t length;
 		const char u_str[1];
@@ -44,7 +44,7 @@ namespace Undertale {
 		bool operator==(const UndertaleString& other) const { return &u_str[0] == &other.u_str[0]; } // always equal
 		bool operator!=(const UndertaleString& other) const { return !(*this == other); }
 	};
-#pragma pack(0)
+#pragma pack(pop)
 	// Container for strings simple pointer strings.  Used for comparing and matching
 	class String {
 		const char* _c_str;

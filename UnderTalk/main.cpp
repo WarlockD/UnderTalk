@@ -160,8 +160,9 @@ int main(int argc, const char* argv[])
 
 	GSprite test_head(230);
 	test_head.setPosition(200, 200);
-//	obj_vaporized_new vtest(test_head,true);
-	obj_vaporized_new vtest(10, false);
+	obj_vaporized_new vtest(test_head,true);
+//	vtest.debugShow();
+//	obj_vaporized_new vtest(10, true);
 	vtest.setPosition(100, 100);
 
 	OBJ_WRITER writer;
@@ -169,6 +170,7 @@ int main(int argc, const char* argv[])
 	writer.SetTextType(1);
 	// Start the game loop
 	sf::Clock clock;
+	bool _dosteps = false;
 	float current = clock.getElapsedTime().asSeconds() + (1 / 30.0f);
 	while (window.isOpen())
 	{
@@ -188,11 +190,19 @@ int main(int argc, const char* argv[])
 				case sf::Keyboard::Escape:
 					window.close();
 					break;
+				case sf::Keyboard::S:
+					vtest.step(1.0f / 30.0f);
+					break;
+				case sf::Keyboard::A:
+					_dosteps = !_dosteps;
+					break;
 				}
 			}
 		}
 		float now = clock.getElapsedTime().asSeconds();
 		if (now > current) {
+			float dt = now - current;
+			if(_dosteps)	vtest.step(dt);
 			writer.frame();
 			current = now + (1 / 30.0f);
 		}

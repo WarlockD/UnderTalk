@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Effect.hpp" />
+    <ClInclude Include="gBatchSprite.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="gsprites.h" />
     <ClInclude Include="json.hpp" />

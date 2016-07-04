@@ -56,5 +56,8 @@
     <ClInclude Include="obj_vaporized_new.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="gBatchSprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
