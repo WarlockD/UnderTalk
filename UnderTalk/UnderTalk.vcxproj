@@ -162,6 +162,7 @@
   <ItemGroup>
     <ClCompile Include="gsprites.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="obj_face.cpp" />
     <ClCompile Include="obj_gobject.cpp" />
     <ClCompile Include="obj_vaporized_new.cpp" />
     <ClCompile Include="obj_writer.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Global.h" />
     <ClInclude Include="gsprites.h" />
     <ClInclude Include="json.hpp" />
+    <ClInclude Include="obj_face.h" />
     <ClInclude Include="obj_gobject.h" />
     <ClInclude Include="obj_vaporized_new.h" />
     <ClInclude Include="obj_writer.h" />

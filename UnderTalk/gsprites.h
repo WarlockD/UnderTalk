@@ -7,27 +7,33 @@
 // so we have to be sure to put that within the vertexes.  There is no way to do that
 // within sf::Sprite as those functions are private 
 
-class GSpriteFrame : public sf::Drawable {
-	sf::Vertex  _vertices[6]; ///< Vertices defining the sprite's geometry, should we use quads?
-	struct SpriteFrameCache {
-		sf::IntRect rect;
-		sf::Texture* texture;
-		sf::Vertex  vertices[6];
-		~SpriteFrameCache();
-	};
-	std::shared_ptr<SpriteFrameCache> _frame;
-	friend class SpriteFrameCacheHelper;
+class GSpriteFrame  {
+	static std::unordered_map <const Undertale::SpriteFrame*, std::weak_ptr<GSpriteFrame>> _frame_cache;
+protected:
+	sf::Vertex  _vertices[4]; ///< Vertices defining the sprite's geometry, should we use quads?
+	sf::IntRect _texRect;
+	size_t _texture_index;
+	sf::Vector2u _size;
+	sf::Vector2u _origin;
+	const Undertale::SpriteFrame* _frame;
 public:
-	GSpriteFrame(const Undertale::SpriteFrame* frame, sf::Color color = sf::Color::White);
-	GSpriteFrame()  {}
-	void setColor(const sf::Color& color);
+	GSpriteFrame() : _frame(nullptr) {} // invalid state
+	GSpriteFrame(const Undertale::SpriteFrame* frame);
+	
 	void setFrame(const Undertale::SpriteFrame* frame);
+	const Undertale::SpriteFrame* frame() const { return _frame; }
 	void insertIntoVertexList(sf::VertexArray& list) const;
-	inline void insertIntoVertexList(sf::Vertex* dist) const { std::memcpy(dist, _vertices, sizeof(sf::Vertex) * 6); }
+	void insertIntoVertexList(std::vector<sf::Vertex>& list, sf::PrimitiveType type) const;
 
-	const sf::IntRect& getTextureRect() const;
-	const sf::Texture* getTexture() const;
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+	
+	const sf::IntRect& getTextureRect() const { return _texRect; }
+	SharedTexture::TextureInfo  getTexture()  { return Undertale::GetTexture(_texture_index, _texRect);  }
+	const sf::Vector2u getSize() const { return _size; }
+	const sf::Vector2u getOrigin() const { return _origin; }
+	const sf::Vertex* vertices() const { return _vertices; }
+	const size_t vertices_count() const { return 4; }
+	const sf::PrimitiveType vertices_type() const { return sf::TriangleStrip; }
 };
 
 // Each frame we update the position of movmenet
@@ -86,37 +92,37 @@ public:
 	}
 };
 
-class GSprite : public sf::Drawable, public TimeTransformable {
+class GSprite :  public sf::Sprite {
 	const Undertale::Sprite* _sprite;
-	int _image_index;
-	sf::Color _color;
-	GSpriteFrame _frame;///< Texture of the sprite
+	SharedTexture::TextureInfo _texture;
+	size_t _image_index;
+	int _depth;
 public:
-	GSprite() : _sprite(nullptr), _image_index(0), _color(sf::Color::White) {}
-	GSprite(int sprite_index, int image_index = 0): _color(sf::Color::White) { setUndertaleSprite(sprite_index); setImageIndex(0); }
-	GSprite(const std::string& name, int image_index = 0) : _color(sf::Color::White) { setUndertaleSprite(name); setImageIndex(0); }
-	GSprite(const Undertale::Sprite* sprite, int image_index = 0) :_color(sf::Color::White) { setUndertaleSprite(sprite); setImageIndex(0); }
-
+	int getDepth() const { return _depth; }
+	void setDepth(int depth) { _depth = depth; }
+	GSprite() : sf::Sprite(), _image_index(0), _depth(0) {}
+	GSprite(int sprite_index) : _image_index(0), _depth(0) { setUndertaleSprite(sprite_index); }
+	GSprite(int sprite_index, int image_index): _image_index(image_index), _depth(0) { setUndertaleSprite(sprite_index);  }
+	GSprite(const std::string& name, int image_index = 0) : _image_index(0), _depth(0) { setUndertaleSprite(name);  }
+	GSprite(const Undertale::Sprite* sprite, int image_index = 0) :_image_index(0), _depth(0) { setUndertaleSprite(sprite);  }
+	const SharedTexture::TextureInfo& getTextureInfo() const { return _texture; }
 	void setUndertaleSprite(int index);
 	void setUndertaleSprite(const std::string& name);
 	void setUndertaleSprite(const Undertale::Sprite* sprite);
 
-	void setColor(const sf::Color& color) { _frame.setColor(_color = color); }
-	const sf::Color& getColor() const { return _color; }
-	sf::Vector2f getSize() const { return sf::Vector2f(_sprite->width()*getScale().x, _sprite->height()*getScale().y); }
-	sf::FloatRect getBounds() const { return sf::FloatRect(getPosition(), getSize()); }
-	const sf::IntRect& getTextureRect() const { return _frame.getTextureRect(); }
-	const sf::Texture* getTexture() const { return _frame.getTexture(); }
-
-	void setImageIndex(int index) { _frame.setFrame(_sprite->frames()->at(_image_index = _sprite ? index % _sprite->frames()->size() : 0)); }
+	sf::Vector2f getLocalSize() const { return sf::Vector2f(_sprite->width(), _sprite->height()); }
+	sf::FloatRect getLocalBounds() const { return sf::FloatRect(_sprite->left(), _sprite->top(), _sprite->left() - _sprite->right(), _sprite->bottom() - _sprite->top()); }
+	size_t getImageCount() const { return _sprite->frames()->size(); }
+	void setImageIndex(size_t index) { 
+		_image_index = index %  getImageCount();  
+		auto frame = _sprite->frames()->at(_image_index);
+		setOrigin(frame->offset_x, frame->offset_y);
+		setTextureRect(sf::IntRect(frame->x, frame->y, frame->width, frame->height));
+	}
 	const char* getName() const { return _sprite->name().c_str(); }
 	uint32_t getIndex() const { return _sprite->index(); }
-	
+	sf::Image copyToImage() const { return _texture.copyToImage(); }
 	int getImageIndex() const { return _image_index; }
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const {
-		if (_sprite) {
-			states.transform *= getTransform();
-			target.draw(_frame, states);
-		}
-	}
+	
 };
+
