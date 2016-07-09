@@ -33,6 +33,9 @@
     <ClCompile Include="obj_vaporized_new.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="obj_face.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Effect.hpp">
@@ -56,7 +59,7 @@
     <ClInclude Include="obj_vaporized_new.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gBatchSprite.h">
+    <ClInclude Include="obj_face.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

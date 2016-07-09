@@ -1,100 +1,84 @@
 #include "gsprites.h"
 using namespace sf;
 
-namespace {
-	struct SpriteFrame {
-		std::string& name;
-		std::vector<sf::Sprite> frames;
-		sf::IntRect bounds;
-		sf::Vector2i size;
-
-		std::vector<unsigned char> _mask;
-	};
-}
 
 
 
+//GSpriteFrame* cframe = new GSpriteFrame;
+//cframe->_texRect = IntRect(frame->x, frame->y, frame->width, frame->height);
 
-GSpriteFrame::GSpriteFrame(const Undertale::SpriteFrame* frame, sf::Color color) {
+
+GSpriteFrame::GSpriteFrame(const Undertale::SpriteFrame* frame) {
 	setFrame(frame);
-	setColor(color);
 }
-template<typename Tval>
-struct MyTemplatePointerHash1 {
-	size_t operator()(const Tval* val) const {
-		static const size_t shift = (size_t)log2(1 + sizeof(Tval));
-		return (size_t)(val) >> shift;
-	}
-};
-GSpriteFrame::SpriteFrameCache::~SpriteFrameCache() {
-
-}
-class SpriteFrameCacheHelper {
-	static std::unordered_map <size_t, std::weak_ptr<GSpriteFrame::SpriteFrameCache>> spriteFrameCache;
-public:
-	static std::shared_ptr<GSpriteFrame::SpriteFrameCache> loadFrame(const Undertale::SpriteFrame* frame) {
-		size_t index = (size_t)frame;
-		auto it = spriteFrameCache.find(index);
-		if (it != spriteFrameCache.end() && !it->second.expired()) {
-			return it->second.lock();
-		}
-		else {
-			GSpriteFrame::SpriteFrameCache* cframe = new GSpriteFrame::SpriteFrameCache;
-			cframe->texture = new sf::Texture;
-			cframe->rect = IntRect(frame->x, frame->y, frame->width, frame->height);
-			auto image = Undertale::GetTextureImage(frame->texture_index);
-			if (!cframe->texture->loadFromImage(*image)) {
-				// couldn't load.  might be because the texture is to big.  If thats the case we got to cut it up
-				if (cframe->texture->loadFromImage(*image, cframe->rect)) {
-					cframe->rect.top = 0;
-					cframe->rect.left = 0;
-				}
-				else { // total fail
-					printf("Could not cut up texture\r\n");
-					throw std::exception("Ugh");
-				}
-			}
-			MakeSpriteTriangles(cframe->vertices, cframe->rect, Vector2f(frame->offset_x, frame->offset_y));
-			std::shared_ptr<GSpriteFrame::SpriteFrameCache> shared = std::shared_ptr<GSpriteFrame::SpriteFrameCache>(cframe);
-			std::weak_ptr<GSpriteFrame::SpriteFrameCache> wptr = shared;
-			spriteFrameCache.emplace(index, wptr);
-			return shared;
-		}
-	}
-};
-std::unordered_map <size_t, std::weak_ptr<GSpriteFrame::SpriteFrameCache>> SpriteFrameCacheHelper::spriteFrameCache;
 
 
 void GSpriteFrame::setFrame(const Undertale::SpriteFrame* frame) {
-	_frame = SpriteFrameCacheHelper::loadFrame(frame);
-	std::memcpy(&_vertices, &_frame->vertices, 6 * sizeof(Vertex));
-}
+	_texture_index = frame->texture_index;
+	_frame = frame;
+	_texRect = IntRect(frame->x, frame->y, frame->width, frame->height);
+	_origin = Vector2u(frame->offset_x, frame->offset_y);
+	{
+		float width = static_cast<float>(_texRect.width);
+		float height = static_cast<float>(_texRect.height);
 
-void GSpriteFrame::setColor(const sf::Color& color) {
-	_vertices[0].color = color;
-	_vertices[1].color = color;
-	_vertices[2].color = color;
-	_vertices[3].color = color;
-	_vertices[4].color = color;
-	_vertices[5].color = color;
-}
-void GSpriteFrame::insertIntoVertexList(sf::VertexArray& list) const {
-	assert(list.getPrimitiveType() == sf::PrimitiveType::Triangles);
-	for (int i = 0; i < 6; i++) list.append(_vertices[i]);
-}
+		float u1 = static_cast<float>(_texRect.left);
+		float u2 = u1 + width;
+		float v1 = static_cast<float>(_texRect.top);
+		float v2 = v1 + height;
 
+		float left = static_cast<float>(_origin.x);
+		float right = left + width;
+		float top = static_cast<float>(_origin.y);
+		float bottom = top + height;
 
-const sf::IntRect& GSpriteFrame::getTextureRect() const {
-	return _frame->rect;
-}
-const sf::Texture* GSpriteFrame::getTexture() const {
-	return _frame->texture;
-}
-void GSpriteFrame::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	if (_frame) {
-		states.texture = _frame->texture;
-		target.draw(_vertices, 6, sf::PrimitiveType::Triangles, states);
+		_vertices[0] = Vertex(Vector2f(left, top), Color::White, Vector2f(u1, v1));
+		_vertices[1] = Vertex(Vector2f(left, bottom), Color::White, Vector2f(u1, v2));
+		_vertices[2] = Vertex(Vector2f(right, top), Color::White, Vector2f(u2, v1));
+		_vertices[3] = Vertex(Vector2f(right, bottom), Color::White, Vector2f(u2, v2));
 	}
+}
+
+
+void GSpriteFrame::insertIntoVertexList(sf::VertexArray& list) const {
+	auto type = list.getPrimitiveType();
+	if (type == sf::PrimitiveType::Triangles) {
+		list.append(_vertices[0]);
+		list.append(_vertices[1]);
+		list.append(_vertices[3]);
+
+		list.append(_vertices[2]);
+		list.append(_vertices[1]);
+		list.append(_vertices[3]);
+
+	}
+	else if (type == PrimitiveType::TrianglesStrip) {
+		list.append(_vertices[0]);
+		list.append(_vertices[1]);
+		list.append(_vertices[2]);
+		list.append(_vertices[3]);
+	}
+	else throw std::exception("Bad type to insert");
+}
+
+void GSpriteFrame::insertIntoVertexList(std::vector<sf::Vertex>& list, sf::PrimitiveType type) const {
+	if (type == sf::PrimitiveType::Triangles) {
+		list.push_back(_vertices[0]);
+		list.push_back(_vertices[1]);
+		list.push_back(_vertices[3]);
+
+		list.push_back(_vertices[2]);
+		list.push_back(_vertices[1]);
+		list.push_back(_vertices[3]);
+
+	}
+	else if (type == PrimitiveType::TrianglesStrip) {
+		list.push_back(_vertices[0]);
+		list.push_back(_vertices[1]);
+		list.push_back(_vertices[2]);
+		list.push_back(_vertices[3]);
+	}
+	else throw std::exception("Bad type to insert");
 }
 
 
@@ -108,6 +92,9 @@ void GSprite::setUndertaleSprite(const std::string& name) {
 void GSprite::setUndertaleSprite(const Undertale::Sprite* sprite) {
 	assert(sprite != nullptr);
 	_sprite = sprite;
-	_frame.setFrame(sprite->frames()->at(_image_index = 0));
+	GSpriteFrame gframe(sprite->frames()->at(0));
+	_texture = gframe.getTexture(); // save a texture ref
+	setTexture(*_texture.getTexture());
+	setImageIndex(0);
 }
 
