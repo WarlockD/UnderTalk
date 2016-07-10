@@ -4,7 +4,7 @@
 #include <cassert>
 #include <sstream>
 #include <type_traits>
-
+#include <algorithm>
 static uint32_t constexpr ChunkToInt(const char* name) {
 		return  name[3] << 24 | name[2] << 16 | name[1] << 8 | name[0];
 }
@@ -138,7 +138,7 @@ public:
 
 		unsigned int size = 0;
 		file.seekg(0, std::ios::end);
-		_data.resize(file.tellg());
+		_data.resize((size_t)file.tellg());
 		file.seekg(0, std::ios::beg);
 		file.read((char*)_data.data(), _data.size());
 		file.close();
@@ -165,7 +165,7 @@ public:
 		ss << "{ count :";
 		ss << count;
 		ss << ", offsets : [";
-		for (uint32_t i = 0; i < count; i++) {
+		for (int i = 0; i < count; i++) {
 			if (i != 0) ss << ",";
 			ss << std::hex << offsets[i];
 		}
@@ -186,6 +186,53 @@ public:
 			font->_glyphs.push_back(reinterpret_cast<const Font::Glyph*>(_data.data() + font->_raw->glyph_offsets[i]));
 		return font;
 	}
+	template<> Background* UndertaleFile::createResource(int index) const {
+		const Chunk* chunk = getChunk(Background::ResType);
+		if (index < 0 || (uint32_t)index >= chunk->size) return nullptr;
+		uint32_t offset = chunk->offsets[index];
+		Background* background = new Background;
+		background->_raw = reinterpret_cast<const Background::RawBackground*>(_data.data() + offset);
+		background->_name = reinterpret_cast<const char*>(_data.data() + background->_raw->name_offset);
+		background->_index = index;
+
+
+		background->_frame = reinterpret_cast<const SpriteFrame*>(_data.data() + background->_raw->frame_offset);
+		return background;
+	}
+	template<class C> void UndertaleFile::fillList(size_t offset, std::vector<const C*>& list) const{
+		const OffsetList* olist = reinterpret_cast<const OffsetList*>(_data.data() + offset);
+		if (olist->count > 0) {
+			for (int i = 0; i < olist->count; i++)
+				list.push_back(reinterpret_cast<const C*>(_data.data() + olist->offsets[i]));
+		}
+		else list.clear();
+	}
+	template<class C, class P> void UndertaleFile::fillList(size_t offset, std::vector<const C*>& list, P pred) const {
+		const OffsetList* olist = reinterpret_cast<const OffsetList*>(_data.data() + offset);
+		if (olist->count > 0) {
+			for (int i = 0; i < olist->count; i++) {
+				const C* obj = reinterpret_cast<const C*>(_data.data() + olist->offsets[i]);
+				if(pred(*obj)) list.push_back(obj);
+			}	
+		}
+		else list.clear();
+	}
+	template<> Room* UndertaleFile::createResource(int index) const {
+		const Chunk* chunk = getChunk(Room::ResType);
+		if (index < 0 || (uint32_t)index >= chunk->size) return nullptr;
+		uint32_t offset = chunk->offsets[index];
+		Room* room = new Room;
+		room->_raw = reinterpret_cast<const Room::RawRoom*>(_data.data() + offset);
+		room->_name = reinterpret_cast<const char*>(_data.data() + room->_raw->name_offset);
+		room->_index = index;
+		fillList(room->_raw->tiles_offset, room->_tiles);
+		fillList(room->_raw->background_offset, room->_backgrounds, [](const Room::Background& o) -> bool { return o.background_index != -1; });
+		fillList(room->_raw->object_offset, room->_objects);
+		fillList(room->_raw->view_offset, room->_views, [](const Room::View& o) -> bool { return o.view_index != -1; });
+		return room;
+	}
+
+
 	template<> Sprite* UndertaleFile::createResource(int index) const {
 		const Chunk* chunk = getChunk(Sprite::ResType);
 		if (index < 0 || (uint32_t)index >= chunk->size) return nullptr;
@@ -224,7 +271,7 @@ public:
 		if (it != _indexCache.end()) return dynamic_cast<const T*>(it->second);
 		T* obj = createResource<T>(index);
 		Resource* res = obj;
-		_cache.emplace(std::unique_ptr<Resource>(res));
+		_cache.emplace(res);
 		_indexCache.emplace(std::make_pair(key, res));
 		//_cache.emplace(std::make_pair(key, uptr));
 		_nameCache.emplace(std::make_pair(res->name(), (const Resource*)res));
@@ -280,6 +327,9 @@ public:
 		return fonts;
 	}
 	const Sprite* UndertaleFile::LookupSprite(int index) {return LookupResource<Sprite>(index); }
+	const Room* UndertaleFile::LookupRoom(int index) { return LookupResource<Room>(index); }
+
+	const Background* UndertaleFile::LookupBackground(int index) { return LookupResource<Background>(index); }
 }
 
 

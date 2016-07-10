@@ -7,6 +7,84 @@ using json = nlohmann::json;
 
 using namespace sf;
 
+
+using namespace sf;
+
+
+#define USE_SSE 1
+
+
+namespace fast {
+#ifndef USE_SSE
+	static uint32_t g_seed;
+	void set_random_seed(uint32_t seed) {
+		g_seed = seed;
+	}
+	uint32_t random() {
+		g_seed = (214013 * g_seed + 2531011);
+		return (g_seed >> 16) & 0x7FFF;
+	}
+
+#else
+	__declspec(align(16)) static __m128i cur_seed;
+	void set_random_seed(uint32_t seed) {
+		cur_seed = _mm_set_epi32(seed, seed + 1, seed, seed + 1);
+	}
+	uint32_t random()
+	{
+		__declspec(align(16)) __m128i cur_seed_split;
+		__declspec(align(16)) __m128i multiplier;
+		__declspec(align(16)) __m128i adder;
+		__declspec(align(16)) __m128i mod_mask;
+		__declspec(align(16)) __m128i sra_mask;
+
+		__declspec(align(16)) static const unsigned int mult[4] = { 214013, 17405, 214013, 69069 };
+		__declspec(align(16)) static const unsigned int gadd[4] = { 2531011, 10395331, 13737667, 1 };
+		__declspec(align(16)) static const unsigned int mask[4] = { 0xFFFFFFFF, 0, 0xFFFFFFFF, 0 };
+		__declspec(align(16)) static const unsigned int masklo[4] = { 0x00007FFF, 0x00007FFF, 0x00007FFF, 0x00007FFF };
+
+		adder = _mm_load_si128((__m128i*) gadd);
+		multiplier = _mm_load_si128((__m128i*) mult);
+		mod_mask = _mm_load_si128((__m128i*) mask);
+		sra_mask = _mm_load_si128((__m128i*) masklo);
+		cur_seed_split = _mm_shuffle_epi32(cur_seed, _MM_SHUFFLE(2, 3, 0, 1));
+
+		cur_seed = _mm_mul_epu32(cur_seed, multiplier);
+		multiplier = _mm_shuffle_epi32(multiplier, _MM_SHUFFLE(2, 3, 0, 1));
+		cur_seed_split = _mm_mul_epu32(cur_seed_split, multiplier);
+		cur_seed = _mm_and_si128(cur_seed, mod_mask);
+		cur_seed_split = _mm_and_si128(cur_seed_split, mod_mask);
+		cur_seed_split = _mm_shuffle_epi32(cur_seed_split, _MM_SHUFFLE(2, 3, 0, 1));
+		cur_seed = _mm_or_si128(cur_seed, cur_seed_split);
+		cur_seed = _mm_add_epi32(cur_seed, adder);
+
+#ifdef COMPATABILITY
+		__declspec(align(16)) __m128i sseresult;
+		// Add the lines below if you wish to reduce your results to 16-bit vals...
+		sseresult = _mm_srai_epi32(cur_seed, 16);
+		sseresult = _mm_and_si128(sseresult, sra_mask);
+		_mm_storeu_si128((__m128i*) result, sseresult);
+		return;
+#endif
+		uint32_t result;
+		//_mm_storeu_si128((__m128i*) result, cur_seed);
+		_mm_storeu_si128((__m128i*)&result, cur_seed);
+		return result;
+	}
+#endif
+	class SetRandomSeed {
+		static SetRandomSeed _setSeed;
+		SetRandomSeed() {
+			uint32_t seed = static_cast<unsigned int>(std::time(NULL));
+			set_random_seed(seed);
+			std::srand(seed); // just in case for a backup
+		}
+	};
+	SetRandomSeed SetRandomSeed::_setSeed;
+};
+
+
+
 namespace util {
 	Randomizer s_random;
 	template<typename T> T random(T a, T b) { return s_random.rnd(a, b); }
@@ -15,7 +93,7 @@ namespace util {
 	template<> float random(float a, float b) { return s_random.rnd<float>(a); }
 };
 
-void MakeSpriteTriangleStrip(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Color& color, const const sf::Vector2f& offset, const sf::Vector2f& scale) {
+void MakeSpriteTriangleStrip(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Color& color, const sf::Vector2f& offset, const sf::Vector2f& scale) {
 	{
 		float left = offset.x;
 		float right = left + static_cast<float>(textRect.width);
@@ -47,7 +125,7 @@ void MakeSpriteTriangleStrip(sf::Vertex* vertices, const sf::IntRect& textRect, 
 	}
 	
 }
-void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Color& color, const const sf::Vector2f& offset, const sf::Vector2f& scale) {
+void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Color& color,  const sf::Vector2f& offset, const sf::Vector2f& scale) {
 	float left = offset.x;
 	float top = offset.y;
 	float right = (left + textRect.width) * scale.x;
@@ -86,25 +164,25 @@ void MakeSpriteTriangles(sf::Vertex* vertices, const sf::IntRect& textRect, cons
 	MakeSpriteTriangles(vertices, textRect, color, offset, Vector2f(1.0f, 1.0f));
 }
 
-void AppendSpriteTriangleStrip(sf::VertexArray& vertices, const sf::IntRect& textRect, const sf::Color& color, const const sf::Vector2f& offset, const sf::Vector2f& scale) {
+void AppendSpriteTriangleStrip(sf::VertexArray& vertices, const sf::IntRect& textRect, const sf::Color& color,  const sf::Vector2f& offset, const sf::Vector2f& scale) {
 	size_t pos = vertices.getVertexCount();
 	vertices.resize(pos + 6);
 	MakeSpriteTriangleStrip(&vertices[pos], textRect, color, offset, scale);
 }
 
-void AppendSpriteTriangleStrip(std::vector<sf::Vertex>& vertices, const sf::IntRect& textRect, const sf::Color& color, const const sf::Vector2f& offset, const sf::Vector2f& scale) {
+void AppendSpriteTriangleStrip(std::vector<sf::Vertex>& vertices, const sf::IntRect& textRect, const sf::Color& color,  const sf::Vector2f& offset, const sf::Vector2f& scale) {
 	size_t pos = vertices.size();
 	vertices.resize(pos + 6);
 	MakeSpriteTriangleStrip(&vertices[pos], textRect, color, offset, scale);
 }
 
-void AppendSpriteTriangles(sf::VertexArray& vertices, const sf::IntRect& textRect, const sf::Color& color, const const sf::Vector2f& offset, const sf::Vector2f& scale) {
+void AppendSpriteTriangles(sf::VertexArray& vertices, const sf::IntRect& textRect, const sf::Color& color,  const sf::Vector2f& offset, const sf::Vector2f& scale) {
 	size_t pos = vertices.getVertexCount();
 	vertices.resize(pos + 6);
 	MakeSpriteTriangles(&vertices[pos], textRect, color, offset,scale);
 }
 
-void AppendSpriteTriangles(std::vector<sf::Vertex>& vertices, const sf::IntRect& textRect, const sf::Color& color, const const sf::Vector2f& offset, const sf::Vector2f& scale) {
+void AppendSpriteTriangles(std::vector<sf::Vertex>& vertices, const sf::IntRect& textRect, const sf::Color& color,  const sf::Vector2f& offset, const sf::Vector2f& scale) {
 	size_t pos = vertices.size();
 	vertices.resize(pos + 6);
 	MakeSpriteTriangles(&vertices[pos], textRect, color, offset, scale);
@@ -169,7 +247,7 @@ void Undertale::LoadAllFonts() {
 				auto rect = sf::IntRect(glyph->x, glyph->y, glyph->width, glyph->height);
 				// glyph["offset"] // kind of important, but not sure where it goes
 				g.textureRect = rect;
-				g.bounds = FloatRect(0, 0, rect.width, rect.height);
+				g.bounds = FloatRect((float)0, (float)0, (float)rect.width, (float)rect.height);
 				g.textureRect.top += info.frame.top;
 				g.textureRect.left += info.frame.left;
 				// g.bounds ignore for now
@@ -237,6 +315,18 @@ std::shared_ptr<sf::Texture> SharedTexture::requestTexture(const std::initialize
 	//std::vector < std::pair<sf::IntRect, std::shared_ptr<sf::Texture>>> _frames;
 }
 namespace Undertale {
+	const sf::Image& GetTextureImage(int index) {
+		if (images[index].getImage().getSize() == Vector2u()) { // if zero then we have to load it
+			sf::Image image;
+			auto utexture = GetUndertale().LookupTexture(index);
+			if (!image.loadFromMemory(utexture.data(), utexture.len())) {
+				printf("Cannot load texture index %i", index);
+				exit(1);
+			}
+			images[index].setImage(std::move(image));
+		}
+		return images[index].getImage();
+	}
 	SharedTexture::TextureInfo GetTexture(int index, const sf::IntRect& rect) {
 		if (images[index].getImage().getSize() == Vector2u()) { // if zero then we have to load it
 			sf::Image image;

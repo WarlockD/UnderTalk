@@ -36,6 +36,9 @@
     <ClCompile Include="obj_face.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="room.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Effect.hpp">
@@ -60,6 +63,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="obj_face.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gBatchSprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="room.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

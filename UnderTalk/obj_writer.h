@@ -16,9 +16,11 @@ class OBJ_WRITER : public sf::Drawable, public sf::Transformable {
 	int _size;
 	struct TextSetup {
 		int myfont;
-		sf::Color color;
-		sf::FloatRect writing; // bounds
-		int shake;
+		int color;
+		int writingx;
+		int writingy;
+		int writingxend;
+		float shake;
 		int textspeed;
 		int txtsound;
 		int spacing;
@@ -42,7 +44,7 @@ public:
 		_pos = 0;
 		_lineno = 0;
 		_halt = 0;
-		_writing = sf::Vector2f(setup.writing.left, setup.writing.top);
+		_writing = sf::Vector2f((float)setup.writingx, (float)setup.writingy);
 		_stringno = 0;
 		_textpause = setup.textspeed;
 	}

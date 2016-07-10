@@ -42,41 +42,39 @@ inline sf::Vector2f CreateMovementVector(float dir, sf::Vector2f speed) {
 }
 // http://discuss.cocos2d-x.org/t/rotate-sprite-towards-a-point/16850/2
 // useful functions
+inline float FixAngleRange(float angle) {
+	return angle >= 180.0f ? (angle - 360.0f) : angle < -180.f ? (angle + 360.0f) : angle;
+}
 inline float getAngleDifference(float angle1, float angle2)
 {
 	float diffAngle = (angle1 - angle2);
 
-	if (diffAngle >= 180.f)
-	{
-		diffAngle -= 360.f;
-	}
-	else if (diffAngle < -180.f)
-	{
-		diffAngle += 360.f;
-	}
-
-	// how much angle the node needs to rotate
-	return diffAngle;
+	return FixAngleRange(diffAngle); // how much angle the node needs to rotate
 }
 inline float getCurrentAngle(sf::Transformable* node)
 {
 	float rotAng = node->getRotation();
-
-	if (rotAng >= 180.f)
-	{
-		rotAng -= 360.f;
-	}
-	else if (rotAng < -180.f)
-	{
-		rotAng += 360.f;
-	}
-
 	// negative angle means node is facing to its left
 	// positive angle means node is facing to its right
-	return rotAng;
+	return FixAngleRange(rotAng); ;
+}
+template<typename T> inline T AngleOfVector(const sf::Vector2<T>&  v) {
+	// simple angles and save devide by zero issues, bad return if the vector is 0
+	if (v.x == (T)0) return v.y > (T)0 ? (T)270 : (T)90;
+	else if (v.y == (T)0) return v.x > (T)0 ? (T)0 : (T)180;
+	else {
+		float rot = std::tanhf((float)v.y / (float)v.x);
+		return rot >= 180.0f ? (T)(rot - 360.0f) : (T)(rot + 360.0f);
+	}
 }
 
-void MakeSpriteTriangleStrip(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Color& color, const const sf::Vector2f& offset, const sf::Vector2f& scale = sf::Vector2f(1.0f, 1.0f));
+template<typename T> inline T MagnatudeOfVector(const sf::Vector2<T>& v) {
+	return (T)std::sqrtf((float)v.x * (float)v.x + (float)v.y * (float)v.y);
+}
+
+
+
+void MakeSpriteTriangleStrip(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Color& color, const sf::Vector2f& offset, const sf::Vector2f& scale = sf::Vector2f(1.0f, 1.0f));
 inline void MakeSpriteTriangleStrip(sf::Vertex* vertices, const sf::IntRect& textRect, const sf::Vector2f& offset, const sf::Vector2f& scale = sf::Vector2f(1.0f, 1.0f)) {
 	MakeSpriteTriangleStrip(vertices, textRect, sf::Color::White, offset, scale);
 }
@@ -170,7 +168,7 @@ namespace Undertale {
 	const std::map<int, sf::Glyph>& GetFontGlyphs(int font_index);
 	const sf::Texture* GetFontTexture(int font_index);
 	int GetFontSize(int font_index);
-	const sf::Image* GetTextureImage(int index);
+	const sf::Image& GetTextureImage(int index);
 	const std::string& LookupSound(int index);
 	void LoadAllFonts();
 }
@@ -258,6 +256,56 @@ namespace util {
 struct ITimeStep {
 	virtual int step(float dt) = 0;
 	virtual ~ITimeStep() {}
+};
+
+// http://stackoverflow.com/questions/427477/fastest-way-to-clamp-a-real-fixed-floating-point-value
+// such a cool method, not sure its faster than normal but thought I mess with it 
+
+namespace fast {
+	inline float min(float a, float b)// Branchless SSE min.
+	{
+		_mm_store_ss(&a, _mm_min_ss(_mm_set_ss(a), _mm_set_ss(b)));
+		return a;
+	}
+#if 0
+	// not sure how masks work yet
+	inline float epsilonequal(float a, float b)// Branchless SSE min.
+	{
+		__declspec(align(16)) static const float epsilon = std::numeric_limits<float>::epsilon();
+		return _mm_cmplt_ss(_mm_sub_ss(_mm_set_ss(a), _mm_set_ss(b)), _mm_set_ss(epsilon)) != 0;
+	}
+	inline float epsilonequal(float a, float b, float epsilon)// Branchless SSE min.
+	{
+		return _mm_cmplt_ss(_mm_sub_ss(_mm_set_ss(a), _mm_set_ss(b)), _mm_set_ss(epsilon)) != 0;
+	}
+#endif
+	inline float max(float a, float b) // Branchless SSE max.
+	{
+		_mm_store_ss(&a, _mm_max_ss(_mm_set_ss(a), _mm_set_ss(b)));
+		return a;
+	}
+	inline float clamp(float val, float minval, float maxval)
+	{
+		// Branchless SSE clamp.
+		// return minss( maxss(val,minval), maxval );
+		_mm_store_ss(&val, _mm_min_ss(_mm_max_ss(_mm_set_ss(val), _mm_set_ss(minval)), _mm_set_ss(maxval)));
+		return val;
+	}
+
+	inline bool equal(float a, float b, float epsilon) { return std::fabsf(a - b) < epsilon; }
+	inline bool equal(float a, float b) { return equal(a, b, std::numeric_limits<float>::epsilon()); }
+	inline bool is_zero(float f, float epsilon) { return std::fabsf(f) < epsilon; }
+	inline bool is_zero(float f) { return is_zero(f, std::numeric_limits<float>::epsilon()); }
+	inline bool is_zero(const sf::Vector2<float>& v, float epsilon) { return is_zero(v.x, epsilon) && is_zero(v.y, epsilon); }
+	inline bool is_zero(const sf::Vector2<float>& v) { return is_zero(v.x) && is_zero(v.y); }
+	inline bool equal(const sf::Vector2<float>&  a, const sf::Vector2<float>&  b, float epsilon) { return equal(a.x, b.x, epsilon) && equal(a.y, b.y, epsilon); }
+	inline bool equal(const sf::Vector2<float>&  a, const sf::Vector2<float>&  b) { return equal(a.x, b.x) && equal(a.y, b.y); }
+	inline sf::Vector2<float> round(const sf::Vector2<float>& v) { return sf::Vector2<float>(std::roundf(v.x), std::roundf(v.y)); }
+	inline sf::Vector2<float> floor(const sf::Vector2<float>& v) { return sf::Vector2<float>(std::floorf(v.x), std::floorf(v.y)); }
+	template<typename T> inline T random(T min, T max) { return  min + static_cast <T> (std::rand()) / (static_cast <T> (RAND_MAX / (max - min))); }
+	template<typename T> inline T random(T max) { return random((T)0, max); }
+	uint32_t random();
+	void set_random_seed(uint32_t seed);
 };
 
 class Rigidbody {

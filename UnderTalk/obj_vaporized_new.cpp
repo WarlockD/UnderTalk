@@ -48,7 +48,7 @@ std::map<uint32_t, std::string> newvapordata = {
 
 using namespace sf;
 sf::Texture* whitePixel = nullptr;
-const sf::Uint8 pixelData[] = { 255,2555,255,255 };
+const sf::Uint8 pixelData[] = { 0xFF,0xFF,0xFF,0xFF };
 
 const sf::Texture* getPixelTexture() {
 	if (!whitePixel) {
@@ -112,7 +112,7 @@ namespace {
 	}
 	*/
 
-	void AppendPixelSprite(std::vector<Vertex>& vertices, const const sf::Vector2f& offset, const sf::Color& color, const sf::Vector2f& scale = sf::Vector2f(1.0f, 1.0f)) {
+	void AppendPixelSprite(std::vector<Vertex>& vertices,  const sf::Vector2f& offset, const sf::Color& color, const sf::Vector2f& scale = sf::Vector2f(1.0f, 1.0f)) {
 		float left = offset.x;
 		float top = offset.y;
 		float right = left +  1.0f * scale.x;
@@ -138,22 +138,22 @@ static const std::vector<Vertex>& cacheVertexes(const GSprite& sprite, bool spec
 	auto size = image.getSize();
 	
 	if (texRect.width <= 120 || spec) {
-		for (size_t y = 0; y < texRect.height; y++)
-			for (size_t x = 0; x < texRect.width; x++) {
+		for (int y = 0; y < texRect.height; y++)
+			for (int x = 0; x < texRect.width; x++) {
 				sf::Color color = image.getPixel(texRect.left + x, texRect.top + y);
 				if((color.r != 0 || color.g != 0 || color.b != 0 )&& color.a !=0)  AppendPixelSprite(verts, Vector2f((float)x, (float)y), color);
 			}
 	}
 	else {
-		for (size_t line = 0; line < texRect.height; line++) {
+		for (int line = 0; line < texRect.height; line++) {
 			int pixelCount = 0;
-			for (size_t x = 0; x < texRect.width; x++) {
+			for (int x = 0; x < texRect.width; x++) {
 				sf::Color color = image.getPixel(texRect.left + x, texRect.top + line);
 				if ((color.r != 0 || color.g != 0 || color.b != 0) && color.a != 0)  pixelCount++;
 			//	if (color.a != 0  || (ignoreblack && (color.r != 0 || color.g != 0 || color.b != 0)))
 				else {
 					if (pixelCount > 0) { // we find the largest pixel size then make THAT the vertex
-						AppendPixelSprite(verts, Vector2f(x - pixelCount, line), color, Vector2f(pixelCount, 1.0f));
+						AppendPixelSprite(verts, Vector2f((float)(x - pixelCount), (float)line), color, Vector2f((float)pixelCount, 1.0f));
 						pixelCount = 0;
 					}
 				}
@@ -196,7 +196,7 @@ void obj_vaporized_new::setPixels(uint32_t index, bool spec) {
 	int ww = 0;
 	int wd = 200;
 	int line = 0;
-	for (int i = 0; i < str.length(); i++) {
+	for (size_t i = 0; i < str.length(); i++) {
 		ch = str[i];
 		if (ch == '~')
 			break; // we drop here
@@ -213,12 +213,12 @@ void obj_vaporized_new::setPixels(uint32_t index, bool spec) {
 		else if (ch >= 39 && ch <= 82) {
 			if (wd > 120 && !spec) {
 				int width = (ch - 40);
-				AppendPixelSprite(_vertices, Vector2f(ww , line), Color::White, Vector2f(width, 1.0f));
+				AppendPixelSprite(_vertices, Vector2f((float)ww , (float)line), Color::White, Vector2f((float)width, 1.0f));
 				ww += width;
 			}
 			else {
 				for (int j = 0; j < (ch - 40); j++) {
-					AppendPixelSprite(_vertices, Vector2f(ww, line), Color::White);
+					AppendPixelSprite(_vertices, Vector2f((float)ww, (float)line), Color::White);
 					ww++;
 				}
 			}
@@ -230,7 +230,7 @@ void obj_vaporized_new::setPixels(uint32_t index, bool spec) {
 
 void obj_vaporized_new::setPixels(const GSprite& sprite, bool spec) {
 	_vertices.clear();
-	_vertices.reserve(sprite.getLocalSize().x * sprite.getLocalSize().y * 6);
+	_vertices.reserve((int)(sprite.getLocalSize().x * sprite.getLocalSize().y * 6));
 	_vertices = cacheVertexes(sprite, spec, true);
 	reset();
 }

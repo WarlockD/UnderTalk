@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include <memory>
 #include <string>
+#include <functional>
 
 #ifdef UNDERLIBRARY_DLL
 #ifdef UNDERLIBRARY_EXPORTS
@@ -93,22 +94,21 @@ namespace Undertale {
 		STRG,
 		_CMAX
 	};
-	class  Resource {
+	class Resource {
 	protected:
 		static constexpr ChunkType ResType = ChunkType::BAD;
 		String _name;
 		int _index;
 		friend class UndertaleFile;
-		
 	public:
 		Resource() : _name(), _index(-1) {}
+		~Resource() {}
 		ChunkType type() const { return ResType; }
 		virtual size_t hash() const { return _name.hash(); }
 		virtual bool valid() const { return index() >= 0; }
 		virtual int index() const { return _index; }
 		virtual const String& name() const { return _name; }
 		inline bool operator==(const Resource& other) const { return _name == other._name; } // its name will be unique cause the pointer is
-		virtual ~Resource() {}
 	};
 }
 
@@ -134,8 +134,8 @@ namespace std {
 		std::size_t operator()(const Undertale::UndertaleString* r) const { return Undertale::simple_hash(r->u_str, r->length); }
 	};
 	template<>
-	struct std::hash<Undertale::Resource const *> {
-		std::size_t operator()(Undertale::Resource const *r) const { return r->hash(); }
+	struct std::hash<const Undertale::Resource*> {
+		std::size_t operator()(const Undertale::Resource  *r) const { return r->hash(); }
 	};
 	template<>
 	struct std::equal_to<Undertale::Resource const *> {
@@ -150,14 +150,14 @@ namespace Undertale {
 	struct SpriteFrame {
 		short x;
 		short y;
-		short width;
-		short height;
+		unsigned short width;
+		unsigned short height;
 		short offset_x;
 		short offset_y;
-		short crop_width;
-		short crop_height;
-		short original_width;
-		short original_height;
+		unsigned short crop_width;
+		unsigned short crop_height;
+		unsigned short original_width;
+		unsigned short original_height;
 		short texture_index;
 	};
 	class BitMask {
@@ -186,9 +186,129 @@ namespace Undertale {
 	public:
 		Texture() : _data(nullptr), _len(0) {}
 		Texture(const uint8_t* data, size_t len) :_data(data), _len(len) {}
-		const uint8_t* data() const { return _data;  }
+		const uint8_t* data() const { return _data; }
 		size_t len() const { return _len; }
 	};
+	class Background : public Resource {
+		friend class UndertaleFile;
+	protected:
+		static constexpr ChunkType ResType = ChunkType::BGND;
+		struct RawBackground {
+			uint32_t name_offset;
+			uint32_t trasparent;
+			uint32_t smooth;
+			uint32_t preload;
+			uint32_t frame_offset;
+		};
+		const RawBackground* _raw;
+		const SpriteFrame* _frame;
+	public:
+		Background() : Resource(), _raw(nullptr), _frame(nullptr) {}
+		bool trasparent() const { return _raw->trasparent != 0; }
+		bool smooth() const { return _raw->smooth != 0; }
+		bool preload() const { return _raw->preload != 0; }
+		const SpriteFrame* frame() const { return _frame; }
+	};
+	class Room : public Resource {
+		friend class UndertaleFile;
+	protected:
+		static constexpr ChunkType ResType = ChunkType::ROOM;
+	public:
+		struct View {
+			int visible;
+			int x;
+			int y;
+			int width;
+			int height;
+			int port_x;
+			int port_y;
+			int port_width;
+			int port_height;
+			int border_x;
+			int border_y;
+			int speed_x;
+			int speed_y;
+			int view_index;
+		};
+		struct Background {
+			int visible;// bool
+			int foreground;// bool
+			int background_index;// bool
+			int x;
+			int y;
+			int tiled_x;
+			int tiled_y;
+			int speed_x;
+			int speed_y;
+			int strech; // bool
+		};
+		struct Object {
+			int x;
+			int y;
+			int object_index;
+			int id;
+			int code_offset;
+			float scale_x;
+			float scale_y;
+			int color;
+			float rotation;
+		};
+		struct Tile {
+			int x;
+			int y;
+			int background_index;
+			int offset_x;
+			int offset_y;
+			int width;
+			int height;
+			int depth;
+			int id;
+			float scale_x;
+			float scale_y;
+			int blend; // color value
+		};
+	protected:
+		struct RawRoom {
+			int name_offset;
+			int caption_offset;
+			int width;
+			int height;
+			int speed;
+			int persistent;
+			int color;
+			int show_color;
+			int code_offset;
+			int flags;
+			int background_offset;
+			int view_offset;
+			int object_offset;
+			int tiles_offset;
+		};
+		const RawRoom* _raw;
+		String _caption;
+		std::vector<const View*> _views;
+		std::vector<const Background*> _backgrounds;
+		std::vector<const Object*> _objects;
+		std::vector<const Tile*> _tiles;
+	public:
+		Room() : Resource(), _raw(nullptr) {}
+		String caption() const { return _caption; }
+		int width() const { return _raw->width; }
+		int height() const { return _raw->height; }
+		int speed() const { return _raw->speed; }
+		bool persistent() const { return _raw->persistent!=0; }
+		int color() const { return _raw->color; }
+		bool show_color() const { return _raw->show_color!=0; }
+		int code_offset() const { return _raw->code_offset; }
+		bool enable_views() const { return (_raw->flags & 1) != 0; }
+		bool view_clear_screen() const { return (_raw->flags & 2) != 0; }
+		bool clear_display_buffer() const { return (_raw->flags & 14) != 0; }
+		const std::vector<const View*>& views() const { return _views; }
+		const std::vector<const Background*>& backgrounds() const { return _backgrounds; }
+		const std::vector<const Object*>& objects() const { return _objects; }
+		const std::vector<const Tile*>& tiles() const { return _tiles; }
+	};
+
 	class Font : public Resource {
 	protected:
 		static constexpr ChunkType ResType = ChunkType::FONT;
@@ -293,14 +413,8 @@ namespace Undertale {
 
 	};
 	class UndertaleFile {
-	
-	//	static unsigned int constexpr ChunkToInt(const char* name) {
-		//	return name[0] << 24 | name[1] << 16 | name[2] << 8 | name[3];
-	//	}
-	//	static const int test = ChunkToInt("TXTR");
-	
 		struct OffsetList {
-			uint32_t count;
+			int count;
 			uint32_t offsets[1];
 			OffsetList(OffsetList const &) = delete;           // undefined
 			OffsetList& operator=(OffsetList const &) = delete;  // undefined
@@ -324,6 +438,7 @@ namespace Undertale {
 			int _index;
 			ChunkType _type;
 		public:
+			ResourceKey() : _index(0), _type(ChunkType::BAD) {}
 			ResourceKey(ChunkType t, int index) : _index(index), _type(t) {}
 			inline int index() const { return _index; }
 			inline ChunkType type() const { return _type; }
@@ -334,7 +449,7 @@ namespace Undertale {
 			std::size_t operator()(const ResourceKey& r) const { return (uint8_t)r.type() << 24 || r.index(); }
 		};
 		// Contains the managed pointer
-		std::unordered_set<std::unique_ptr<Resource>> _cache;
+		std::unordered_set<Resource*> _cache;
 		// lookup by index
 		std::unordered_map<ResourceKey, const Resource*, ResourceKeyHasher> _indexCache;
 		// lookup for name
@@ -352,18 +467,25 @@ namespace Undertale {
 		template<class T> T* createResource(int index) const { return nullptr;  }
 		template<> Font* createResource(int index) const;
 		template<> Sprite* createResource(int index) const;
+		template<> Background* createResource(int index) const;
+		template<> Room* createResource(int index) const;
 
 		template<class T> const T* cascheReadResorce(int index);
 		String getUndertaleString(int offset) const;
-
+		template<class C> void fillList(size_t offset, std::vector<const C*>& list) const;
+		template<class C, class P> void fillList(size_t offset, std::vector<const C*>& list, P pred) const;
+		template<class T> const T* LookupResource(int index);
 	public:
 
 		UndertaleFile();
 		bool loadFromFilename(const std::string& filename);
 		bool loadFromData(const std::vector<uint8_t>& data); // we want it, so its a move
 		//bool loadFromData(const std::vector<uint8_t*>& _data); // copy it instead
-		template<class T> const T* LookupResource(int index);
+
+		
 		const Sprite* LookupSprite(int index);
+		const Room* LookupRoom(int index);
+		const Background* LookupBackground(int index);
 		/// Returns the raw location of the texture, its a png so hopefuly you have something that can
 		/// read it
 		Texture LookupTexture(int index) const;

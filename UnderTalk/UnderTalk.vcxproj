@@ -166,6 +166,7 @@
     <ClCompile Include="obj_gobject.cpp" />
     <ClCompile Include="obj_vaporized_new.cpp" />
     <ClCompile Include="obj_writer.cpp" />
+    <ClCompile Include="room.cpp" />
     <ClCompile Include="UndertaleResources.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +179,7 @@
     <ClInclude Include="obj_gobject.h" />
     <ClInclude Include="obj_vaporized_new.h" />
     <ClInclude Include="obj_writer.h" />
+    <ClInclude Include="room.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UndertaleLib\UndertaleLib.vcxproj">

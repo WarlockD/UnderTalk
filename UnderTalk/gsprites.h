@@ -110,8 +110,8 @@ public:
 	void setUndertaleSprite(const std::string& name);
 	void setUndertaleSprite(const Undertale::Sprite* sprite);
 
-	sf::Vector2f getLocalSize() const { return sf::Vector2f(_sprite->width(), _sprite->height()); }
-	sf::FloatRect getLocalBounds() const { return sf::FloatRect(_sprite->left(), _sprite->top(), _sprite->left() - _sprite->right(), _sprite->bottom() - _sprite->top()); }
+	sf::Vector2f getLocalSize() const { return sf::Vector2f((float)_sprite->width(), (float)_sprite->height()); }
+	sf::FloatRect getLocalBounds() const { return sf::FloatRect((float)_sprite->left(), (float)_sprite->top(), (float)_sprite->left() - (float)_sprite->right(), (float)_sprite->bottom() - (float)_sprite->top()); }
 	size_t getImageCount() const { return _sprite->frames()->size(); }
 	void setImageIndex(size_t index) { 
 		_image_index = index %  getImageCount();  
