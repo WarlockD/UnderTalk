@@ -193,12 +193,23 @@ std::map<size_t, OBJ_WRITER::TextSetup> OBJ_WRITER::setups = {
 	};
 
 void  OBJ_WRITER::SetTextType(int type) {
+	if (_typer == type) return;
+	_typer = type;
 	auto pos = getPosition();
 //	setup = { 1, Color::White, FloatRect(pos.x + 20, pos.y + 20, 290,0.0f), 1,1,94,16,32 };
-	setup = setups[type];
 	Reset();
+	switch (type) {
+	case 4:
+		setup = { 7, 8421376, 20 , 20, /* view.x */ + 290, 0, 1, 101, 8, 18 };
+		// 4) script_execute(149/* SCR_TEXTSETUP */, 2, 16777215, self.x + 20, self.y + 20, self.view_xview[self.view_current] + 290, 0, 1, 101, 8, 18);
+		break;
+	default:
+		setup = setups[type];
+		break;
+	};
 	if (!_textSoundBuffer.loadFromFile(Undertale::LookupSound(setup.txtsound))) {
 		printf("Could not load sound");
+		setup.txtsound = -1;
 	}
 	else {
 		_textSound.setBuffer(_textSoundBuffer);
@@ -400,8 +411,11 @@ void  OBJ_WRITER::frame() {
 					_pos += 2;
 				}
 				else {
-					_textSound.stop();
-					_textSound.play();
+					if (setup.txtsound >= 0) {
+						_textSound.stop();
+						_textSound.play();
+					}
+					
 				}
 				if(ch == '&') _pos++;
 				if (ch == '\\') _pos += 2;
@@ -417,7 +431,4 @@ void OBJ_WRITER::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.texture = Undertale::GetFontTexture(6);
 	target.draw(_quads, states);
 	if (_sprites.size() > 0) for(auto& s :_sprites) target.draw(s, states);
-	if (face.hasFace()) {
-		target.draw(face, states);
-	}
 }

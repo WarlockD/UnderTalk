@@ -192,7 +192,7 @@ struct FontInfo {
 	std::string name;
 	int size;
 	std::map<int, sf::Glyph> glyphs;
-	SharedTexture::TextureInfo texture;
+	SharedTexture texture;
 	IntRect frame;
 };
 
@@ -204,7 +204,7 @@ struct SoundInfo {
 	int index;
 };
 
-Undertale::UndertaleFile* res = nullptr;
+Undertale::UndertaleFile res;
 std::map<int, SoundInfo> _audiofiles; 
 
 static SharedTexture images[20];
@@ -214,17 +214,15 @@ static bool loaded = false;
 std::unordered_map<uint32_t, sf::Sprite> _spriteCache;
 
 void LoadUndertaleResources(const std::string& filename) {
-	if (res == nullptr) {
-		res = new Undertale::UndertaleFile;
-		if (!res->loadFromFilename(filename)) {
+	if (!res.isLoaded()) {
+		if (!res.loadFromFilename(filename)) {
 			printf("Could not load data win");
 			exit(-1);
 		}
 	}
 }
 Undertale::UndertaleFile& GetUndertale() {
-	assert(res != nullptr);
-	return *res;
+	return res;
 }
 
 
@@ -234,26 +232,26 @@ Undertale::UndertaleFile& GetUndertale() {
 void Undertale::LoadAllFonts() {
 	if (!loaded) {
 		loaded = true;
-		for (auto font : GetUndertale().ReadAllfonts()) {
+		for (auto& font : GetUndertale().ReadAllfonts()) {
 			FontInfo info;
-			info.size = font->size();
-			info.name = font->name().string();
-			info.frame = IntRect(font->frame()->x, font->frame()->y, font->frame()->width, font->frame()->height);
-			info.texture = GetTexture(font->frame()->texture_index, info.frame);
+			info.size = font.size();
+			info.name = font.name().string();
+			info.frame = IntRect(font.frame().x, font.frame().y, font.frame().width, font.frame().height);
+			info.texture = GetTexture(font.frame().texture_index);
 
-			for (auto glyph : font->glyphs()) {
+			for (auto& glyph : font.glyphs()) {
 				sf::Glyph g;
-				g.advance = glyph->shift;
-				auto rect = sf::IntRect(glyph->x, glyph->y, glyph->width, glyph->height);
+				g.advance = glyph.shift;
+				auto rect = sf::IntRect(glyph.x, glyph.y, glyph.width, glyph.height);
 				// glyph["offset"] // kind of important, but not sure where it goes
 				g.textureRect = rect;
 				g.bounds = FloatRect((float)0, (float)0, (float)rect.width, (float)rect.height);
 				g.textureRect.top += info.frame.top;
 				g.textureRect.left += info.frame.left;
 				// g.bounds ignore for now
-				info.glyphs[glyph->ch] = std::move(g);
+				info.glyphs[glyph.ch] = std::move(g);
 			}
-			int index = font->index();
+			int index = font.index();
 			printf("Font loaded (%i)'%s'\n", index, info.name.c_str());
 			fonts.insert(std::pair<int, FontInfo>(index, info));
 		}
@@ -261,86 +259,38 @@ void Undertale::LoadAllFonts() {
 }
 
 
-/*
-class SharedTexture {
-sf::Image _image;
-std::unordered_map<sf::IntRect, std::weak_ptr<sf::Texture>> _textures;
-public:
-SharedTexture(const sf::Image& image) : _image(image) {}
-SharedTexture(sf::Image&& image) : _image(image) {}
-const sf::Image& getImage() const { return _image; }
-// attempts to request a texture.  If we cannot load the whole thing, then we cut the texture
-// int to a partial texture and give you that
-bool requestTexture(sf::IntRect& frame, std::shared_ptr<sf::Texture>& texture);
-};
-*/
-void SharedTexture::checkOpenGL() {
-	assert(!_fullTexture);
-	auto max_size = Texture::getMaximumSize();
-	if (_image.getSize().x <= max_size || _image.getSize().y <= max_size) {
-		TextureRef* ref = new TextureRef;
-		if (!ref->texture.loadFromImage(_image)) {
-			printf("Could not cut up texture\r\n");
-			throw std::exception("Ugh");
-		}
-		ref->frame = IntRect(0, 0, _image.getSize().x, _image.getSize().y);
-		_fullTexture.reset(ref);
-	}
-}
-SharedTexture::TextureInfo  SharedTexture::requestTexture(const sf::IntRect& frame) {
-	if (_fullTexture) return TextureInfo(this, _fullTexture,frame);
-	IntRect rect(0, 0, frame.width, frame.height);
-	auto it = _textures.find(frame);
-	if (it != _textures.end() && !it->second.expired()) return TextureInfo(this, it->second.lock(), rect);
-	else {
-		TextureRef* ref = new TextureRef;	// we have to look up the texture and split it up
-		if(!ref->texture.loadFromImage(_image, frame)) {
-			printf("Could not cut up texture\r\n");
-			throw std::exception("Ugh");
-		}
-		ref->frame = frame;
-		std::shared_ptr<TextureRef> shared = std::shared_ptr<TextureRef>(ref);
-		_textures.emplace(frame, shared);
-		return TextureInfo(this, shared, rect); 
-	}
-}
-std::shared_ptr<sf::Texture> SharedTexture::requestTexture(const std::initializer_list<sf::IntRect>& frames) {
-	auto max_size = Texture::getMaximumSize();
-	if (_image.getSize().x <= max_size && _image.getSize().y <= max_size) {
-		// we don't have to do anything, just return the existing texture in the cache
-		//return requestTexture(*frames.begin()).second;
-	}
-	// just throw something here sigh
-	throw std::exception("do something here");
-	//std::vector < std::pair<sf::IntRect, std::shared_ptr<sf::Texture>>> _frames;
-}
+
+
+static std::unordered_map<uint32_t, std::weak_ptr<Texture>> simple_textures;
+static std::unordered_map<uint32_t, std::unique_ptr<Image>> simple_images;
+
 namespace Undertale {
 	const sf::Image& GetTextureImage(int index) {
-		if (images[index].getImage().getSize() == Vector2u()) { // if zero then we have to load it
-			sf::Image image;
+		auto& ptr = simple_images[index];
+		if (!ptr) {
+			Image* image = new Image;
 			auto utexture = GetUndertale().LookupTexture(index);
-			if (!image.loadFromMemory(utexture.data(), utexture.len())) {
+			if (!image->loadFromMemory(utexture.data(), utexture.len())) {
 				printf("Cannot load texture index %i", index);
 				exit(1);
 			}
-			images[index].setImage(std::move(image));
+			ptr.reset(image);
 		}
-		return images[index].getImage();
+		return *ptr.get();
 	}
-	SharedTexture::TextureInfo GetTexture(int index, const sf::IntRect& rect) {
-		if (images[index].getImage().getSize() == Vector2u()) { // if zero then we have to load it
-			sf::Image image;
-			auto utexture = GetUndertale().LookupTexture(index);
-			if (!image.loadFromMemory(utexture.data(), utexture.len())) {
+	SharedTexture GetTexture(uint32_t index) {
+		std::shared_ptr<sf::Texture> texture = simple_textures[index].lock(); // I still don't get if make shared is better here or not?
+		if (!texture) {
+			texture = std::make_shared<sf::Texture>();
+			if (!texture->loadFromImage(GetTextureImage(index))) {
 				printf("Cannot load texture index %i", index);
 				exit(1);
 			}
-			images[index].setImage(std::move(image));
+			simple_textures[index] = texture;
 		}
-		auto& image = images[index];
-		return image.requestTexture(rect);
+		return std::move(texture);
 	}
-
+\
 
 	const std::map<int, sf::Glyph>& GetFontGlyphs(int font_index) {
 		return fonts[font_index].glyphs;
@@ -349,7 +299,7 @@ namespace Undertale {
 		return fonts[font_index].size;
 	}
 	const sf::Texture* GetFontTexture(int font_index) {
-		return fonts[font_index].texture.getTexture();
+		return fonts[font_index].texture.get();
 	}
 	const std::string& LookupSound(int index) {
 		if (_audiofiles.empty()) {

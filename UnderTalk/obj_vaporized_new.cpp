@@ -133,8 +133,8 @@ static const std::vector<Vertex>& cacheVertexes(const GSprite& sprite, bool spec
 	auto it = s_vaporizedCache.find(sprite.getIndex());
 	if (it != s_vaporizedCache.end()) return it->second;
 	std::vector<Vertex> verts;
-	const Image& image = sprite.getTextureInfo().getOriginalImage();
 	const IntRect& texRect = sprite.getTextureRect();	
+	auto& image = Undertale::GetTextureImage(sprite.getUndertaleSprite().frames().at(0).texture_index);
 	auto size = image.getSize();
 	
 	if (texRect.width <= 120 || spec) {

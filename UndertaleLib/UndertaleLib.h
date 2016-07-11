@@ -110,6 +110,51 @@ namespace Undertale {
 		virtual const String& name() const { return _name; }
 		inline bool operator==(const Resource& other) const { return _name == other._name; } // its name will be unique cause the pointer is
 	};
+	template<class T> class OffsetVectorIt;
+	template<class T> class OffsetVector {
+		const uint8_t* _data;
+		struct Record {
+			uint32_t count;
+			uint32_t offsets[1];
+			Record(Record const &) = delete;           // undefined
+			Record& operator=(Record const &) = delete;  // undefined
+		};
+		const Record* _rec;
+	public:
+		typedef OffsetVectorIt<T> const_iterator;
+		typedef const_iterator iterator;
+		typedef ptrdiff_t difference_type;
+		typedef size_t size_type;
+		typedef T value_type;
+		typedef T* pointer;
+		typedef T& reference;
+		OffsetVector() :_data(nullptr), _rec(nullptr) {}
+		OffsetVector(const uint8_t* data, size_t offset) : _data(data), _rec(reinterpret_cast<const Record*>(data + offset)) {}
+		OffsetVector(const uint8_t* data, const uint8_t* rec) : _data(data), _rec(reinterpret_cast<const Record*>(rec)) {}
+		const T& at(uint32_t i) const { return *reinterpret_cast<const T*>(_data + _rec->offsets[i]); }
+		const T& operator[](uint32_t i) const {return at(i);}
+		
+		OffsetVectorIt<T> begin() const;
+		OffsetVectorIt<T>  end() const;
+		size_t size() const { return _rec->count; }
+		typedef std::initializer_list<T> test_t;
+	};
+	template<class T> class OffsetVectorIt  {
+		const OffsetVector<T>& _vec;
+		size_t _pos;
+	public:
+		OffsetVectorIt(const OffsetVector<T>& vec, size_t pos) : _vec(vec), _pos(pos) {}
+		OffsetVectorIt(const OffsetVector<T>& vec) : _vec(vec), _pos(0) {}
+		OffsetVectorIt& operator++() { _pos++; return *this; }
+		OffsetVectorIt& operator--() { _ pos--; return *this; }
+		const T& operator*() const { return _vec[_pos]; }
+		bool operator==(const OffsetVectorIt& other) const { return _pos == other._pos; }
+		bool operator!=(const OffsetVectorIt& other) const { return _pos != other._pos; }
+	};
+	
+
+	template<class T> OffsetVectorIt<T> OffsetVector<T>::begin() const { return OffsetVectorIt<T>(*this, (size_t)0); }
+	template<class T>  OffsetVectorIt<T> OffsetVector<T>::end() const { return OffsetVectorIt<T>(*this, size()); }
 }
 
 namespace std {
@@ -159,6 +204,8 @@ namespace Undertale {
 		unsigned short original_width;
 		unsigned short original_height;
 		short texture_index;
+		bool valid() const { return texture_index != -1; }
+		SpriteFrame() : x(0), y(0), width(0), height(0), offset_x(0), offset_y(0), crop_width(0), crop_height(0), original_width(0), original_height(0), texture_index(-1) {}
 	};
 	class BitMask {
 		int _width;
@@ -201,13 +248,14 @@ namespace Undertale {
 			uint32_t frame_offset;
 		};
 		const RawBackground* _raw;
+		typedef RawBackground RawResourceType;
 		const SpriteFrame* _frame;
 	public:
 		Background() : Resource(), _raw(nullptr), _frame(nullptr) {}
 		bool trasparent() const { return _raw->trasparent != 0; }
 		bool smooth() const { return _raw->smooth != 0; }
 		bool preload() const { return _raw->preload != 0; }
-		const SpriteFrame* frame() const { return _frame; }
+		const SpriteFrame& frame() const { return *_frame; }
 	};
 	class Room : public Resource {
 		friend class UndertaleFile;
@@ -285,11 +333,12 @@ namespace Undertale {
 			int tiles_offset;
 		};
 		const RawRoom* _raw;
+		typedef RawRoom RawResourceType;
 		String _caption;
-		std::vector<const View*> _views;
-		std::vector<const Background*> _backgrounds;
-		std::vector<const Object*> _objects;
-		std::vector<const Tile*> _tiles;
+		OffsetVector<View> _views;
+		OffsetVector<Background> _backgrounds;
+		OffsetVector<Object> _objects;
+		OffsetVector<Tile> _tiles;
 	public:
 		Room() : Resource(), _raw(nullptr) {}
 		String caption() const { return _caption; }
@@ -303,10 +352,10 @@ namespace Undertale {
 		bool enable_views() const { return (_raw->flags & 1) != 0; }
 		bool view_clear_screen() const { return (_raw->flags & 2) != 0; }
 		bool clear_display_buffer() const { return (_raw->flags & 14) != 0; }
-		const std::vector<const View*>& views() const { return _views; }
-		const std::vector<const Background*>& backgrounds() const { return _backgrounds; }
-		const std::vector<const Object*>& objects() const { return _objects; }
-		const std::vector<const Tile*>& tiles() const { return _tiles; }
+		const OffsetVector<View>& views() const { return _views; }
+		const OffsetVector<Background>& backgrounds() const { return _backgrounds; }
+		const OffsetVector<Object>& objects() const { return _objects; }
+		const OffsetVector<Tile>& tiles() const { return _tiles; }
 	};
 
 	class Font : public Resource {
@@ -334,16 +383,13 @@ namespace Undertale {
 			uint32_t frame_offset;
 			float scale_width;
 			float scale_height;
-			uint32_t glyph_count;
-			int glyph_offsets[1];
-			RawFont(RawFont const &) = delete;           // undefined
-			RawFont& operator=(RawFont const &) = delete;  // undefined
 		};
 		friend class UndertaleFile;
 		const RawFont* _raw;
+		typedef RawFont RawResourceType;
 		const SpriteFrame* _frame;
 		String _description;
-		std::vector<const Glyph*> _glyphs;
+		OffsetVector<Glyph> _glyphs;
 	public:
 		Font() : Resource(), _raw(nullptr), _frame(nullptr), _description() {}
 		int size() const { return _raw->size; }
@@ -353,10 +399,10 @@ namespace Undertale {
 		int charSet() const { return (_raw->flags >> 16) & 0xFF; }
 		uint16_t firstChar() const { return (_raw->flags) & 0xFFFF; }
 		uint16_t lastChar() const { return _raw->lastChar; }
-		const SpriteFrame* frame() const { return _frame; }
+		const SpriteFrame& frame() const { return *_frame; }
 		float scaleWidth() const { return _raw->scale_width; }
 		float scaleHeight() const { return _raw->scale_height; }
-		const std::vector<const Glyph*>& glyphs() const { return _glyphs; }
+		const OffsetVector<Glyph>& glyphs() const { return _glyphs; }
 	};
 
 
@@ -380,16 +426,11 @@ namespace Undertale {
 			int colcheck;
 			int original_x;
 			int original_y;
-			uint32_t frame_count;
-			int frame_offsets[1];
-			RawSprite(RawSprite const &) = delete;           // undefined
-			RawSprite& operator=(RawSprite const &) = delete;  // undefined
-			// int frame_count, int[] offsets
-			// int mask_offsets int[] offsets
 		};
 		#pragma pack()
+		typedef RawSprite RawResourceType;
 		const RawSprite* _raw;
-		std::vector<const SpriteFrame*> _frames;
+		OffsetVector<SpriteFrame> _frames;
 		std::vector<BitMask> _masks;
 		friend class UndertaleFile;
 	public:
@@ -408,18 +449,10 @@ namespace Undertale {
 		int origin_x() const { return _raw->original_x; }
 		int origin_y() const { return _raw->original_y; }
 		bool has_mask() const { return _masks.size() > 0; }
-		const std::vector<const SpriteFrame*>* frames() const { return &_frames; }
+		const OffsetVector<SpriteFrame>& frames() const { return _frames; }
 		const std::vector<BitMask>& masks() const { return _masks; }
-
 	};
 	class UndertaleFile {
-		struct OffsetList {
-			int count;
-			uint32_t offsets[1];
-			OffsetList(OffsetList const &) = delete;           // undefined
-			OffsetList& operator=(OffsetList const &) = delete;  // undefined
-			std::string toString() const;
-		};
 		struct Chunk {
 			union {
 				char name[4];
@@ -449,47 +482,43 @@ namespace Undertale {
 			std::size_t operator()(const ResourceKey& r) const { return (uint8_t)r.type() << 24 || r.index(); }
 		};
 		// Contains the managed pointer
-		std::unordered_set<Resource*> _cache;
 		// lookup by index
-		std::unordered_map<ResourceKey, const Resource*, ResourceKeyHasher> _indexCache;
 		// lookup for name
-		std::unordered_map<String, const Resource*> _nameCache;
+		std::unordered_map<String, ResourceKey> _nameCache;
 		// all strings hash
 		std::unordered_set<const UndertaleString*> _strings; // the strings are directly mapped to the loaded data.win
 
-		typedef std::unordered_map<ResourceKey, const Resource*, ResourceKeyHasher>::iterator CacheIterator;
-
-		typedef std::unordered_map<std::string, const Resource*>::iterator NameCacheIterator;
 
 		bool internalParse();
 		void internalReset();
 		const Chunk* getChunk(ChunkType t) const { return _chunks[(uint32_t)t]; }
-		template<class T> T* createResource(int index) const { return nullptr;  }
-		template<> Font* createResource(int index) const;
-		template<> Sprite* createResource(int index) const;
-		template<> Background* createResource(int index) const;
-		template<> Room* createResource(int index) const;
+		template<class T> const uint8_t* preCreateResorce(int index, T&res) const;
+		template<class T> T&& createResource(int index) const { return T();  }
+		template<> Font&& createResource(int index) const;
+		template<> Sprite&& createResource(int index) const;
+		template<> Background&& createResource(int index) const;
+		template<> Room&& createResource(int index) const;
 
-		template<class T> const T* cascheReadResorce(int index);
+
 		String getUndertaleString(int offset) const;
 		template<class C> void fillList(size_t offset, std::vector<const C*>& list) const;
 		template<class C, class P> void fillList(size_t offset, std::vector<const C*>& list, P pred) const;
-		template<class T> const T* LookupResource(int index);
 	public:
 
 		UndertaleFile();
+		bool isLoaded() const { return _data.size() > 0; }
 		bool loadFromFilename(const std::string& filename);
 		bool loadFromData(const std::vector<uint8_t>& data); // we want it, so its a move
 		//bool loadFromData(const std::vector<uint8_t*>& _data); // copy it instead
 
 		
-		const Sprite* LookupSprite(int index);
-		const Room* LookupRoom(int index);
-		const Background* LookupBackground(int index);
+		Sprite&& LookupSprite(int index);
+		Room&& LookupRoom(int index);
+		Background&& LookupBackground(int index);
 		/// Returns the raw location of the texture, its a png so hopefuly you have something that can
 		/// read it
-		Texture LookupTexture(int index) const;
-		std::vector<const Font*> ReadAllfonts();
+		Texture&& LookupTexture(int index) const;
+		std::vector<Font>&& ReadAllfonts();
 
 	};
 }

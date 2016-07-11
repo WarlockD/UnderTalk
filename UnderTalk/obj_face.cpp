@@ -64,7 +64,7 @@ void obj_face::setEmotion(size_t e) {
 
 	
 			static const int obj_face_undyne_faces[]{ 2025, 2026, 2029, 2031, 2032, 2033, 2034, 2036, 2039, 2040 };
-			_face.setUndertaleSprite(obj_face_undyne_faces[_emotion]);
+			setUndertaleSprite(obj_face_undyne_faces[_emotion]);
 		}
 			/* // this happens per step so might have to do something here
 			if (global.faceemotion == 1 && global.flag[390] == 2)
@@ -80,7 +80,7 @@ void obj_face::setEmotion(size_t e) {
 		case 6: // obj_face_alphys
 		{
 			static const int spr_alphysface_faces[]{ 2046, 2049, 2050, 2051, 2052, 2053, 2054, 2055, 2056, 2057, 2058, 2059, 2060, 2061, 2062, 2063, 2064, 2065, 2066, 2067, 2068, 2069, 2070, 2071, 2072, 2073 };
-			_face.setUndertaleSprite(spr_alphysface_faces[_emotion]);
+			setUndertaleSprite(spr_alphysface_faces[_emotion]);
 		}
 			// shit tone here, depends on the global flag 430
 		/*
@@ -132,16 +132,16 @@ void obj_face::setEmotion(size_t e) {
 
 		
 			static const int spr_alphysface_faces[]={ 2075, 2076, 2077, 2078, 2079, 2080 };
-			_face.setUndertaleSprite(spr_alphysface_faces[_emotion]);
+			setUndertaleSprite(spr_alphysface_faces[_emotion]);
 		}
 				break;
 		case 8: // obj_face_mettaton
-			_face.setUndertaleSprite(_emotion); // this cannot be right, can it? 
+			setUndertaleSprite(_emotion); // this cannot be right, can it? 
 			break;
 		case 9: // obj_face_asriel
 		{
 			static const int spr_face_asriel_faces[] = { 2082, 2083, 2084, 2085, 2086, 2087, 2088, 2089, 2090, 2091 };
-			_face.setUndertaleSprite(spr_face_asriel_faces[_emotion]);
+			setUndertaleSprite(spr_face_asriel_faces[_emotion]);
 		}
 			break;
 		}
@@ -149,30 +149,29 @@ void obj_face::setEmotion(size_t e) {
 }
 void obj_face::setFaceChoice(size_t c) { 
 	if (c != _choice) {
+		if (_choice == 1) {
+			removeChild(1985); // body
+			removeChild(1989); // glasses
+		}
 		_choice = c;
-		_extra.clear(); // clear the extra as the face is changing
-		_sprites.clear();
 		sf::Vector2f pos;
 		switch (_choice) {
 		case 1: // obj_face_torieltalk
 		{
 			pos = Vector2f(-33.0f, 25.0f);
-			GSprite  spr_face_torielbody(1985);  // put in her body? spr_face_torielbody
-			spr_face_torielbody.setDepth(-100); // make sure its behind
-			auto& rect = spr_face_torielbody.getTextureRect();
-			Vector2f center((pos.x + rect.width) / 2 - (rect.width / 2), pos.y + 27);
-			spr_face_torielbody.setPosition(pos + center);
-			_extra.emplace_back(spr_face_torielbody);
+			RoomObject* obj = instance_create(getPosition().x, 0.0f, 785, 1985);  // body
+			Vector2f center(Vector2f(getPosition().x, 0.0f) + (obj->getSize() * 0.5f));
+			obj->setDepth(100);
+
 			// do we really ant to create her body here? humm
 			if (_emotion == 99) {
 				_emotion = 0;
-				GSprite  spr_face_torielglasses(1989);  // put in her glasses
-				spr_face_torielglasses.setDepth(100); // make sure its in front
-				spr_face_torielglasses.setPosition(pos);
-				_extra.emplace_back(spr_face_torielglasses);
+				RoomObject* obj = instance_create(getPosition().x, 0.0f, 785, 1989); // put in her glasses
+				Vector2f center(Vector2f(getPosition().x, 0.0f) + (obj->getSize() * 0.5f));
+				obj->setDepth(101);
 			}
 		}
-			break;
+		break;
 
 		case 2: // obj_face_floweytalk
 			pos = Vector2f(-36.0f, 25.0f);
@@ -205,8 +204,7 @@ void obj_face::setFaceChoice(size_t c) {
 		int e = _emotion;
 		_emotion = -1; // force update of emotion
 		setEmotion(e);
-		_sprites.emplace(&_face);
-		for (auto& s : _extra) _sprites.emplace(&s);
+		setImageSpeed(0.25* (1.0f/30.0f));
 	}
 }
 

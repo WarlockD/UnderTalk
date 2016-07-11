@@ -3,6 +3,7 @@
 #include "gsprites.h"
 #include "obj_face.h"
 
+
 class OBJ_WRITER : public sf::Drawable, public sf::Transformable {
 	
 	mutable sf::VertexArray _quads;           ///< Vertex array containing the fill geometry
@@ -38,7 +39,7 @@ class OBJ_WRITER : public sf::Drawable, public sf::Transformable {
 	// text position
 public:
 	obj_face face;
-	OBJ_WRITER() : _text(""), _texture(nullptr), _quads(sf::PrimitiveType::Triangles) , _size(0), _stringno(0), _pos(0), _lineno(0), _halt(0){}
+	OBJ_WRITER(Room* room) :  _text(""), _texture(nullptr), _quads(sf::PrimitiveType::Triangles), _size(0), _stringno(0), _pos(0), _lineno(0), _halt(0) { SetTextType(4);  }
 	void AddText(const std::string& text) { _lines.push_back(text); _text = _lines[0];  }
 	void Reset() {
 		_pos = 0;

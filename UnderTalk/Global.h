@@ -119,56 +119,14 @@ namespace std {
 }
 
 
-class SharedTexture {
-	struct TextureRef {
-		sf::Texture texture;
-		sf::IntRect frame;
-	};
-	sf::Image _image;
-	std::shared_ptr<TextureRef> _fullTexture; // if we can load the entire image, than save it here, otherwise we have to count it
-	std::unordered_map<sf::IntRect, std::weak_ptr<TextureRef>> _textures;
-	void checkOpenGL();
-public:
-	class TextureInfo {
-		const SharedTexture* _owner;
-		std::shared_ptr<TextureRef> _texture;
-		sf::IntRect _rect;
-		friend class SharedTexture;
-		TextureInfo(const SharedTexture* owner, std::shared_ptr<TextureRef>  texture, const sf::IntRect& rect) : _owner(owner), _texture(texture), _rect(rect) {}
-	public:
-		TextureInfo() : _owner(nullptr) {}
-		const sf::Texture* getTexture() const { return &_texture->texture; }
-		const sf::IntRect& getFrame() const { return _rect; }
-		const sf::Image& getOriginalImage() const { return _owner->getImage(); }
-		sf::Image copyToImage() const {
-			const sf::IntRect& rect = _texture->frame;
-			sf::Image image;
-			image.create(rect.width, rect.height);
-			image.copy(getOriginalImage(), rect.top, rect.left, rect, true);
-			return std::move(image);
-		}
-	};
-	SharedTexture() :_fullTexture(nullptr) {}
-	SharedTexture(const sf::Image& image) : _image(image) , _fullTexture(nullptr) { checkOpenGL(); }
-	SharedTexture(sf::Image&& image) : _image(image) , _fullTexture(nullptr) { checkOpenGL(); }
-
-	void setImage(sf::Image&& image) { assert(_textures.empty());  _image = image; checkOpenGL();}
-	void setImage(const sf::Image& image) { assert(_textures.empty()); _image = image; checkOpenGL();}
-
-	const sf::Image& getImage() const { return _image; }
-	// attempts to request a texture.  If we cannot load the whole thing, then we cut the texture
-	// int to a partial texture and give you that
-	TextureInfo requestTexture(const sf::IntRect& frame);
-	// it will try to create one texture that holds multipul frames. throws if fucked
-	std::shared_ptr<sf::Texture> requestTexture(const std::initializer_list<sf::IntRect>& frames);
-};
-
+typedef std::shared_ptr<sf::Texture> SharedTexture;
 namespace Undertale {
-	SharedTexture::TextureInfo GetTexture(int index,const sf::IntRect& rect);
+	//SharedTexture::TextureInfo GetTexture(int index,const sf::IntRect& rect);
 	const std::map<int, sf::Glyph>& GetFontGlyphs(int font_index);
 	const sf::Texture* GetFontTexture(int font_index);
 	int GetFontSize(int font_index);
 	const sf::Image& GetTextureImage(int index);
+	SharedTexture GetTexture(uint32_t index);
 	const std::string& LookupSound(int index);
 	void LoadAllFonts();
 }
@@ -341,3 +299,4 @@ public:
 		_velocity += _gravity;
 	}
 };
+

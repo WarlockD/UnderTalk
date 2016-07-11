@@ -33,7 +33,7 @@ void windowLoop() {
 	size_t room_num = 20;
 	auto uroom = res.LookupRoom(room_num);
 	
-	TileMap testMap(res, uroom);
+	TileMap testMap( uroom);
 	size_t num = 0;
 
 	//GSprite test_head(230);
@@ -43,8 +43,7 @@ void windowLoop() {
 	//vtest.setPosition(100, 100);
 	//vtest.setScale(2.0f, 2.0f);
 	OBJ_WRITER writer;
-	writer.AddText("*\\F1This is a \\Ytest\\W&* and another \\z%%");
-	writer.SetTextType(1);
+	writer.AddText("*\\TT\\F1This is a \\Ytest\\W&* and another \\z%%");
 	writer.setPosition(100, 100);
 
 
@@ -75,11 +74,11 @@ void windowLoop() {
 					break;
 				case sf::Keyboard::D:
 					room_num++;
-					testMap.loadRoom(res, res.LookupRoom(room_num));
+					testMap.loadRoom(room_num);
 					break;
 				case sf::Keyboard::A:
 					room_num--;
-					testMap.loadRoom(res, res.LookupRoom(room_num));
+					testMap.loadRoom(room_num);
 					break;
 
 				case sf::Keyboard::Q:

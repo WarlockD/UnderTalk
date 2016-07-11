@@ -7,17 +7,10 @@ using namespace sf;
 //GSpriteFrame* cframe = new GSpriteFrame;
 //cframe->_texRect = IntRect(frame->x, frame->y, frame->width, frame->height);
 
-
-GSpriteFrame::GSpriteFrame(const Undertale::SpriteFrame* frame) {
-	setFrame(frame);
-}
-
-
-void GSpriteFrame::setFrame(const Undertale::SpriteFrame* frame) {
-	_texture_index = frame->texture_index;
-	_frame = frame;
-	_texRect = IntRect(frame->x, frame->y, frame->width, frame->height);
-	_origin = Vector2u(frame->offset_x, frame->offset_y);
+void GSpriteFrame::updateVertices() {
+	_texture = Undertale::GetTexture(_frame.texture_index);
+	_texRect = IntRect(_frame.x, _frame.y, _frame.width, _frame.height);
+	_origin = Vector2u(_frame.offset_x, _frame.offset_y);
 	{
 		float width = static_cast<float>(_texRect.width);
 		float height = static_cast<float>(_texRect.height);
@@ -37,6 +30,21 @@ void GSpriteFrame::setFrame(const Undertale::SpriteFrame* frame) {
 		_vertices[2] = Vertex(Vector2f(right, top), Color::White, Vector2f(u2, v1));
 		_vertices[3] = Vertex(Vector2f(right, bottom), Color::White, Vector2f(u2, v2));
 	}
+}
+GSpriteFrame::GSpriteFrame(const Undertale::SpriteFrame& frame) {
+	setFrame(frame);
+}
+GSpriteFrame::GSpriteFrame(Undertale::SpriteFrame&& frame) {
+	setFrame(frame);
+}
+void GSpriteFrame::setFrame(Undertale::SpriteFrame&& frame) {
+	_frame = frame;
+	updateVertices();
+}
+
+void GSpriteFrame::setFrame(const Undertale::SpriteFrame& frame) {
+	_frame = frame;
+	updateVertices();
 }
 
 
@@ -83,18 +91,21 @@ void GSpriteFrame::insertIntoVertexList(std::vector<sf::Vertex>& list, sf::Primi
 
 
 void GSprite::setUndertaleSprite(int index) {
-	const Undertale::Sprite* sprite = GetUndertale().LookupSprite(index);
-	setUndertaleSprite(sprite);
+	if (index == -1) {
+		_sprite = Undertale::Sprite();
+		setFrame(Undertale::SpriteFrame());
+	}
+	else {
+		_sprite = GetUndertale().LookupSprite(index);
+		setImageIndex(0);
+	}
 }
 void GSprite::setUndertaleSprite(const std::string& name) {
 	assert(false);
 }
-void GSprite::setUndertaleSprite(const Undertale::Sprite* sprite) {
-	assert(sprite != nullptr);
-	_sprite = sprite;
-	GSpriteFrame gframe(sprite->frames()->at(0));
-	_texture = gframe.getTexture(); // save a texture ref
-	setTexture(*_texture.getTexture());
-	setImageIndex(0);
+void GSprite::setImageIndex(int index) {
+	_image_index = std::abs(index %  (int)getImageCount());
+	setFrame(_sprite.frames().at(_image_index));
 }
+
 
