@@ -493,11 +493,11 @@ namespace Undertale {
 		void internalReset();
 		const Chunk* getChunk(ChunkType t) const { return _chunks[(uint32_t)t]; }
 		template<class T> const uint8_t* preCreateResorce(int index, T&res) const;
-		template<class T> T&& createResource(int index) const { return T();  }
-		template<> Font&& createResource(int index) const;
-		template<> Sprite&& createResource(int index) const;
-		template<> Background&& createResource(int index) const;
-		template<> Room&& createResource(int index) const;
+		template<class T> T createResource(int index) const { return T();  }
+		template<> Font createResource(int index) const;
+		template<> Sprite createResource(int index) const;
+		template<> Background createResource(int index) const;
+		template<> Room createResource(int index) const;
 
 
 		String getUndertaleString(int offset) const;
@@ -512,13 +512,13 @@ namespace Undertale {
 		//bool loadFromData(const std::vector<uint8_t*>& _data); // copy it instead
 
 		
-		Sprite&& LookupSprite(int index);
-		Room&& LookupRoom(int index);
-		Background&& LookupBackground(int index);
+		Sprite LookupSprite(int index);
+		Room LookupRoom(int index);
+		Background LookupBackground(int index);
 		/// Returns the raw location of the texture, its a png so hopefuly you have something that can
 		/// read it
-		Texture&& LookupTexture(int index) const;
-		std::vector<Font>&& ReadAllfonts();
+		Texture LookupTexture(int index) const;
+		std::vector<Font> ReadAllfonts();
 
 	};
 }

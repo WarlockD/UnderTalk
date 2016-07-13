@@ -5,16 +5,15 @@
 
 class obj_face : RoomObject {
 	size_t _emotion;
-	size_t _choice;
-	GSprite _face; 
+	size_t _face;
+	SpriteNode _faceSprite; 
 	float _time;
 	float _last;
 public:
-	obj_face(Room* room) : RoomObject(room),_choice(0), _emotion(0) , _time(0.0) { }
-	GSprite& getFace() { return _face; }
+	obj_face() : RoomObject(), _face(0), _emotion(0), _time(0.0) {  }
+	size_t getFace() { return _face; }
 	virtual size_t getEmotion() const { return _emotion;  }
-	size_t getFaceChoice() const { return _choice; }
-	bool hasFace() const { return _choice != 0; }
+	bool hasFace() const { return _face != 0; }
 	void setEmotion(size_t e);
-	void setFaceChoice(size_t c);
+	void setFace(size_t c);
 };

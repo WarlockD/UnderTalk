@@ -6,57 +6,58 @@ using namespace sf;
 void obj_face::setEmotion(size_t e) { 
 	if (e != _emotion) {
 		_emotion = e;
-		switch (_choice) {
+		if (_face == 0) return; // done
+		switch (_face) {
 		case 1: // obj_face_torieltalk
 			switch (_emotion) {
-			case 0: _face.setUndertaleSprite(1986); break;
-			case 1: _face.setUndertaleSprite(2004); break;
-			case 2: _face.setUndertaleSprite(1990); break;
-			case 3: _face.setUndertaleSprite(1999); break;
-			case 4: _face.setUndertaleSprite(2000); break;
+			case 0: setUndertaleSprite(1986); break;
+			case 1: setUndertaleSprite(2004); break;
+			case 2: setUndertaleSprite(1990); break;
+			case 3: setUndertaleSprite(1999); break;
+			case 4: setUndertaleSprite(2000); break;
 				// case 5: missing? humm
-			case 6: _face.setUndertaleSprite(1991); break;
-			case 7: _face.setUndertaleSprite(1993); break;
-			case 8: _face.setUndertaleSprite(1996); break;
-			case 9: _face.setUndertaleSprite(1987); break;
+			case 6: setUndertaleSprite(1991); break;
+			case 7: setUndertaleSprite(1993); break;
+			case 8: setUndertaleSprite(1996); break;
+			case 9: setUndertaleSprite(1987); break;
 				break;
 			}
 			break;
 		case 2: // obj_face_floweytalk
 			switch (_emotion) {
-			case 0: _face.setUndertaleSprite(166); break;
-			case 1: _face.setUndertaleSprite(170); break;
-			case 2: _face.setUndertaleSprite(171); break;
-			case 3: _face.setUndertaleSprite(172); break;
-			case 4: _face.setUndertaleSprite(179); break;
-			case 5: _face.setUndertaleSprite(175); break;
-			case 6: _face.setUndertaleSprite(176); break;
-			case 7: _face.setUndertaleSprite(177); break;
-			case 8: _face.setUndertaleSprite(167); break;
+			case 0: setUndertaleSprite(166); break;
+			case 1: setUndertaleSprite(170); break;
+			case 2: setUndertaleSprite(171); break;
+			case 3: setUndertaleSprite(172); break;
+			case 4: setUndertaleSprite(179); break;
+			case 5: setUndertaleSprite(175); break;
+			case 6: setUndertaleSprite(176); break;
+			case 7: setUndertaleSprite(177); break;
+			case 8: setUndertaleSprite(167); break;
 		//	case 9:  break;
 			}
 			break;
 		case 3: // obj_face_sans
 			switch (_emotion) {
-			case 0: _face.setUndertaleSprite(2018); break;
-			case 1: _face.setUndertaleSprite(2022); break;
-			case 2: _face.setUndertaleSprite(2019); break;
-			case 3: _face.setUndertaleSprite(2020); break;
-			case 4: _face.setUndertaleSprite(2021); break;
+			case 0: setUndertaleSprite(2018); break;
+			case 1: setUndertaleSprite(2022); break;
+			case 2: setUndertaleSprite(2019); break;
+			case 3: setUndertaleSprite(2020); break;
+			case 4: setUndertaleSprite(2021); break;
 			}
 			break;
 		case 4: //obj_face_papyrus
 			switch (_emotion) {
-			case 0: _face.setUndertaleSprite(2008); break;
-			case 1: _face.setUndertaleSprite(2010); break;
-			case 2: _face.setUndertaleSprite(2012); break;
-			case 3: _face.setUndertaleSprite(2013); break;
-			case 4: _face.setUndertaleSprite(2011); break;
-			case 5: _face.setUndertaleSprite(2009); break;
-			case 6: _face.setUndertaleSprite(2014); break;
-			case 7: _face.setUndertaleSprite(2015); break;
-			case 8: _face.setUndertaleSprite(2016); break;
-			case 9: _face.setUndertaleSprite(2017); break;
+			case 0: setUndertaleSprite(2008); break;
+			case 1: setUndertaleSprite(2010); break;
+			case 2: setUndertaleSprite(2012); break;
+			case 3: setUndertaleSprite(2013); break;
+			case 4: setUndertaleSprite(2011); break;
+			case 5: setUndertaleSprite(2009); break;
+			case 6: setUndertaleSprite(2014); break;
+			case 7: setUndertaleSprite(2015); break;
+			case 8: setUndertaleSprite(2016); break;
+			case 9: setUndertaleSprite(2017); break;
 			}
 			break;
 		case 5: // obj_face_undyne
@@ -129,8 +130,6 @@ void obj_face::setEmotion(size_t e) {
 		case 7: // obj_face_asgore
 			// atleast this guy is simple
 		{
-
-		
 			static const int spr_alphysface_faces[]={ 2075, 2076, 2077, 2078, 2079, 2080 };
 			setUndertaleSprite(spr_alphysface_faces[_emotion]);
 		}
@@ -147,28 +146,40 @@ void obj_face::setEmotion(size_t e) {
 		}
 	}
 }
-void obj_face::setFaceChoice(size_t c) { 
-	if (c != _choice) {
-		if (_choice == 1) {
-			removeChild(1985); // body
-			removeChild(1989); // glasses
-		}
-		_choice = c;
+
+void obj_face::setFace(size_t c) { 
+	if (c != _face) {
+		removeAllChildren();
+		_face = c;
+		if (c == 0) return; // done
+		setDepth(0);
 		sf::Vector2f pos;
-		switch (_choice) {
+		switch (_face) {
 		case 1: // obj_face_torieltalk
 		{
 			pos = Vector2f(-33.0f, 25.0f);
-			RoomObject* obj = instance_create(getPosition().x, 0.0f, 785, 1985);  // body
-			Vector2f center(Vector2f(getPosition().x, 0.0f) + (obj->getSize() * 0.5f));
-			obj->setDepth(100);
+			SpriteNode* tor_body = new SpriteNode();
+			tor_body->setUndertaleSprite(1985);
+			tor_body->setTag(1985); // body
+			tor_body->setDepth(-100); // under
+			addChild(tor_body);
+			
+		//	obj->setPosition()
+		//	instance_create(getPosition().x, 0.0f, 785, 1985); 
+		//	Vector2f center(Vector2f(getPosition().x, 0.0f) + (obj->getSize() * 0.5f));
 
 			// do we really ant to create her body here? humm
-			if (_emotion == 99) {
+			if (_emotion == 99) { // glasses
+				SpriteNode* tor_glasses = new SpriteNode();
+				tor_glasses->setUndertaleSprite(1989); // glasses
+				tor_glasses->setTag(1989); // body
+				tor_glasses->setDepth(100); // over
+				addChild(tor_glasses);
+
 				_emotion = 0;
-				RoomObject* obj = instance_create(getPosition().x, 0.0f, 785, 1989); // put in her glasses
-				Vector2f center(Vector2f(getPosition().x, 0.0f) + (obj->getSize() * 0.5f));
-				obj->setDepth(101);
+			//	RoomObject* obj = instance_create(getPosition().x, 0.0f, 785, 1989); // put in her glasses
+			//	Vector2f center(Vector2f(getPosition().x, 0.0f) + (obj->getSize() * 0.5f));
+			//	obj->setDepth(101);
 			}
 		}
 		break;
@@ -200,7 +211,7 @@ void obj_face::setFaceChoice(size_t c) {
 		}
 		// not sure if we should set the position or the origin here humm
 		// really need some kind of  parent system at some point
-		_face.setPosition(pos);
+	//	_face.setPosition(pos);
 		int e = _emotion;
 		_emotion = -1; // force update of emotion
 		setEmotion(e);

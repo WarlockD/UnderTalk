@@ -134,7 +134,7 @@ public:
 	bool UndertaleFile::loadFromFilename(const std::string& filename) {
 		internalReset();
 		std::fstream file(filename, std::ios::in | std::ios::binary);
-		if (!file) {
+		if (!file || file.bad()) {
 			std::cerr << "File '" << filename.c_str() << "' could not be opened.  Code: " << std::strerror(errno) << std::endl;
 			return false;
 		}
@@ -192,7 +192,7 @@ public:
 		}
 		else return nullptr;
 	}
-	template<> Font&& UndertaleFile::createResource(int index) const {
+	template<> Font UndertaleFile::createResource(int index) const {
 		const Chunk* chunk = getChunk(Font::ResType);
 		Font font;
 		const uint8_t* ptr = preCreateResorce(index, font);
@@ -201,19 +201,19 @@ public:
 			font._frame = reinterpret_cast<const SpriteFrame*>(_data.data() + font._raw->frame_offset);
 			font._glyphs = OffsetVector<Font::Glyph>(_data.data(), ptr);
 		}		
-		return std::move(font);
+		return font;
 	}
-	template<> Background&& UndertaleFile::createResource(int index) const {
+	template<> Background UndertaleFile::createResource(int index) const {
 		const Chunk* chunk = getChunk(Background::ResType);
 		Background background;
 		const uint8_t* ptr = preCreateResorce(index, background);
 		if (ptr != nullptr) {
 			background._frame = reinterpret_cast<const SpriteFrame*>(_data.data() + background._raw->frame_offset);
 		}
-		return std::move(background);
+		return background;
 	}
 
-	template<> Room&& UndertaleFile::createResource(int index) const {
+	template<> Room UndertaleFile::createResource(int index) const {
 		const Chunk* chunk = getChunk(Room::ResType);
 		Room room;
 		const uint8_t* ptr = preCreateResorce(index, room);
@@ -224,11 +224,11 @@ public:
 			room._objects = OffsetVector<Room::Object>(_data.data(), room._raw->object_offset);
 			room._views = OffsetVector<Room::View>(_data.data(), room._raw->view_offset);
 		}
-		return std::move(room);
+		return room;
 	}
 
 
-	template<> Sprite&& UndertaleFile::createResource(int index) const {
+	template<> Sprite UndertaleFile::createResource(int index) const {
 		const Chunk* chunk = getChunk(Sprite::ResType);
 		Sprite sprite;
 		const uint8_t* ptr = preCreateResorce(index, sprite);
@@ -252,7 +252,7 @@ public:
 				}
 			}
 		}
-		return std::move(sprite);
+		return sprite;
 	}
 
 
@@ -262,7 +262,7 @@ public:
 	//static const char* pngSigStr = "\x89PNG\r\n\x1a\n";
 
 	static const uint8_t pngSig[] = { 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a };
-	Texture&& UndertaleFile::LookupTexture(int index) const {
+	Texture UndertaleFile::LookupTexture(int index) const {
 		auto txtChunk = getChunk(ChunkType::TXTR);
 		if (index >= 0 && (uint32_t)index < txtChunk->count)
 		{
@@ -293,18 +293,18 @@ public:
 		else
 			return Texture();
 	}
-	std::vector<Font>&& UndertaleFile::ReadAllfonts() {
+	std::vector<Font> UndertaleFile::ReadAllfonts() {
 		std::vector<Font> fonts;
 		const Chunk* chunk = getChunk(Font::ResType);
 		fonts.reserve(chunk->count);
 		for (uint32_t i = 0; i < chunk->count; i++) fonts.emplace_back(createResource<Font>(i));
 		
-		return std::move(fonts);
+		return fonts;
 	}
-	Sprite&& UndertaleFile::LookupSprite(int index) {return std::move(createResource<Sprite>(index)); }
-	Room&& UndertaleFile::LookupRoom(int index) { return std::move(createResource<Room>(index)); }
+	Sprite UndertaleFile::LookupSprite(int index) {return createResource<Sprite>(index); }
+	Room UndertaleFile::LookupRoom(int index) { return createResource<Room>(index); }
 
-	Background&& UndertaleFile::LookupBackground(int index) { return std::move(createResource<Background>(index)); }
+	Background UndertaleFile::LookupBackground(int index) { return createResource<Background>(index); }
 }
 
 

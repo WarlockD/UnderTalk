@@ -249,7 +249,7 @@ void OBJ_WRITER::RefreshQuads() {
 			{
 				n++;
 				int fc = _text[n + 1] - '0';
-				face.setFaceChoice(fc);
+				face.setFace(fc);
 			}
 				
 				break;
@@ -424,7 +424,6 @@ void  OBJ_WRITER::frame() {
 	}
 	RefreshQuads();
 }
-
 
 void OBJ_WRITER::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();

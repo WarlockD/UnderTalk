@@ -212,32 +212,24 @@ static std::map<int, FontInfo> fonts;
 
 static bool loaded = false;
 std::unordered_map<uint32_t, sf::Sprite> _spriteCache;
-
-void LoadUndertaleResources(const std::string& filename) {
-	if (!res.isLoaded()) {
-		if (!res.loadFromFilename(filename)) {
-			printf("Could not load data win");
-			exit(-1);
-		}
-	}
-}
 Undertale::UndertaleFile& GetUndertale() {
 	return res;
 }
 
-
-
-
-
-void Undertale::LoadAllFonts() {
+void LoadUndertaleResources(const std::string& filename) {
 	if (!loaded) {
+		if (!res.loadFromFilename(filename)) {
+			printf("Could not load data win");
+			exit(-1);
+		}
 		loaded = true;
-		for (auto& font : GetUndertale().ReadAllfonts()) {
+		printf("Loading fonts..\n");
+		for (auto& font : res.ReadAllfonts()) {
 			FontInfo info;
 			info.size = font.size();
 			info.name = font.name().string();
 			info.frame = IntRect(font.frame().x, font.frame().y, font.frame().width, font.frame().height);
-			info.texture = GetTexture(font.frame().texture_index);
+			info.texture = Undertale::GetTexture(font.frame().texture_index);
 
 			for (auto& glyph : font.glyphs()) {
 				sf::Glyph g;
@@ -252,11 +244,11 @@ void Undertale::LoadAllFonts() {
 				info.glyphs[glyph.ch] = std::move(g);
 			}
 			int index = font.index();
-			printf("Font loaded (%i)'%s'\n", index, info.name.c_str());
 			fonts.insert(std::pair<int, FontInfo>(index, info));
 		}
 	}
 }
+
 
 
 

@@ -33,7 +33,8 @@ void windowLoop() {
 	size_t room_num = 20;
 	auto uroom = res.LookupRoom(room_num);
 	
-	TileMap testMap( uroom);
+	TileMap testMap;
+	testMap.loadRoom(uroom);
 	size_t num = 0;
 
 	//GSprite test_head(230);
@@ -132,7 +133,7 @@ int main(int argc, const char* argv[])
 	//Undertale::UndertaleFile dataWin;
 	if (argc != 2) exit(-1);
 	LoadUndertaleResources(argv[1]);
-	Undertale::LoadAllFonts();
+
 
 
 	if (!debugFont.loadFromFile("resources\\DTM-Mono.otf"))
