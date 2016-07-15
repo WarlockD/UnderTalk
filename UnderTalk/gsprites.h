@@ -7,6 +7,50 @@
 // so we have to be sure to put that within the vertexes.  There is no way to do that
 // within sf::Sprite as those functions are private 
 
+//  Class used to updating and managing a triangle vertex quad.
+/// sub class this with verts
+class SpriteVertices {
+protected:
+	sf::Vertex* _vertices;
+	bool _owned;
+	virtual void draw_vertices(sf::RenderTarget& target, sf::RenderStates states) const {
+		target.draw(getVertices(), 6, sf::PrimitiveType::Triangles, states);
+	}
+public:
+	sf::Vertex* getVertices() { return _vertices; }
+	const sf::Vertex* getVertices() const { return _vertices; }
+	SpriteVertices();
+	SpriteVertices(const sf::Vector2f& pos, const sf::Color& color = sf::Color::White);
+	SpriteVertices(const sf::Vector2f& pos, const sf::IntRect& textRect, const sf::Color& color = sf::Color::White);
+	SpriteVertices(const sf::FloatRect& posRect, const sf::IntRect& textRect, const sf::Color& color = sf::Color::White);
+	SpriteVertices(sf::Vertex* vertices);
+	SpriteVertices(sf::Vertex* vertices, const sf::Vector2f& pos, const sf::Color& color = sf::Color::White);
+	SpriteVertices(sf::Vertex* vertices, const sf::Vector2f& pos, const sf::IntRect& textRect, const sf::Color& color = sf::Color::White);
+	SpriteVertices(sf::Vertex* vertices, const sf::FloatRect& posRect, const sf::IntRect& textRect, const sf::Color& color = sf::Color::White);
+	/// rule of 5 cause we have a managed pointer! maybe!
+	// Carful with copy, it will create a new vertex, copy the original and the copy will be managed it does NOT move the refrence
+	SpriteVertices(const SpriteVertices& copy);
+	SpriteVertices& operator=(const SpriteVertices& copy);
+	SpriteVertices(SpriteVertices&& move);
+	SpriteVertices& operator=(SpriteVertices&& move);
+	~SpriteVertices();
+
+
+	void set(const sf::FloatRect& rect,  const sf::IntRect& textRect, sf::Color color = sf::Color::White); // main that gets all piped into
+
+	/// Normaly you want setsize as it will keep the vert aspect ratio correct
+	void setTextureRect(const sf::IntRect& rect, bool setsize=true); 
+	void setColor(const sf::Color& color); // same with color
+	void setVertexPosition(const sf::Vector2f& offset);
+	void setVertexPosition(const sf::FloatRect& rect);
+	void setVertexSize(const sf::Vector2f& size);
+	
+	// run to update verts
+	const sf::Vector2f& getVertexPosition() const { return _vertices[0].position; }
+	const sf::Color&  getColor() const { return _vertices[0].color; }
+	sf::Vector2f getVertexSize() const;
+};
+
 class GSpriteFrame  : public sf::Drawable {
 protected:
 	sf::Vertex  _vertices[4]; ///< Vertices defining the sprite's geometry, should we use quads?
@@ -20,12 +64,12 @@ public:
 	GSpriteFrame()  {} // invalid state
 	GSpriteFrame(const Undertale::SpriteFrame& frame);
 	GSpriteFrame(Undertale::SpriteFrame&& frame);
-
+	void insertIntoVertexList(sf::VertexArray& list) const;
+	void insertIntoVertexList(std::vector<sf::Vertex>& list, sf::PrimitiveType type) const;
 	void setFrame(const Undertale::SpriteFrame& frame);
 	void setFrame(Undertale::SpriteFrame&& frame);
 	const Undertale::SpriteFrame& getFrame() const { return _frame; }
-	void insertIntoVertexList(sf::VertexArray& list) const;
-	void insertIntoVertexList(std::vector<sf::Vertex>& list, sf::PrimitiveType type) const;
+	
 	const sf::IntRect& getTextureRect() const { return _texRect; }
 	SharedTexture getTexture() const { return _texture;  }
 	const sf::Vector2f getSize() const { return sf::Vector2f((float)_size.x,(float)_size.y); }

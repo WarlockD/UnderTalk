@@ -117,7 +117,11 @@ template<class C> void Node::removeChild(std::function<bool(const C*)> pred) {
 		else it++;
 	}
 }
-
+void Node::step(float dt) {
+	if (_children.empty()) return;
+	for (auto child : _children) child->step(dt);
+	if (_zOrderDirty) resortChildren();
+}
 void Node::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	if (_children.empty()) return;

@@ -34,7 +34,7 @@ public:
 
 	sf::Vector2f getLocalSize() const { return sf::Vector2f((float)_sprite.width(), (float)_sprite.height()); }
 	sf::FloatRect getLocalBounds() const { return sf::FloatRect((float)_sprite.left(), (float)_sprite.top(), (float)_sprite.left() - (float)_sprite.right(), (float)_sprite.bottom() - (float)_sprite.top()); }
-	size_t getImageCount() const { return _sprite.frames().size(); }
+	size_t getImageCount() const { return _sprite.valid() ?  _sprite.frames().size() : 0; }
 	void setImageIndex(int index);
 	const char* getName() const { return _sprite.name().c_str(); }
 	uint32_t getIndex() const { return _sprite.index(); }
@@ -42,11 +42,7 @@ public:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
-
-class RoomObject : public Node,  public sf::Transformable {
-private: // simple movment stuff and physics stuff
-	SpriteNode _sprite;
-	bool _visiable;
+class RiggedBody : public sf::Transformable {
 	sf::Vector2f _movmentVector;
 	sf::Vector2f _gravityVector;
 	sf::Vector2f _velocityVector;
@@ -54,34 +50,14 @@ private: // simple movment stuff and physics stuff
 	float _gravityDirection;
 	float _direction;
 	float _speed;
-	float _image_speed;
-	float _current_frame;
 	sf::Vector2f _size;
 public:
-	RoomObject();
-	void setUndertaleSprite(int index) { 
-		if (index == -1 && _sprite.getParent() != nullptr) 
-			removeChild(&_sprite);
-		else {
-			_sprite.setUndertaleSprite(index);
-			if (_sprite.getParent() == nullptr) addChild(&_sprite);
-			_size = _sprite.getSize();
-		}
-	}
-	const sf::Vector2f& getSize() const { return _size; }
-	void setSize(const sf::Vector2f& size)  { _size=size; }
-	const sf::Vector2f getNextPosition(float dt) const {
-		sf::Vector2f pos = getPosition();
-		pos += _movmentVector  * dt; // add the movment vector first
-		pos += _velocityVector  * dt; // add the gravity acceration
-		return pos;
-	}
-	void setImageSpeed(float a) { _image_speed = a; }
-	float getImageSpeed() const { return _image_speed; }
-	void setDirection(float d) { _movmentVector = CreateMovementVector(_direction = d,_speed);  }
-	void setSpeed(float s) { _movmentVector = CreateMovementVector(_direction, _speed=s); }
+	RiggedBody();
+	virtual ~RiggedBody() {}
+	void setDirection(float d) { _movmentVector = CreateMovementVector(_direction = d, _speed); }
+	void setSpeed(float s) { _movmentVector = CreateMovementVector(_direction, _speed = s); }
 	void setGravityDirection(float d) { _gravityVector = CreateMovementVector(_direction = d, _gravity);  _velocityVector = sf::Vector2f(); }
-	void setGravity(float s) { _gravityVector = CreateMovementVector(_direction, _gravity=s); _velocityVector = sf::Vector2f();}
+	void setGravity(float s) { _gravityVector = CreateMovementVector(_direction, _gravity = s); _velocityVector = sf::Vector2f(); }
 	float getGravity() const { return _gravity; }
 	float getSpeed() const { return _speed; }
 
@@ -89,10 +65,43 @@ public:
 	sf::Vector2f& getMovement() { return _movmentVector; }
 	const sf::Vector2f& getVelocity() const { return _velocityVector; }
 	sf::Vector2f& getVelocity() { return _velocityVector; }
+	const sf::Vector2f& getSize() const { return _size; }
+	void setSize(const sf::Vector2f& size) { _size = size; }
+
+	const sf::Vector2f getNextPosition(float dt) const {
+		sf::Vector2f pos = getPosition();
+		pos += _movmentVector  * dt; // add the movment vector first
+		pos += _velocityVector  * dt; // add the gravity acceration
+		return pos;
+	}
+protected:
+	void bodyStep(float dt);
+};
+class RoomObject : public Node,  public RiggedBody {
+private: // simple movment stuff and physics stuff
+	SpriteNode _sprite;
+	bool _visiable;
+	float _image_speed;
+	float _current_frame;
+public:
+	RoomObject();
+	void setUndertaleSprite(int index) { 
+		if (index == -1 && _sprite.getParent() != nullptr) {
+			removeChild(&_sprite);
+			setSize(sf::Vector2f(0.0f, 0.0f));
+		}
+		else {
+			_sprite.setUndertaleSprite(index);
+			if (_sprite.getParent() == nullptr) addChild(&_sprite);
+			setSize(_sprite.getSize());
+		}
+	}
+	void setImageSpeed(float a) { _image_speed = a; }
+	float getImageSpeed() const { return _image_speed; }
 	bool isVisiable() const { return _visiable; }
 	void setVisiable(bool v) { _visiable=v;  }
-	virtual void step(float dt);
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+	virtual void step(float dt); // We do run step on all the children...
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override; // .. we don't run draw on any of the children though
 };
 
 class Room : public Node {
@@ -104,12 +113,14 @@ class Room : public Node {
 	bool _objectsChanged;
 	float _speed;
 	TileMap _tiles;
+	Undertale::Room _room;
 public:
 	Room() : Node(), _view(sf::FloatRect(0.0f, 0.0f, 640.0f, 480.0f)) {}
 	sf::View& getView() { return _view; }
 	const sf::View& getView() const { return _view; }
 	float getSpeed() const { return _speed; }
 	void setSpeed(float speed) { _speed = speed; }
+	void loadRoom(int index);
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const  override {
 		target.setView(_view);

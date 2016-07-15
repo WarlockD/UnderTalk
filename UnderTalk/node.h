@@ -22,6 +22,7 @@ public:
 	void setParent(Node* node);
 	void retain() { assert(_ref > 0); ++_ref; }
 	void release() { assert(_ref > 0); --_ref; if (_ref == 0) { setParent(nullptr);  delete this; } }
+	virtual void step(float dt) {  }
 	Node* getParent() const { return _parent; }
 };
 // All nodes draw, otherwise what would be the point?
@@ -67,6 +68,6 @@ public:
 	void removeChild(int tag);
 	void removeChild(Ref* child);
 	void removeChild(const std::type_info& type);
-	virtual void step(float dt) { if (_zOrderDirty) resortChildren(); }
-	virtual void Node::draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	virtual void step(float dt) override;
+	virtual void Node::draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };

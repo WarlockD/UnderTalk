@@ -41,33 +41,77 @@ namespace {
 		vertices.append(sf::Vertex(sf::Vector2f(right   ,  top ), color, sf::Vector2f(u2, v1)));
 		vertices.append(sf::Vertex(sf::Vector2f(right  , bottom ), color, sf::Vector2f(u2, v2)));
 	}
+	inline int GetCharOrDefault(const std::string& text, size_t index) { return index < text.length() ? text[index] : 0; }
+	inline int GetCharOrAssert(const std::string& text, size_t index) { 
+		assert(index < text.length());
+		return text[index];
+	}
 }
 
 
 
 
 
-
-
+void UndertaleText::parse() {
+	_charCount = 0;
+	_parsed.clear();
+	size_t n;
+	for (size_t n = 0; n < _text.length(); n++) {
+		int ch = _text[n];
+		int nch = GetCharOrDefault(_text, n + 1);
+		switch (ch) {
+		case '&': _parsed.emplace_back(Token::NewLine); break;
+		case '\r':
+		case '\n':
+			_parsed.emplace_back(Token::NewLine);
+			if (nch != ch && (nch == '\r' || nch == '\n')) n++; // skip it
+			break;
+		case '^':  // delay, '0' is considered default
+			_parsed.emplace_back(Token::Delay, 10 * (nch - '0'));  break;
+		case '\\':
+			switch (nch) {
+			case 'R': _parsed.emplace_back(Token::Color, 255);  break;
+			case 'G': _parsed.emplace_back(Token::Color, 65280);  break;
+			case 'W': _parsed.emplace_back(Token::Color, 16777215);  break;
+			case 'Y': _parsed.emplace_back(Token::Color, 65535); break;
+			case 'X': _parsed.emplace_back(Token::Color, 0);  break;
+			case 'B': _parsed.emplace_back(Token::Color, 16711680);  break;
+			case 'O': _parsed.emplace_back(Token::Color, 4235519);  break;
+			case 'L': _parsed.emplace_back(Token::Color, 16754964);  break;
+			case 'P': _parsed.emplace_back(Token::Color, 16711935);  break;
+			case 'C': _parsed.emplace_back(Token::Choicer); break; // choise see obj_choicer
+			case 'M': _parsed.emplace_back(Token::Flag, GetCharOrAssert(_text, n + 2) - '0'); n++; break; // something with flag[20], animation index?
+			case 'E': _parsed.emplace_back(Token::Emotion, GetCharOrAssert(_text, n + 2) - '0'); n++;	break;
+			case 'F': _parsed.emplace_back(Token::Face, GetCharOrAssert(_text, n + 2) - '0'); n++;	break;
+			case 'T': _parsed.emplace_back(Token::Typer, GetCharOrAssert(_text, n + 2)); n++;  break;
+			case 'z': _parsed.emplace_back(Token::Infinity);   break;// what the hell is Z? OOOH its a shaking infinity sign for the asriel dremo fight
+			default:
+				// error
+				assert(false);
+				break;
+			}
+			n++; // skip nch
+			break;
+		case '/':
+			// all halts
+			if (nch == '%') _parsed.emplace_back(Token::Halt, 2); 
+			else if (nch == '^' &&  GetCharOrAssert(_text,n + 2) != '0') _parsed.emplace_back(Token::Halt, 4);
+			else if (nch == '*') _parsed.emplace_back(Token::Halt, 6);
+			else _parsed.emplace_back(Token::Halt, 1);
+			return; // done
+		case '%':
+			if (nch == '%') _parsed.emplace_back(Token::SelfDestroy);
+			else _parsed.emplace_back(Token::NextString);
+			return; // die here
+		default:
+			_charCount++;
+			_parsed.emplace_back(Token::Letter,ch);
+			break;
+		}
+	}
+}
 
 /*
-void OBJ_WRITER::AddText(const std::string& str) {
-	_text = str;
-	_quads.clear();
-	_texture = Undertale::GetFontTexture(1);
-	_size = Undertale::GetFontSize(1);
-	auto glyphs = Undertale::GetFontGlyphs(1);
-
-	Vector2f pos;
-	_sprites.resize(str.length());
-	for (int i = 0; i < str.length(); i++) {
-		char c = str[i];
-		auto& g = glyphs[c];
-		addGlyphQuad(_quads, pos, Color::White, g);
-		pos.x += g.advance;
-	}
-
-}
 
 struct TextSetup {
 int myfont;
@@ -194,13 +238,16 @@ std::map<size_t, OBJ_WRITER::TextSetup> OBJ_WRITER::setups = {
 
 void  OBJ_WRITER::SetTextType(int type) {
 	if (_typer == type) return;
+	if (type == 0) type = 4;
 	_typer = type;
 	auto pos = getPosition();
 //	setup = { 1, Color::White, FloatRect(pos.x + 20, pos.y + 20, 290,0.0f), 1,1,94,16,32 };
-	Reset();
+	
 	switch (type) {
-	case 4:
-		setup = { 7, 8421376, 20 , 20, /* view.x */ + 290, 0, 1, 101, 8, 18 };
+	case 4: 
+		//script_execute(149/* SCR_TEXTSETUP */, 2, 16777215, self.x + 20, self.y + 20, self.view_xview[self.view_current] + 290, 0, 1, 101, 8, 18);
+	//	setup = { 7, 8421376, 20 , 20, /* view.x */ + 290, 0, 1, 101, 8, 18 };
+		setup = { 2, 16777215, 20 , 20, /* view.x */ +290, 0, 1, 101, 8, 18 };
 		// 4) script_execute(149/* SCR_TEXTSETUP */, 2, 16777215, self.x + 20, self.y + 20, self.view_xview[self.view_current] + 290, 0, 1, 101, 8, 18);
 		break;
 	default:
@@ -215,219 +262,170 @@ void  OBJ_WRITER::SetTextType(int type) {
 		_textSound.setBuffer(_textSoundBuffer);
 		_textSound.setVolume(10);
 	}
-	
-	
+	setup.shake = 1;
+	Reset();
+	setFont(setup.myfont);
 }
+void OBJ_WRITER::GlyphUpdater::step(float dt)  {
+	switch ((int)_shake) {
+	case 0:
+		break; // no shaking
+	case 39:
+		//   self.direction+= 10;
+		// draw_text(self.myx + self.hspeed, self.myy + self.vspeed, self.myletter);
+	case 40:
+		//	self.direction += 20 * self.n;
+		//	draw_text(self.myx + self.hspeed, self.myy + self.vspeed, self.myletter);
+		//	self.direction -= 20 * self.n;
+		//start = CreateMovementVector(20, 2) + my;
+		//	addGlyphQuad(_quads, start, color, g);
+	case 41:
 
-void OBJ_WRITER::RefreshQuads() {
-	_quads.clear();
-	_sprites.clear();
-	Vector2f my = _writing;
-	Vector2f start;
-	Color color(setup.color);
-	auto glyphs = Undertale::GetFontGlyphs(setup.myfont);
-	for (size_t n = 0; n < _pos; n++) {
-		char ch = _text[n];
-		char nch = (n + 1) < _text.length() ? _text[n + 1] : 0;
-		switch (ch) {
-		case '&':
-			my.x = _writing.x;
-			my.y += setup.vspacing;
-			_lineno++;
-			break;
-		case '\\':
-			switch (nch) {
-			case 'R': color = Color::Red; break;
-			case 'W': color = Color::White; break;
-			case 'Y': color = Color::Yellow;  break;
-			case 'X': color = Color::Black; break;
-			case 'B': color = Color::Blue; break;
-			case 'C': break; // choise see obj_choicer
-			case 'M': break; // something with flag[20], animation index?
-			case 'E': n++; face.setEmotion(_text[n + 1] - '0'); 	break;
-			case 'F': 
-			{
-				n++;
-				int fc = _text[n + 1] - '0';
-				face.setFace(fc);
-			}
-				
-				break;
-			case 'T': // just for tor?  chagnes the typer
-				switch (_text[n + 2]) {
-				case 'T': SetTextType(4); break;
-				case 't':SetTextType(48); break;
-				case '0':SetTextType(5); break;
-				case 'S':SetTextType(10); break;
-				case 'F':SetTextType(16); break;
-				case 's':SetTextType(17); break;
-				case 'P':SetTextType(18); break;
-				case 'M':SetTextType(27); break;
-				case 'U':SetTextType(37); break;
-				case 'A':SetTextType(47); break;
-				case 'a':SetTextType(60); break;
-				case 'R':SetTextType(76); break;
-				}
-				n++;
-				break;
-			case 'z':
-			{
-				GSprite inf_sprite(837);
-				Vector2f shake = Vector2f(((float)util::random(setup.shake)) - (float)setup.shake / 2.0f, ((float)util::random(setup.shake)) - (float)setup.shake / 2.0f) + Vector2f(0.0f, 10.0f);
-				inf_sprite.setPosition(my+shake);
-				inf_sprite.setScale(2, 2);
-				_sprites.emplace_back(inf_sprite);
-			}
-			break;
-			}
-			n++;
-			break; // what the hell is Z? OOOH its a shaking infinity sign for the asriel dremo fight
-		case '/':
-			if (nch == '%') _halt = 2;
-			else if (nch == '^' && _text[n + 2] != '0') _halt = 4;
-			else if (nch == '*') _halt = 6;
-			else _halt = 1;
-			return;
-		case '%':
-			if (nch == '%') return; // die here
-			else {
-				Reset(); // next line
-				_stringno++;
-				_text = _lines[_stringno++];
-				_quads.clear();
-				n = -1; // reset
-				continue;
-			}
-		default:
-		{
-			if (my.x > setup.writingxend) {
-				my.x = _writing.x;
-				my.y += setup.vspacing;
-				_lineno++;
-			} // new line
-			// text fixes
-			if (_typer == 18) {
-				switch (ch) {
-				case 'l': case 'i': case 'I': case '!': case '.': case '?':
-					my.x += 2;
-					break;
-				case 'S': case 'D': case 'A': case '\'':
-					my.x++;
-					break;
-				}
-			}
-			auto& g = glyphs[ch];
-			switch ((int)setup.shake) {
-			case 0:
-				addGlyphQuad(_quads, my, color, g);
-				break;
-			case 39:
-				//   self.direction+= 10;
-					// draw_text(self.myx + self.hspeed, self.myy + self.vspeed, self.myletter);
-			case 40:
-				//	self.direction += 20 * self.n;
-				//	draw_text(self.myx + self.hspeed, self.myy + self.vspeed, self.myletter);
-				//	self.direction -= 20 * self.n;
-					//start = CreateMovementVector(20, 2) + my;
-				//	addGlyphQuad(_quads, start, color, g);
-			case 41:
-
-				//	self.direction += 10 * self.n;
-				//	draw_text(self.myx + self.hspeed, self.myy + self.vspeed, self.myletter);
-				//	self.direction -= 10 * self.n;
-			case 43:
-				//self.direction += 30 * self.n;
-				//draw_text(self.myx + self.hspeed * 0.7 + 10, self.myy + self.vspeed * 0.7, self.myletter);
-				//self.direction -= 30 * self.n;
-				break;
-			default:
-				assert(setup.shake > 0);
-				start = Vector2f(((float)util::random(setup.shake)) - setup.shake / 2, ((float)util::random(setup.shake)) - setup.shake / 2);
-				addGlyphQuad(_quads, start + my, color, g);
-				break;
-			}
-			my.x += setup.spacing;
-			if (setup.myfont == 8) {
-				switch (ch) {
-				case 'w': case 'm': case 'i': case 'l': my.x += 2;
-				case 's': case 'j': my.x -= 1;
-				}
-			}
-			if (setup.myfont == 9) {
-				if (ch == 'D') my.x += 1;
-				if (ch == 'Q') my.x += 3;
-				if (ch == 'M') my.x += 1;
-				if (ch == 'L') my.x -= 1;
-				if (ch == 'K') my.x -= 1;
-				if (ch == 'C') my.x += 1;
-				if (ch == '.') my.x -= 3;
-				if (ch == '!') my.x -= 3;
-				if (ch == 'O' || ch == 'W') my.x += 2;
-				if (ch == 'I') my.x -= 6;
-				if (ch == 'T') my.x -= 1;
-				if (ch == 'P') my.x -= 2;
-				if (ch == 'R') my.x -= 2;
-				if (ch == 'A') my.x += 1;
-				if (ch == 'H') my.x += 1;
-				if (ch == 'B') my.x += 1;
-				if (ch == 'G') my.x += 1;
-				if (ch == 'F') my.x -= 1;
-				if (ch == '?') my.x -= 3;
-				if (ch == '\'') my.x -= 6;
-				if (ch == 'J') my.x -= 1;
-			}
-			break;
-		}
-		}
-		
+		//	self.direction += 10 * self.n;
+		//	draw_text(self.myx + self.hspeed, self.myy + self.vspeed, self.myletter);
+		//	self.direction -= 10 * self.n;
+	case 43:
+		//self.direction += 30 * self.n;
+		//draw_text(self.myx + self.hspeed * 0.7 + 10, self.myy + self.vspeed * 0.7, self.myletter);
+		//self.direction -= 30 * self.n;
+		break;
+	default:
+		assert(_shake > 0);
+		Vector2f shakeAmount(((float)util::random(_shake)) - (_shake / 2.0f), ((float)util::random(_shake)) - (_shake / 2.0f));
+		setVertexPosition(shakeAmount + _home);
+		break;
 	}
 }
-void  OBJ_WRITER::frame() {
+void OBJ_WRITER::setFont(int index) {
+	_fontGlyphs = &Undertale::GetFontGlyphs(index);
+	_fontTexture = Undertale::GetFontTexture(6);
+}
+void OBJ_WRITER::step(float dt) {
+
 	if (_halt > 0) {
-		switch (_halt) {
-		case 1:
-			Reset();
-			_pos = 0;
-			_stringno++;
-			_text = _lines[_stringno++];
-		case 2:
-			break; // instance destroy;
-		case 4:
-			break; // clear return instance destory/  not in a fight?
-		}
+		if (_haltdel) _halt = _haltdel(*this, _halt);
 	}
 	else {
+
 		if (_textpause > 0) _textpause--;
 		else {
-			if (_pos < _text.length()) {
-				_pos++;
-				_textpause = setup.textspeed;
-				char ch = _text[_pos];
-				char nch = (_pos + 1) < _text.length() ? _text[_pos + 1] : 0;
-				if (ch == '^') {
-					if (nch != '0') {
-						_textpause = 10 * (nch - '0');
+			_textpause = setup.textspeed;
+			while (_pos != _tokens.end()) {
+				switch (_pos->token()) {
+				case UndertaleText::Token::NewLine:
+					_writing.x = (float)setup.writingx;
+					_writing.y += setup.vspacing;
+					break;
+				case UndertaleText::Token::Color:
+					_currentColor = Color(_pos->value());
+					break;
+				case UndertaleText::Token::Emotion:
+					_face.setEmotion(_pos->value());
+					break;
+				case UndertaleText::Token::Face:
+					_face.setFace(_pos->value());
+					break;
+				case UndertaleText::Token::Typer:
+					switch (_pos->value()) {
+					case 'T': SetTextType(4); break;
+					case 't':SetTextType(48); break;
+					case '0':SetTextType(5); break;
+					case 'S':SetTextType(10); break;
+					case 'F':SetTextType(16); break;
+					case 's':SetTextType(17); break;
+					case 'P':SetTextType(18); break;
+					case 'M':SetTextType(27); break;
+					case 'U':SetTextType(37); break;
+					case 'A':SetTextType(47); break;
+					case 'a':SetTextType(60); break;
+					case 'R':SetTextType(76); break;
 					}
-					_pos += 2;
-				}
-				else {
-					if (setup.txtsound >= 0) {
+					break;
+				case UndertaleText::Token::Halt:
+					_halt = _pos->value();
+					return;
+				case UndertaleText::Token::NextString:
+					_stringno++;
+					Reset();
+					continue; // have to run the new string
+				case UndertaleText::Token::Letter:
+					int ch = _pos->value();
+					if (_writing.x > (float)setup.writingxend) {
+						_writing.x = (float)setup.writingx;
+						_writing.y += (float)setup.vspacing;
+					} // new line because we are at bounds
+					  // text fixes
+					if (_typer == 18) {
+						switch (ch) {
+						case 'l': case 'i': case 'I': case '!': case '.': case '?':
+							_writing.x += 2.0f;
+							break;
+						case 'S': case 'D': case 'A': case '\'':
+							_writing.x += 1.0f;
+							break;
+						}
+					}
+					// adding glyph part
+					{
+						auto& g = _fontGlyphs->at(ch);
+						sf::Vertex* ptr = _glyphVertices.data();
+						_glyphVertices.resize(_glyphVertices.size() + 6);
+						//	GlyphUpdater* glyph = new GlyphUpdater(ptr, setup.shake, g.textureRect, _writing, _currentColor);
+						GlyphUpdater* glyph = new GlyphUpdater(_glyphVertices, _glyphVertices.size() - 6, setup.shake, g.textureRect, _writing, _currentColor);
+						addChild(glyph);
+						glyph->release();
+					}
+
+
+					_writing.x += (float)setup.spacing;
+					if (setup.myfont == 8) {
+						switch (ch) {
+						case 'w': case 'm': case 'i': case 'l': _writing.x += 2.0f;
+						case 's': case 'j': _writing.x -= 1.0f;
+						}
+					}
+					// kerning for the parpaus font
+					if (setup.myfont == 9) {
+						if (ch == 'D') _writing.x += 1;
+						if (ch == 'Q') _writing.x += 3;
+						if (ch == 'M') _writing.x += 1;
+						if (ch == 'L') _writing.x -= 1;
+						if (ch == 'K') _writing.x -= 1;
+						if (ch == 'C') _writing.x += 1;
+						if (ch == '.') _writing.x -= 3;
+						if (ch == '!') _writing.x -= 3;
+						if (ch == 'O' || ch == 'W') _writing.x += 2;
+						if (ch == 'I') _writing.x -= 6;
+						if (ch == 'T') _writing.x -= 1;
+						if (ch == 'P') _writing.x -= 2;
+						if (ch == 'R') _writing.x -= 2;
+						if (ch == 'A') _writing.x += 1;
+						if (ch == 'H') _writing.x += 1;
+						if (ch == 'B') _writing.x += 1;
+						if (ch == 'G') _writing.x += 1;
+						if (ch == 'F') _writing.x -= 1;
+						if (ch == '?') _writing.x -= 3;
+						if (ch == '\'') _writing.x -= 6;
+						if (ch == 'J') _writing.x -= 1;
+					}
+					if (setup.txtsound >= 0) {// do sound!
 						_textSound.stop();
 						_textSound.play();
 					}
-					
+					_pos++; // ugh
+					return; 
 				}
-				if(ch == '&') _pos++;
-				if (ch == '\\') _pos += 2;
+				_pos++;
 			}
 		}
 	}
-	RefreshQuads();
+	RoomObject::step(dt); // update all objects
 }
 
 void OBJ_WRITER::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
-	states.texture = Undertale::GetFontTexture(6);
-	target.draw(_quads, states);
-	if (_sprites.size() > 0) for(auto& s :_sprites) target.draw(s, states);
+	states.texture = _fontTexture;
+	target.draw(_glyphVertices.data(), _glyphVertices.size(), PrimitiveType::Triangles, states);
+	Node::draw(target, states);
+
 }

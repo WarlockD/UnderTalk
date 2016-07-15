@@ -10,7 +10,6 @@
 #include "room.h"
 
 
-static sf::Font debugFont;
 
 ////////////////////////////////////////////////////////////
 /// Entry point of application
@@ -20,6 +19,13 @@ static sf::Font debugFont;
 ////////////////////////////////////////////////////////////
 
 void windowLoop() {
+	sf::Font debugFont;
+	if (!debugFont.loadFromFile("resources\\DTM-Mono.otf"))
+	{
+		printf("Could not load debug font\n");
+		exit(1);
+	}
+
 	sf::View battleView;
 	battleView.reset(sf::FloatRect(0, 0, 640, 480));
 
@@ -31,10 +37,9 @@ void windowLoop() {
 	fpsText.setPosition(0.0f, 0.0f);
 	auto res = GetUndertale();
 	size_t room_num = 20;
-	auto uroom = res.LookupRoom(room_num);
-	
-	TileMap testMap;
-	testMap.loadRoom(uroom);
+
+	Room testRoom;
+	testRoom.loadRoom(room_num);
 	size_t num = 0;
 
 	//GSprite test_head(230);
@@ -44,10 +49,11 @@ void windowLoop() {
 	//vtest.setPosition(100, 100);
 	//vtest.setScale(2.0f, 2.0f);
 	OBJ_WRITER writer;
-	writer.AddText("*\\TT\\F1This is a \\Ytest\\W&* and another \\z%%");
+	writer.DebugSetFace(1, 99);
+	writer.AddText("*This is a \\Ytest\\W&* and another \\z%%");
 	writer.setPosition(100, 100);
-
-
+	writer.Reset();
+	testRoom.addChild(&writer);
 	// Start the game loop
 	sf::Clock clock;
 	// Create the main window
@@ -75,11 +81,11 @@ void windowLoop() {
 					break;
 				case sf::Keyboard::D:
 					room_num++;
-					testMap.loadRoom(room_num);
+					testRoom.loadRoom(room_num);
 					break;
 				case sf::Keyboard::A:
 					room_num--;
-					testMap.loadRoom(room_num);
+					testRoom.loadRoom(room_num);
 					break;
 
 				case sf::Keyboard::Q:
@@ -100,9 +106,11 @@ void windowLoop() {
 				}
 			}
 		}
+		float current = clock.getElapsedTime().asSeconds();
 		if (clock.getElapsedTime().asSeconds() > (1.0f / 30.0f)) {
 			float elapsed = clock.restart().asSeconds();
-				writer.frame();
+			writer.step(elapsed);
+			testRoom.step(elapsed);
 			//vtest.step(elapsed);
 			float ffps = 1.0f / elapsed;
 			fpsText.setString(std::to_string(std::floorf(ffps)));
@@ -110,9 +118,9 @@ void windowLoop() {
 		// Clear the window
 		window.clear(sf::Color(0, 0, 0));
 		//window.setView(battleView);
-		window.draw(testMap);
+		window.draw(testRoom);
 		window.draw(fpsText);
-		window.draw(writer);
+	//	window.draw(writer);
 	//	window.draw(test_head);
 	//	window.draw(vtest); // fps is always over eveything
 		window.display();
@@ -136,11 +144,6 @@ int main(int argc, const char* argv[])
 
 
 
-	if (!debugFont.loadFromFile("resources\\DTM-Mono.otf"))
-	{
-		printf("Could not load debug font\n");
-		exit(1);
-	}
 
 	//auto spr_icewolf = dataWin.LookupSprite(1302);
 

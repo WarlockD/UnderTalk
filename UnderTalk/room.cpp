@@ -17,8 +17,10 @@ void SpriteNode::setUndertaleSprite(const std::string& name) {
 	assert(false);
 }
 void SpriteNode::setImageIndex(int index) {
-	_image_index = std::abs(index % (int)getImageCount());
-	setFrame(_sprite.frames().at(_image_index));
+	if (_sprite.valid()) {
+		_image_index = std::abs(index % (int)getImageCount());
+		setFrame(_sprite.frames().at(_image_index));
+	}
 }
 
 void SpriteNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -26,26 +28,37 @@ void SpriteNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 }
 
 
-RoomObject::RoomObject() : Node(), _movmentVector(0.0f, 0.0f), _gravityVector(0.0f, 0.0f), _gravity(0.0f), _direction(0.0f),  _visiable(false) {
+RoomObject::RoomObject() : Node(),  _visiable(false) {
+}
+RiggedBody::RiggedBody() : _movmentVector(0.0f, 0.0f), _gravityVector(0.0f, 0.0f), _gravity(0.0f), _direction(0.0f), _gravityDirection(0.0f), _speed(0.0f), _size(0.0f,0.0f) {
+
 }
 
-
+void RiggedBody::bodyStep(float dt) {
+	sf::Vector2f pos = getNextPosition(dt);
+	if (_gravity != 0.0f) _velocityVector += _gravityVector * dt;// velocity += timestep * acceleration;	
+}
 RoomObject* Room::instance_create(float x, float y, int index) {
 	RoomObject* obj = new RoomObject(); // auto adds to the child system
+	obj->setParent(this);
 	obj->setPosition(x, y);
 	obj->setTag(index); // index is the tag
 	return obj;
 }
+void Room::loadRoom(int index) {
+	_room = GetUndertale().LookupRoom(index);
+	if (_room.valid()) {
+		_tiles.loadRoom(_room);
+	}
+}
 void RoomObject::step(float dt)  {
-	resortChildren();
-	sf::Vector2f pos = getNextPosition(dt);
-	if (_gravity != 0.0f) _velocityVector += _gravityVector * dt;// velocity += timestep * acceleration;	
-
+	bodyStep(dt);
 	_current_frame += _image_speed;
 	if ((std::abs(_current_frame) + 0.01f) >= 1.0f) { // we add some flub there
 		int next_frame = (int)std::modf(_current_frame + 0.01f, &_current_frame); // this should work
 		_sprite.setImageIndex(next_frame);
 	}
+	Node::step(dt);
 }
 void RoomObject::draw(sf::RenderTarget& target, sf::RenderStates states) const  {
 	if (_sprite.getUndertaleSprite().valid()) {
