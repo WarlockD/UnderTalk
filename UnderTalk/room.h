@@ -1,5 +1,6 @@
 #pragma once
 #include "Global.h"
+
 #include "node.h"
 #include "gsprites.h"
 
@@ -20,14 +21,14 @@ public:
 };
 
 
-class SpriteNode : public Ref , public GSpriteFrame {
+class SpriteNode : public Node , public GSpriteFrame {
 	Undertale::Sprite _sprite;
 	size_t _image_index;
 public:
-	SpriteNode() : Ref(), GSpriteFrame(), _image_index(0) {}
-	SpriteNode(int sprite_index) : Ref(), _image_index(0) { setUndertaleSprite(sprite_index); }
-	SpriteNode(int sprite_index, int image_index) : Ref(), _image_index(image_index) { setUndertaleSprite(sprite_index); }
-	SpriteNode(const std::string& name, int image_index = 0) : Ref(), _image_index(0) { setUndertaleSprite(name); }
+	SpriteNode() : Node(), GSpriteFrame(), _image_index(0) {}
+	SpriteNode(int sprite_index) : Node(), _image_index(0) { setUndertaleSprite(sprite_index); }
+	SpriteNode(int sprite_index, int image_index) : Node(), _image_index(image_index) { setUndertaleSprite(sprite_index); }
+	SpriteNode(const std::string& name, int image_index = 0) : Node(), _image_index(0) { setUndertaleSprite(name); }
 	void setUndertaleSprite(int index);
 	void setUndertaleSprite(const std::string& name);
 	const Undertale::Sprite& getUndertaleSprite() const { return _sprite; }
@@ -42,42 +43,8 @@ public:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
-class RiggedBody : public sf::Transformable {
-	sf::Vector2f _movmentVector;
-	sf::Vector2f _gravityVector;
-	sf::Vector2f _velocityVector;
-	float _gravity;
-	float _gravityDirection;
-	float _direction;
-	float _speed;
-	sf::Vector2f _size;
-public:
-	RiggedBody();
-	virtual ~RiggedBody() {}
-	void setDirection(float d) { _movmentVector = CreateMovementVector(_direction = d, _speed); }
-	void setSpeed(float s) { _movmentVector = CreateMovementVector(_direction, _speed = s); }
-	void setGravityDirection(float d) { _gravityVector = CreateMovementVector(_direction = d, _gravity);  _velocityVector = sf::Vector2f(); }
-	void setGravity(float s) { _gravityVector = CreateMovementVector(_direction, _gravity = s); _velocityVector = sf::Vector2f(); }
-	float getGravity() const { return _gravity; }
-	float getSpeed() const { return _speed; }
 
-	const sf::Vector2f& getMovement() const { return _movmentVector; }
-	sf::Vector2f& getMovement() { return _movmentVector; }
-	const sf::Vector2f& getVelocity() const { return _velocityVector; }
-	sf::Vector2f& getVelocity() { return _velocityVector; }
-	const sf::Vector2f& getSize() const { return _size; }
-	void setSize(const sf::Vector2f& size) { _size = size; }
-
-	const sf::Vector2f getNextPosition(float dt) const {
-		sf::Vector2f pos = getPosition();
-		pos += _movmentVector  * dt; // add the movment vector first
-		pos += _velocityVector  * dt; // add the gravity acceration
-		return pos;
-	}
-protected:
-	void bodyStep(float dt);
-};
-class RoomObject : public Node,  public RiggedBody {
+class RoomObject : public Node {
 private: // simple movment stuff and physics stuff
 	SpriteNode _sprite;
 	bool _visiable;

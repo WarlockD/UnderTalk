@@ -160,6 +160,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="console.cpp" />
     <ClCompile Include="gsprites.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="node.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="obj_gobject.cpp" />
     <ClCompile Include="obj_vaporized_new.cpp" />
     <ClCompile Include="obj_writer.cpp" />
+    <ClCompile Include="ref.cpp" />
     <ClCompile Include="room.cpp" />
     <ClCompile Include="UndertaleResources.cpp" />
   </ItemGroup>
@@ -181,6 +183,7 @@
     <ClInclude Include="obj_gobject.h" />
     <ClInclude Include="obj_vaporized_new.h" />
     <ClInclude Include="obj_writer.h" />
+    <ClInclude Include="Ref.h" />
     <ClInclude Include="room.h" />
   </ItemGroup>
   <ItemGroup>

@@ -24,17 +24,14 @@ void SpriteNode::setImageIndex(int index) {
 }
 
 void SpriteNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	if (_sprite.valid()) GSpriteFrame::draw(target, states);
+	if (_sprite.valid()) {
+		states.texture = getTexture().get();
+		states.transform *= getTransform();
+		target.draw(getVertices(), getVerticesCount(), getVerticesType(), states);
+	}
 }
 
-
-RoomObject::RoomObject() : Node(),  _visiable(false) {
-}
-RiggedBody::RiggedBody() : _movmentVector(0.0f, 0.0f), _gravityVector(0.0f, 0.0f), _gravity(0.0f), _direction(0.0f), _gravityDirection(0.0f), _speed(0.0f), _size(0.0f,0.0f) {
-
-}
-
-void RiggedBody::bodyStep(float dt) {
+void Node::bodyStep(float dt) {
 	sf::Vector2f pos = getNextPosition(dt);
 	if (_gravity != 0.0f) _velocityVector += _gravityVector * dt;// velocity += timestep * acceleration;	
 }

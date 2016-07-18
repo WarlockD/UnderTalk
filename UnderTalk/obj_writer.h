@@ -92,9 +92,9 @@ private:
 		GlyphUpdater(std::vector<sf::Vertex>& verteices, size_t index, float shake, const sf::IntRect& rect, const sf::Vector2f& pos, sf::Color color) : _home(pos),
 			SpriteVertices(verteices.data() + index, pos, rect,color), _shake(shake) {}
 		// we don't care about dt, as OBJ_WRITER caculates the frame for us
-		virtual void step(float dt) override;
-		void draw(sf::RenderTarget& target, sf::RenderStates states) const override { } //draw_vertices(target, states); }
+		virtual void step(float dt) ;
 	};
+	std::vector<GlyphUpdater> _updaters;
 	static std::map<size_t, OBJ_WRITER::TextSetup> setups;
 	//sf::VertexArray _glyphVertices;
 	TextSetup setup;
@@ -124,6 +124,7 @@ public:
 		_writing = sf::Vector2f((float)setup.writingx, (float)setup.writingy);
 		_glyphVertices.clear();
 		removeAllChildren();
+		_updaters.clear();
 		_currentColor = sf::Color(setup.color);
 		_textpause = setup.textspeed;
 		if (_stringno < _lines.size())

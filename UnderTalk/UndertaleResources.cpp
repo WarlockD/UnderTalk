@@ -2,6 +2,8 @@
 #include "json.hpp"
 #include <UndertaleLib.h>
 #include "gsprites.h"
+#include <cstdarg>
+
 
 using json = nlohmann::json;
 
@@ -13,6 +15,46 @@ using namespace sf;
 
 #define USE_SSE 1
 
+void OutputDebugStringA(const char*);
+
+namespace console {
+	/// The max length of CCLog message.
+	static const int MAX_LOG_LENGTH = 16 * 1024;
+	static Mutex consoleMutex;
+	char _logbuffer[MAX_LOG_LENGTH];
+	char _logFinalbuffer[MAX_LOG_LENGTH];
+	void PrintMessage(const char* type, const char* message) {
+		char* msg = _logFinalbuffer; // oldschool booy
+		*msg++ = '[';
+		while (*type) *msg++ = *type++;
+		*msg++ = ']';
+		*msg++ = ':';
+		*msg++ = ' ';
+		while (*message) *msg++ = *message++;
+		*msg++ = '\r';
+		*msg++ = '\n';
+		printf(_logFinalbuffer);
+		OutputDebugStringA(_logFinalbuffer);
+	}
+	void info(const char* format, ...) {
+		consoleMutex.lock();
+		va_list args;
+		va_start(args, format);
+		vsnprintf_s(_logbuffer, MAX_LOG_LENGTH, format, args);
+		va_end(args);
+		PrintMessage("INFO", _logbuffer);
+		consoleMutex.unlock();
+	}
+	void error(const char * format, ...) {
+		consoleMutex.lock();
+		va_list args;
+		va_start(args, format);
+		vsnprintf_s(_logbuffer, MAX_LOG_LENGTH, format, args);
+		va_end(args);
+		PrintMessage("ERROR", _logbuffer);
+		consoleMutex.unlock();
+	}
+}
 
 namespace fast {
 #ifndef USE_SSE

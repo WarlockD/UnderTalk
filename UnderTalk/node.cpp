@@ -12,30 +12,30 @@ Room* Node::getRoom() const {
 
 void Node::resortChildren() const {
 	if (_zOrderDirty) {
-		std::sort(_children.begin(), _children.end(), [](const Ref*  l, const Ref*  r) { return r->_depth < r->_depth; });
+		std::sort(_children.begin(), _children.end(), [](const Node*  l, const Node*  r) { return r->_depth < r->_depth; });
 		_zOrderDirty = false;
 	}
 }
 
 
-void Ref::setParent(Node* node) {
+void Node::setParent(Node* node) {
 	if (getParent() == node) return;
 	if (_parent != nullptr) _parent->removeChild(this);
 	if (node != nullptr) node->addChild(this);
 }
-void Node::addChild(Ref* child) {
+void Node::addChild(Node* child) {
 	assert(child != nullptr);
 	assert(child->getParent() == nullptr);
 	_children.push_back(child);
 	child->retain();
 	child->_parent = this;
 }
-void Node::removeChildHelper(Ref* child){
+void Node::removeChildHelper(Node* child){
 	assert(child->_parent == this);
 	child->_parent = nullptr;
 	child->release();
 }
-void Node::addChildHelper(Ref* child) {
+void Node::addChildHelper(Node* child) {
 	assert(child->_parent == nullptr);
 	child->_parent = this;
 	child->retain();
@@ -76,13 +76,13 @@ template<class C> void Node::with(int tag, std::function<void(C*)> func) {
 }
 
 void Node::removeChild(int tag) {
-	removeChild<Ref>([tag](const Ref* ref) { return ref->getTag() == tag; });
+	removeChild<Node>([tag](const Node* ref) { return ref->getTag() == tag; });
 }
 
 void Node::removeChild(const std::type_info& type) {
 	auto it = _children.begin();
 	while (it != _children.end()) {
-		Ref* child = (*it);
+		Node* child = (*it);
 		if (typeid((*it)) == type) {
 			removeChildHelper(child);
 			it = _children.erase(it);
@@ -90,14 +90,14 @@ void Node::removeChild(const std::type_info& type) {
 		else it++;
 	}
 }
-void Node::removeChild(Ref* child) {
-	removeChild<Ref>([child](const Ref* ref) { return ref == child; });
+void Node::removeChild(Node* child) {
+	removeChild<Node>([child](const Node* ref) { return ref == child; });
 }
 
-template<> void Node::removeChild(std::function<bool(const Ref*)> pred) {
+template<> void Node::removeChild(std::function<bool(const Node*)> pred) {
 	auto it = _children.begin();
 	while (it != _children.end()) {
-		Ref* child = (*it);
+		Node* child = (*it);
 		if (pred(child)) {
 			removeChildHelper(child);
 			it = _children.erase(it);
@@ -105,20 +105,10 @@ template<> void Node::removeChild(std::function<bool(const Ref*)> pred) {
 		else it++;
 	}
 }
-template<class C> void Node::removeChild(std::function<bool(const C*)> pred) {
-	auto it = _children.begin();
-	while (it != _children.end()) {
-		C* child = dynamic_cast<C*>((*it));
-		if (child == nullptr) continue;
-		if (pred(child)) {
-			removeChildHelper(child);
-			it = _children.erase(it);
-		}
-		else it++;
-	}
-}
+
 void Node::step(float dt) {
 	if (_children.empty()) return;
+	bodyStep(dt);
 	for (auto child : _children) child->step(dt);
 	if (_zOrderDirty) resortChildren();
 }

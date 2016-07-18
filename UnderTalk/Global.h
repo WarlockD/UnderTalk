@@ -300,3 +300,11 @@ public:
 	}
 };
 
+
+
+namespace console {
+	/// The max length of CCLog message.
+	void info(const char* format, ...);
+	void error(const char * format, ...);
+}
+

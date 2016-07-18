@@ -51,7 +51,7 @@ public:
 	sf::Vector2f getVertexSize() const;
 };
 
-class GSpriteFrame  : public sf::Drawable {
+class GSpriteFrame  {
 protected:
 	sf::Vertex  _vertices[4]; ///< Vertices defining the sprite's geometry, should we use quads?
 	SharedTexture _texture;
@@ -72,21 +72,15 @@ public:
 	
 	const sf::IntRect& getTextureRect() const { return _texRect; }
 	SharedTexture getTexture() const { return _texture;  }
-	const sf::Vector2f getSize() const { return sf::Vector2f((float)_size.x,(float)_size.y); }
+	const sf::Vector2f getFrameSize() const { return sf::Vector2f((float)_size.x,(float)_size.y); }
 	const sf::Vector2u getOrigin() const { return _origin; }
 	const sf::Vertex* getVertices() const { return _vertices; }
 	const size_t getVerticesCount() const { return 4; }
 	const sf::PrimitiveType getVerticesType() const { return sf::TriangleStrip; }
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-		if (_frame.valid()) {
-			states.texture = _texture.get();
-			target.draw(_vertices, 4, sf::PrimitiveType::TrianglesStrip, states);
-		}
-	}
 };
 
 
-class GSprite :  public GSpriteFrame , public sf::Transformable {
+class GSprite :  public GSpriteFrame {
 	Undertale::Sprite _sprite;
 	size_t _image_index;
 public:
@@ -105,11 +99,5 @@ public:
 	const char* getName() const { return _sprite.name().c_str(); }
 	uint32_t getIndex() const { return _sprite.index(); }
 	int getImageIndex() const { return _image_index; }
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-		if (_sprite.valid()) {
-			states.transform *= getTransform();
-			GSpriteFrame::draw(target, states);
-		}
-	}
 };
 

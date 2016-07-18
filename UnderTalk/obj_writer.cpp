@@ -370,10 +370,8 @@ void OBJ_WRITER::step(float dt) {
 						auto& g = _fontGlyphs->at(ch);
 						sf::Vertex* ptr = _glyphVertices.data();
 						_glyphVertices.resize(_glyphVertices.size() + 6);
-						//	GlyphUpdater* glyph = new GlyphUpdater(ptr, setup.shake, g.textureRect, _writing, _currentColor);
-						GlyphUpdater* glyph = new GlyphUpdater(_glyphVertices, _glyphVertices.size() - 6, setup.shake, g.textureRect, _writing, _currentColor);
-						addChild(glyph);
-						glyph->release();
+						GlyphUpdater glyph(_glyphVertices, _glyphVertices.size() - 6, setup.shake, g.textureRect, _writing, _currentColor);
+						_updaters.emplace_back(glyph);
 					}
 
 

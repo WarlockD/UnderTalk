@@ -1,44 +1,64 @@
 #pragma once
 #include "Global.h"
 #include <typeinfo>
-
+#include "Ref.h"
 // a hacked implmentation of the node in cocos2d-x
 class Room;
-class Node;
-// Ref is a light weight ref counted drawable object
-class Ref : public sf::Drawable {
-	friend class Node;
-	int _ref;
+
+
+// All nodes draw, otherwise what would be the point?
+class Node : public Ref , public sf::Drawable , public sf::Transformable {
 	int _tag;
 	int _depth;
-	Node* _parent; // make above shared ptr and this a weak ptr? humm.  Now it should all be unique ptrs
+	sf::Vector2f _movmentVector;
+	sf::Vector2f _gravityVector;
+	sf::Vector2f _velocityVector;
+	float _gravity;
+	float _gravityDirection;
+	float _direction;
+	float _speed;
+	sf::Vector2f _size;
+	// mabye use above if we want to control the managment of pointers
+//	typedef set_unique_ptr<Ref> t_child;
+	//typedef std::unique_ptr<Ref> t_child;
+	typedef Node* t_child;
+	mutable std::vector<t_child> _children;
+	mutable bool _zOrderDirty;
+	// finds the parent in the chain, if we cannot find it than we are screwed
+	void removeChildHelper(Node* child);
+	void addChildHelper(Node* child);
+	Node* _parent;
 public:
-	Ref() :_ref(1), _tag(0), _depth(0) , _parent(nullptr)  {}
-	virtual ~Ref() { if(_parent!= nullptr) setParent(nullptr); }
 	int getTag() const { return _tag; }
 	void setTag(int tag) { _tag = tag; }
 	int getDepth() const { return _depth; }
 	void setDepth(int depth) { _depth = depth; }
-	void setParent(Node* node);
-	void retain() { assert(_ref > 0); ++_ref; }
-	void release() { assert(_ref > 0); --_ref; if (_ref == 0) { setParent(nullptr);  delete this; } }
-	virtual void step(float dt) {  }
-	Node* getParent() const { return _parent; }
-};
-// All nodes draw, otherwise what would be the point?
-class Node : public Ref {
-	friend class Ref;
+	void setDirection(float d) { _movmentVector = CreateMovementVector(_direction = d, _speed); }
+	void setSpeed(float s) { _movmentVector = CreateMovementVector(_direction, _speed = s); }
+	void setGravityDirection(float d) { _gravityVector = CreateMovementVector(_direction = d, _gravity);  _velocityVector = sf::Vector2f(); }
+	void setGravity(float s) { _gravityVector = CreateMovementVector(_direction, _gravity = s); _velocityVector = sf::Vector2f(); }
+	float getGravity() const { return _gravity; }
+	float getSpeed() const { return _speed; }
 
-	// mabye use above if we want to control the managment of pointers
-//	typedef set_unique_ptr<Ref> t_child;
-	//typedef std::unique_ptr<Ref> t_child;
-	typedef Ref* t_child;
-	mutable std::vector<Ref*> _children;
-	mutable bool _zOrderDirty;
-	// finds the parent in the chain, if we cannot find it than we are screwed
-	void removeChildHelper(Ref* child);
-	void addChildHelper(Ref* child);
+	const sf::Vector2f& getMovement() const { return _movmentVector; }
+	sf::Vector2f& getMovement() { return _movmentVector; }
+	const sf::Vector2f& getVelocity() const { return _velocityVector; }
+	sf::Vector2f& getVelocity() { return _velocityVector; }
+	const sf::Vector2f& getSize() const { return _size; }
+	void setSize(const sf::Vector2f& size) { _size = size; }
+
+	const sf::Vector2f getNextPosition(float dt) const {
+		sf::Vector2f pos = getPosition();
+		pos += _movmentVector  * dt; // add the movment vector first
+		pos += _velocityVector  * dt; // add the gravity acceration
+		return pos;
+	}
+	void bodyStep(float dt);
 public:
+
+	Node* getParent() const { return _parent; }
+	void setParent(Node* node);
+
 	Node() : Ref(), _zOrderDirty(false) {}
 	const std::vector<t_child>& getChildren() const { resortChildren(); return _children; }
 	void removeAllChildren() { _children.clear(); _zOrderDirty = false; }
@@ -51,23 +71,25 @@ public:
 	
 
 	Room* getRoom() const;
-	void addChild(Ref* child);
+	
 
-	template<class C> 
-	C* findChild(std::function<bool(const Ref*)> pred) const;
-
-	template<class C> 
-	bool findChildren(std::vector<C*>& search, std::function<bool(const C*)> pred) const;
+	template<class C> C* findChild(std::function<bool(const Ref*)> pred) const;
+	template<class C> bool findChildren(std::vector<C*>& search, std::function<bool(const C*)> pred) const;
 
 	template<class C> C* findByTag(int tag) const;
 	template<class C> bool findChildrenByTag(std::vector<C*>& search, int tag) const;
 	template<class C> void with(int tag, std::function<void(C*)> func);
 
 	template<class C> void removeChild(std::function<bool(const C*)> pred);
-	template<> void Node::removeChild(std::function<bool(const Ref*)> pred);
+	template<> void Node::removeChild(std::function<bool(const Node*)> pred);
+
+
+	void addChild(Node* child);
 	void removeChild(int tag);
-	void removeChild(Ref* child);
+	void removeChild(Node* child);
 	void removeChild(const std::type_info& type);
-	virtual void step(float dt) override;
+
+
+	virtual void step(float dt) ;
 	virtual void Node::draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
