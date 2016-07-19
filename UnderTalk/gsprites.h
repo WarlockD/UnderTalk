@@ -98,6 +98,6 @@ public:
 	void setImageIndex(int index);
 	const char* getName() const { return _sprite.name().c_str(); }
 	uint32_t getIndex() const { return _sprite.index(); }
-	int getImageIndex() const { return _image_index; }
+	size_t getImageIndex() const { return _image_index; }
 };
 

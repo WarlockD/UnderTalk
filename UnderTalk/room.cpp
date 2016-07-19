@@ -35,6 +35,7 @@ void Node::bodyStep(float dt) {
 	sf::Vector2f pos = getNextPosition(dt);
 	if (_gravity != 0.0f) _velocityVector += _gravityVector * dt;// velocity += timestep * acceleration;	
 }
+RoomObject::RoomObject() : Node(), _visiable(false), _current_frame(0.0f), _image_speed(0.0f) {}
 RoomObject* Room::instance_create(float x, float y, int index) {
 	RoomObject* obj = new RoomObject(); // auto adds to the child system
 	obj->setParent(this);
@@ -55,6 +56,7 @@ void RoomObject::step(float dt)  {
 		int next_frame = (int)std::modf(_current_frame + 0.01f, &_current_frame); // this should work
 		_sprite.setImageIndex(next_frame);
 	}
+
 	Node::step(dt);
 }
 void RoomObject::draw(sf::RenderTarget& target, sf::RenderStates states) const  {

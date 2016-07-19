@@ -4,57 +4,26 @@
 #include "gsprites.h"
 #include <cstdarg>
 
+#if _DEBUG
+#pragma comment(lib,"sfml-network-s-d.lib")
+#pragma comment(lib,"sfml-system-s-d.lib")
+#pragma comment(lib,"sfml-window-s-d.lib")
+#pragma comment(lib,"sfml-graphics-s-d.lib")
+#pragma comment(lib,"sfml-audio-s-d.lib")
+
+#else
+
+
+#endif
 
 using json = nlohmann::json;
 
 using namespace sf;
 
 
-using namespace sf;
-
-
 #define USE_SSE 1
 
-void OutputDebugStringA(const char*);
 
-namespace console {
-	/// The max length of CCLog message.
-	static const int MAX_LOG_LENGTH = 16 * 1024;
-	static Mutex consoleMutex;
-	char _logbuffer[MAX_LOG_LENGTH];
-	char _logFinalbuffer[MAX_LOG_LENGTH];
-	void PrintMessage(const char* type, const char* message) {
-		char* msg = _logFinalbuffer; // oldschool booy
-		*msg++ = '[';
-		while (*type) *msg++ = *type++;
-		*msg++ = ']';
-		*msg++ = ':';
-		*msg++ = ' ';
-		while (*message) *msg++ = *message++;
-		*msg++ = '\r';
-		*msg++ = '\n';
-		printf(_logFinalbuffer);
-		OutputDebugStringA(_logFinalbuffer);
-	}
-	void info(const char* format, ...) {
-		consoleMutex.lock();
-		va_list args;
-		va_start(args, format);
-		vsnprintf_s(_logbuffer, MAX_LOG_LENGTH, format, args);
-		va_end(args);
-		PrintMessage("INFO", _logbuffer);
-		consoleMutex.unlock();
-	}
-	void error(const char * format, ...) {
-		consoleMutex.lock();
-		va_list args;
-		va_start(args, format);
-		vsnprintf_s(_logbuffer, MAX_LOG_LENGTH, format, args);
-		va_end(args);
-		PrintMessage("ERROR", _logbuffer);
-		consoleMutex.unlock();
-	}
-}
 
 namespace fast {
 #ifndef USE_SSE
@@ -254,6 +223,7 @@ static std::map<int, FontInfo> fonts;
 
 static bool loaded = false;
 std::unordered_map<uint32_t, sf::Sprite> _spriteCache;
+
 Undertale::UndertaleFile& GetUndertale() {
 	return res;
 }
@@ -265,7 +235,7 @@ void LoadUndertaleResources(const std::string& filename) {
 			exit(-1);
 		}
 		loaded = true;
-		printf("Loading fonts..\n");
+
 		for (auto& font : res.ReadAllfonts()) {
 			FontInfo info;
 			info.size = font.size();
@@ -352,5 +322,69 @@ namespace Undertale {
 			}
 		}
 		return _audiofiles[index].filename;
+	}
+}
+
+#ifdef _DEBUG
+// since we got to load this, lets try loading it at the end
+#include <windows.h>
+
+typedef void t_OutputDebugStringW(const wchar_t *);
+typedef void t_OutputDebugStringA(const char *);
+
+//t_OutputDebugStringW* OutputDebugStringW = nullptr;
+//t_OutputDebugStringA* OutputDebugStringA = nullptr;
+//#define OutputDebugString OutputDebugStringA
+
+#endif
+
+namespace console {
+	/// The max length of CCLog message.
+	static const int MAX_LOG_LENGTH = 16 * 1024;
+	static Mutex consoleMutex;
+	char _logbuffer[MAX_LOG_LENGTH];
+	char _logFinalbuffer[MAX_LOG_LENGTH];
+	void PrintMessage(const char* type, const char* message) {
+		char* msg = _logFinalbuffer; // oldschool booy
+		*msg++ = '[';
+		while (*type) *msg++ = *type++;
+		*msg++ = ']';
+		*msg++ = ':';
+		*msg++ = ' ';
+		while (*message) *msg++ = *message++;
+		*msg++ = '\r';
+		*msg++ = '\n';
+		*msg++ = 0;
+		printf(_logFinalbuffer);
+#if _DEBUG
+		if (OutputDebugStringA == nullptr) {
+			//	HINSTANCE dllHandle = LoadLibrary("art.dll");
+			//	FindArtistType FindArtistPtr = NULL;
+
+			//Load the dll and keep the handle to it
+			//	dllHandle = 
+			//	OutputDebugStringA
+		}
+		OutputDebugStringA(_logFinalbuffer);
+#endif
+
+	}
+	void info(const char* format, ...) {
+		consoleMutex.lock();
+		va_list args;
+		va_start(args, format);
+		vsnprintf_s(_logbuffer, MAX_LOG_LENGTH, format, args);
+		va_end(args);
+		PrintMessage("INFO", _logbuffer);
+		consoleMutex.unlock();
+	}
+	void error(const char * format, ...) {
+		consoleMutex.lock();
+		va_list args;
+		va_start(args, format);
+		vsnprintf_s(_logbuffer, MAX_LOG_LENGTH, format, args);
+		va_end(args);
+		PrintMessage("ERROR", _logbuffer);
+		consoleMutex.unlock();
 	}
 }

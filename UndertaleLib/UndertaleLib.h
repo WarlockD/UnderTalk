@@ -61,7 +61,7 @@ namespace Undertale {
 			_len = strlen(str);
 			return *this;
 		}
-		const char* c_str() const { return   _c_str; }
+		const char* c_str() const { return _c_str; }
 		std::string string() const { return std::string(_c_str,_len); }
 		size_t length() const { return _len; }
 		size_t hash() const { return Undertale::simple_hash(_c_str, _len); }

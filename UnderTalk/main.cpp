@@ -1,6 +1,3 @@
-////////////////////////////////////////////////////////////
-// Headers
-////////////////////////////////////////////////////////////
 #include "Global.h"
 #include "Effect.hpp"
 #include <vector>
@@ -9,32 +6,25 @@
 #include "obj_vaporized_new.h"
 #include "room.h"
 
-
-
-////////////////////////////////////////////////////////////
-/// Entry point of application
-///
-/// \return Application exit code
-///
-////////////////////////////////////////////////////////////
-
 void windowLoop() {
+#if 0
 	sf::Font debugFont;
 	if (!debugFont.loadFromFile("resources\\DTM-Mono.otf"))
 	{
 		printf("Could not load debug font\n");
 		exit(1);
 	}
-
+#endif
 	sf::View battleView;
 	battleView.reset(sf::FloatRect(0, 0, 640, 480));
 
 	sf::View overLand;
 	overLand.reset(sf::FloatRect(0, 0, 320, 240));
-	sf::Text fpsText;
-	fpsText.setFont(debugFont);
-	fpsText.setCharacterSize(30);
-	fpsText.setPosition(0.0f, 0.0f);
+
+	//sf::Text fpsText;
+//	fpsText.setFont(debugFont);
+	//fpsText.setCharacterSize(30);
+//	fpsText.setPosition(0.0f, 0.0f);
 	auto res = GetUndertale();
 	size_t room_num = 20;
 
@@ -113,16 +103,14 @@ void windowLoop() {
 			testRoom.step(elapsed);
 			//vtest.step(elapsed);
 			float ffps = 1.0f / elapsed;
-			fpsText.setString(std::to_string(std::floorf(ffps)));
+		//	fpsText.setString(std::to_string(std::floorf(ffps)));
 		}
 		// Clear the window
 		window.clear(sf::Color(0, 0, 0));
-		//window.setView(battleView);
+
 		window.draw(testRoom);
-		window.draw(fpsText);
-	//	window.draw(writer);
-	//	window.draw(test_head);
-	//	window.draw(vtest); // fps is always over eveything
+		//window.draw(fpsText);
+
 		window.display();
 	}
 	printf("All done\r\n");
@@ -142,19 +130,7 @@ int main(int argc, const char* argv[])
 	if (argc != 2) exit(-1);
 	LoadUndertaleResources(argv[1]);
 
-
-
-
-	//auto spr_icewolf = dataWin.LookupSprite(1302);
-
-
-	
-
 	windowLoop();
 
-
-
-	
-	
 	return 0;
 }

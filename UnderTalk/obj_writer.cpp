@@ -254,6 +254,8 @@ void  OBJ_WRITER::SetTextType(int type) {
 		setup = setups[type];
 		break;
 	};
+	setup.txtsound = -1;
+#if 0
 	if (!_textSoundBuffer.loadFromFile(Undertale::LookupSound(setup.txtsound))) {
 		printf("Could not load sound");
 		setup.txtsound = -1;
@@ -262,6 +264,7 @@ void  OBJ_WRITER::SetTextType(int type) {
 		_textSound.setBuffer(_textSoundBuffer);
 		_textSound.setVolume(10);
 	}
+#endif
 	setup.shake = 1;
 	Reset();
 	setFont(setup.myfont);
@@ -291,7 +294,7 @@ void OBJ_WRITER::GlyphUpdater::step(float dt)  {
 		break;
 	default:
 		assert(_shake > 0);
-		Vector2f shakeAmount(((float)util::random(_shake)) - (_shake / 2.0f), ((float)util::random(_shake)) - (_shake / 2.0f));
+		Vector2f shakeAmount(util::random(_shake) - (_shake / 2.0f), util::random(_shake) - (_shake / 2.0f));
 		setVertexPosition(shakeAmount + _home);
 		break;
 	}
@@ -371,7 +374,7 @@ void OBJ_WRITER::step(float dt) {
 						sf::Vertex* ptr = _glyphVertices.data();
 						_glyphVertices.resize(_glyphVertices.size() + 6);
 						GlyphUpdater glyph(_glyphVertices, _glyphVertices.size() - 6, setup.shake, g.textureRect, _writing, _currentColor);
-						_updaters.emplace_back(glyph);
+					//	_updaters.emplace_back(glyph);
 					}
 
 
@@ -417,6 +420,7 @@ void OBJ_WRITER::step(float dt) {
 			}
 		}
 	}
+	for (auto& u : _updaters) u.step(dt);
 	RoomObject::step(dt); // update all objects
 }
 
@@ -424,6 +428,6 @@ void OBJ_WRITER::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
 	states.texture = _fontTexture;
 	target.draw(_glyphVertices.data(), _glyphVertices.size(), PrimitiveType::Triangles, states);
-	Node::draw(target, states);
+	Node::draw(target, states); 
 
 }

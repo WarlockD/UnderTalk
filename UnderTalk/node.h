@@ -56,10 +56,10 @@ public:
 	void bodyStep(float dt);
 public:
 
+	Node() : Ref(), _parent(nullptr), _zOrderDirty(false) {}
 	Node* getParent() const { return _parent; }
 	void setParent(Node* node);
 
-	Node() : Ref(), _zOrderDirty(false) {}
 	const std::vector<t_child>& getChildren() const { resortChildren(); return _children; }
 	void removeAllChildren() { _children.clear(); _zOrderDirty = false; }
 	std::vector<t_child>::iterator begin() { return _children.begin(); }
@@ -91,5 +91,5 @@ public:
 
 
 	virtual void step(float dt) ;
-	virtual void Node::draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
