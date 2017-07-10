@@ -86,5 +86,8 @@
     <ClInclude Include="Ref.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="list.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -119,7 +119,8 @@ void windowLoop() {
 int main(int argc, const char* argv[])
 {
 	// undertail combat views are in 640x480 but overowrd is in 320 240 fyi
-
+	ObjectWraper<std::string>* test = new ObjectWraper<std::string>();
+	std::cout << test->hash();
 	sf::View battleView;
 	battleView.reset(sf::FloatRect(0, 0, 640, 480));
 

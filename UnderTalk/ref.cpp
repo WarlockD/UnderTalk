@@ -11,7 +11,7 @@ void Ref::release() {
 	auto poolManager = PoolManager::getInstance();
 	if (poolManager->isObjectInPools(this))
 	{
-		assert(false, "The reference shouldn't be 0 because it is still in autorelease pool.");
+		assert(false);
 	}
 
 	if (_refCount == 0) delete this; 

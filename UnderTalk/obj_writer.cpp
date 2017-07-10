@@ -55,7 +55,7 @@ namespace {
 void UndertaleText::parse() {
 	_charCount = 0;
 	_parsed.clear();
-	size_t n;
+//	size_t n;
 	for (size_t n = 0; n < _text.length(); n++) {
 		int ch = _text[n];
 		int nch = GetCharOrDefault(_text, n + 1);

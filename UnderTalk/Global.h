@@ -218,7 +218,7 @@ struct ITimeStep {
 
 // http://stackoverflow.com/questions/427477/fastest-way-to-clamp-a-real-fixed-floating-point-value
 // such a cool method, not sure its faster than normal but thought I mess with it 
-
+#include <smmintrin.h>
 namespace fast {
 	inline float min(float a, float b)// Branchless SSE min.
 	{
