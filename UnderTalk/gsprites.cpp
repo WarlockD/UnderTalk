@@ -8,9 +8,9 @@ using namespace sf;
 //cframe->_texRect = IntRect(frame->x, frame->y, frame->width, frame->height);
 
 void GSpriteFrame::updateVertices() {
-	_texture = Undertale::GetTexture(_frame.texture_index);
-	_texRect = IntRect(_frame.x, _frame.y, _frame.width, _frame.height);
-	_origin = Vector2u(_frame.offset_x, _frame.offset_y);
+	_texture = Undertale::GetTexture(_frame->texture_index);
+	_texRect = IntRect(_frame->x, _frame->y, _frame->width, _frame->height);
+	_origin = Vector2u(_frame->offset_x, _frame->offset_y);
 	{
 		float width = static_cast<float>(_texRect.width);
 		float height = static_cast<float>(_texRect.height);
@@ -127,19 +127,12 @@ void SpriteVertices::setTextureRect(const sf::IntRect& rect, bool setsize) {
 }
 sf::Vector2f SpriteVertices::getVertexSize() const { return _vertices[2].position - _vertices[0].position; } // size is set by texture rect
 
-GSpriteFrame::GSpriteFrame(const Undertale::SpriteFrame& frame) {
-	setFrame(frame);
-}
-GSpriteFrame::GSpriteFrame(Undertale::SpriteFrame&& frame) {
-	setFrame(frame);
-}
-void GSpriteFrame::setFrame(Undertale::SpriteFrame&& frame) {
-	_frame = frame;
+GSpriteFrame::GSpriteFrame(const gm::SpriteFrame& frame) : _frame(&frame) {
 	updateVertices();
 }
 
-void GSpriteFrame::setFrame(const Undertale::SpriteFrame& frame) {
-	_frame = frame;
+void GSpriteFrame::setFrame(const gm::SpriteFrame& frame) {
+	_frame = &frame;
 	updateVertices();
 }
 
@@ -184,12 +177,12 @@ void GSpriteFrame::insertIntoVertexList(std::vector<sf::Vertex>& list, sf::Primi
 	}
 	else throw std::exception("Bad type to insert");
 }
-
+#if 0
 
 void GSprite::setUndertaleSprite(int index) {
 	if (index == -1) {
-		_sprite = Undertale::Sprite();
-		setFrame(Undertale::SpriteFrame());
+		_sprite = gm::Sprite();
+		setFrame(gm::SpriteFrame());
 	}
 	else {
 		_sprite = GetUndertale().LookupSprite(index);
@@ -205,3 +198,4 @@ void GSprite::setImageIndex(int index) {
 }
 
 
+#endif

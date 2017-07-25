@@ -953,13 +953,14 @@ namespace gm {
 		bool mask() const { return _raw->mask != 0; }
 		bool physics_enabled() const { return _raw->physics_enabled != 0; }
 	};
-
+	using SpriteFrame = raw_type::SpriteFrame;
 	class Sprite : public Resource<raw_type::Sprite, ChunkType::SPRT>, public XMLResourceExportInterface {
 		const uint8_t* _masks;
 		// kind of a hack.  First number is an int of the size, after that
 		// its just an array of masks, not sure why there would be more than
 		// one though
 	public:
+		Sprite() = default;
 		Sprite(int index, const uint8_t* data, uint32_t offset) :
 			Resource(index, data, offset) {
 			size_t frames = util::cast<uint32_t>(_raw->ptr_end());

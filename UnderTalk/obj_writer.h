@@ -85,7 +85,7 @@ private:
 		int spacing;
 		int vspacing;
 	};
-	class GlyphUpdater : public Ref, public SpriteVertices{
+	class GlyphUpdater :  public SpriteVertices{
 		float _shake;
 		sf::Vector2f _home;
 	public:

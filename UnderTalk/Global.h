@@ -19,6 +19,7 @@
 #include <unordered_set>
 #include <entityplus/event.h>
 #include <typeinfo>
+#include <gm_lib.h>
 
 using input_manager_type = entityplus::event_manager<sf::Event::KeyEvent, sf::Event::MouseButtonEvent, sf::Event::MouseMoveEvent, sf::Event::MouseWheelEvent>;
 input_manager_type& input_manager();

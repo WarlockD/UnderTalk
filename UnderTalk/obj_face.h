@@ -14,6 +14,7 @@ class obj_face  : public sf::Drawable {
 
 public:
 	obj_face(ManagerType& manager;
+	~obj_face();
 	size_t getFace() { return _face; }
 	virtual size_t getEmotion() const { return _emotion;  }
 	bool hasFace() const { return _face != 0; }

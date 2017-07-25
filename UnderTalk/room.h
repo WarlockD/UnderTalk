@@ -3,13 +3,47 @@
 
 #include "enitys.h"
 
+class RoomSprite : public GSprite, public sf::Drawable, public sf::Transformable {
+	bool _visible;
+	float _depth;
+public:
+	RoomSprite() : _visible(true), _depth(0.0f) {}
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
+		if (_visible && valid()) {
+			states.texture = getTexture().get();
+			states.transform *= getTransform();
+			target.draw(getVertices(), getVerticesCount(), getVerticesType(), states);
+		}
+	} 
+	void setVisible(bool v) { _visible = v; }
+	bool getVisible() const { return _visible; }
+	void setDepth(float depth) { _depth = depth; }
+	float getDepth() const {return _depth; }
+	bool operator<(const RoomSprite& r) const { return r._depth < _depth; )
+};
 
 
+class RoomObject : public  sf::Drawable, public sf::Transformable {
+	Room& _room;
+	gm::Object _object;
+	std::vector<RoomSprite> _sprites;
+public:
+	RoomObject(Room& room) : _room(room) {}
+	void setObject(gm::Object obj) { _object = obj; }
+	const gm::Object& getObject() const { return _object; }
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
+		if (!_sprites.empty()) {
+			states.transform *= getTransform();
+			for (const auto& a : _sprites) a.draw(target, states);
+		}
+	}
+
+};
 
 
 class Room  : public sf::Drawable {
 	friend class RoomObject;
-
+	gm::UndertaleFile& _file;
 	ManagerType _manager;
 	// helper for simple game maker objects
 	
@@ -18,10 +52,10 @@ class Room  : public sf::Drawable {
 	float _speed;
 	TileMap _tiles;
 	Undertale::Room _room;
-	std::vector<entity_t> _enitys; // sorted list
-	std::unordered_multimap<int, entity_t> _enitys;
+	std::vector<std::unique_ptr<RoomObject>> _enitys; // sorted list
+	std::unordered_multimap<int, std::reference_wrapper<RoomObject>> _enitys;
 public:
-	Room() : _view(sf::FloatRect(0.0f, 0.0f, 640.0f, 480.0f)) {}
+	Room(gm::UndertaleFile& file) : _file(file), _view(sf::FloatRect(0.0f, 0.0f, 640.0f, 480.0f)) {}
 	void step(float dt);
 	sf::View& getView() { return _view; }
 	const sf::View& getView() const { return _view; }

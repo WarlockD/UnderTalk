@@ -53,22 +53,21 @@ public:
 
 class GSpriteFrame  {
 protected:
+	const gm::SpriteFrame* _frame; // to save space this could just be a pointer
 	sf::Vertex  _vertices[4]; ///< Vertices defining the sprite's geometry, should we use quads?
-	SharedTexture _texture;
+	std::shared_ptr<sf::Texture> _texture;
 	sf::IntRect _texRect;
 	sf::Vector2u _size;
 	sf::Vector2u _origin;
-	Undertale::SpriteFrame _frame;
-	void updateVertices();
+
+	void updateVertices(gm::DataWinFile& file);
 public:
-	GSpriteFrame()  {} // invalid state
-	GSpriteFrame(const Undertale::SpriteFrame& frame);
-	GSpriteFrame(Undertale::SpriteFrame&& frame);
+	GSpriteFrame() : _frame(nullptr) {}
+	GSpriteFrame(const gm::SpriteFrame& frame);
 	void insertIntoVertexList(sf::VertexArray& list) const;
 	void insertIntoVertexList(std::vector<sf::Vertex>& list, sf::PrimitiveType type) const;
-	void setFrame(const Undertale::SpriteFrame& frame);
-	void setFrame(Undertale::SpriteFrame&& frame);
-	const Undertale::SpriteFrame& getFrame() const { return _frame; }
+	void setFrame(const gm::SpriteFrame& frame);
+	const gm::SpriteFrame& getFrame() const { return *_frame; }
 	
 	const sf::IntRect& getTextureRect() const { return _texRect; }
 	SharedTexture getTexture() const { return _texture;  }
@@ -77,27 +76,40 @@ public:
 	const sf::Vertex* getVertices() const { return _vertices; }
 	const size_t getVerticesCount() const { return 4; }
 	const sf::PrimitiveType getVerticesType() const { return sf::TriangleStrip; }
+	bool valid() const { return _frame != nullptr && _texture; }
 };
 
 
 class GSprite :  public GSpriteFrame {
 protected:
-	Undertale::Sprite _sprite;
+	gm::Sprite _sprite;
 	size_t _image_index;
 public:
 	GSprite() : GSpriteFrame(), _image_index(0) {}
-	GSprite(int sprite_index) : _image_index(0) { setUndertaleSprite(sprite_index); }
-	GSprite(int sprite_index, int image_index): _image_index(image_index) { setUndertaleSprite(sprite_index);  }
-	GSprite(const std::string& name, int image_index = 0) : _image_index(0) { setUndertaleSprite(name);  }
-	void setUndertaleSprite(int index);
-	void setUndertaleSprite(const std::string& name);
-	const Undertale::Sprite& getUndertaleSprite() const { return _sprite; }
+	GSprite(gm::DataWinFile& file, int sprite_index) : _image_index(0) { setUndertaleSprite(file,sprite_index); }
+	GSprite(gm::DataWinFile& file, int sprite_index, int image_index): _image_index(image_index) { setUndertaleSprite(file,sprite_index);  }
+	GSprite(gm::DataWinFile& file, const std::string& name, int image_index = 0) : _image_index(0) { setUndertaleSprite(file,name);  }
+	void setUndertaleSprite(gm::DataWinFile& file, int index) {
+		if (index == -1) {
+			_sprite = gm::Sprite();
+			setFrame(gm::SpriteFrame());
+		}
+		else {
+			_sprite = file.resource_at<gm::Sprite>(index);
+			setImageIndex(0);
+		}
+	}
+	void setUndertaleSprite(gm::DataWinFile& file, const std::string& name) {
+		assert(0);
+		// not supported yet
+	}
+	const gm::Sprite& getUndertaleSprite() const { return _sprite; }
 
 	sf::Vector2f getLocalSize() const { return sf::Vector2f((float)_sprite.width(), (float)_sprite.height()); }
 	sf::FloatRect getLocalBounds() const { return sf::FloatRect((float)_sprite.left(), (float)_sprite.top(), (float)_sprite.left() - (float)_sprite.right(), (float)_sprite.bottom() - (float)_sprite.top()); }
 	size_t getImageCount() const { return _sprite.frames().size(); }
 	void setImageIndex(int index);
-	const char* getName() const { return _sprite.name().c_str(); }
+	const gm::StringView& getName() const { return _sprite.name(); }
 	uint32_t getIndex() const { return _sprite.index(); }
 	size_t getImageIndex() const { return _image_index; }
 	bool valid() const { return _sprite.valid(); }
