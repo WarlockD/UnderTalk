@@ -48,6 +48,9 @@
     <ClCompile Include="console.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="enity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Effect.hpp">
@@ -87,6 +90,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="list.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tailq.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="enitys.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

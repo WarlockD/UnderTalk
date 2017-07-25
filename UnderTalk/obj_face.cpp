@@ -147,27 +147,37 @@ void obj_face::setEmotion(size_t e) {
 	}
 }
 
+obj_face::obj_face(ManagerType& manager) :_manager(manager), _face(0), _emotion(0), _time(0.0) {  
+
+}
 void obj_face::setFace(size_t c) { 
 	if (c != _face) {
-		removeAllChildren();
+
 		_face = c;
-		if (c == 0) return; // done
-		setDepth(0);
+		if (c == 0){
+			if (_faceSprites[0].get_status() == entityplus::entity_status::OK) {
+				_faceSprites[0].destroy();
+			}
+			return; // done
+		}
+		if (_faceSprites[0].get_status() != entityplus::entity_status::OK)
+			_faceSprites[0] = _manager.create_entity<sf::Transformable, SpriteComponent>();
+		auto& body = _faceSprites[0].get_component<SpriteComponent>();
+		auto& position = _faceSprites[0].get_component<sf::Transformable>();
 		sf::Vector2f pos;
+		int face_sprite;
 		switch (_face) {
 		case 1: // obj_face_torieltalk
 		{
 			pos = Vector2f(-33.0f, 25.0f);
-			SpriteNode* tor_body = new SpriteNode();
-			tor_body->setUndertaleSprite(1985);
-			tor_body->setTag(1985); // body
-			tor_body->setDepth(-100); // under
-			addChild(tor_body);
-			
+			face_sprite = 1985;
+		//	tor_body.setTag(1985); // body
+		//	tor_body.setDepth(-100); // under
+			// we have to do the face and glasses too but right now just this
 		//	obj->setPosition()
 		//	instance_create(getPosition().x, 0.0f, 785, 1985); 
 		//	Vector2f center(Vector2f(getPosition().x, 0.0f) + (obj->getSize() * 0.5f));
-
+#if 0
 			// do we really ant to create her body here? humm
 			if (_emotion == 99) { // glasses
 				SpriteNode* tor_glasses = new SpriteNode();
@@ -181,6 +191,7 @@ void obj_face::setFace(size_t c) {
 			//	Vector2f center(Vector2f(getPosition().x, 0.0f) + (obj->getSize() * 0.5f));
 			//	obj->setDepth(101);
 			}
+#endif
 		}
 		break;
 
@@ -212,6 +223,8 @@ void obj_face::setFace(size_t c) {
 		// not sure if we should set the position or the origin here humm
 		// really need some kind of  parent system at some point
 	//	_face.setPosition(pos);
+		body.setUndertaleSprite(face_sprite);
+		position.setPosition(pos);
 		int e = _emotion;
 		_emotion = -1; // force update of emotion
 		setEmotion(e);

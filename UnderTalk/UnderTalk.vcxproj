@@ -22,7 +22,7 @@
     <ProjectGuid>{FFCF06B8-6D3A-4CEC-A281-AE35903766C1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>UnderTalk</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -73,22 +73,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\UndertaleLib;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\include\SFML\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\UndertaleLib;$(SolutionDir)SFML\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)SFML\extlibs\libs-msvc-universal\x86;$(SolutionDir)SFML_Build\lib\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\UndertaleLib;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\libs;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)SFML\extlibs\libs-msvc\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\UndertaleLib;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\include\SFML\libs;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)SFML\extlibs\libs-msvc\x86;$(SolutionDir)SFML_Build\lib\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(ProjectDir)..\libs;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)SFML\extlibs\libs-msvc\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -98,14 +98,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;SFML_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>winmm.lib;opengl32.lib;$(ProjectDir)..\libs\openal32.lib;$(ProjectDir)..\libs\vorbisenc.lib;$(ProjectDir)..\libs\vorbisfile.lib;$(ProjectDir)..\libs\vorbis.lib;$(ProjectDir)..\libs\ogg.lib;$(ProjectDir)..\libs\flac.lib;$(ProjectDir)..\libs\freetype.lib;$(ProjectDir)..\libs\jpeg.lib;$(ProjectDir)..\libs\sfml-audio-s-d.lib;$(ProjectDir)..\libs\sfml-graphics-s-d.lib;$(ProjectDir)..\libs\sfml-window-s-d.lib;$(ProjectDir)..\libs\sfml-system-s-d.lib;$(ProjectDir)..\libs\sfml-network-s-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>
       </OptimizeReferences>
     </Link>
@@ -137,13 +137,14 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;SFML_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(ProjectDir)..\libs\openal32.lib;$(ProjectDir)..\libs\vorbisenc.lib;$(ProjectDir)..\libs\vorbisfile.lib;$(ProjectDir)..\libs\vorbis.lib;$(ProjectDir)..\libs\ogg.lib;$(ProjectDir)..\libs\flac.lib;$(ProjectDir)..\libs\freetype.lib;$(ProjectDir)..\libs\jpeg.lib;winmm.lib;opengl32.lib;$(ProjectDir)..\libs\sfml-audio-s.lib;$(ProjectDir)..\libs\sfml-graphics-s.lib;$(ProjectDir)..\libs\sfml-window-s.lib;$(ProjectDir)..\libs\sfml-system-s.lib;$(ProjectDir)..\libs\sfml-network-s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -165,6 +166,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="console.cpp" />
+    <ClCompile Include="enity.cpp" />
     <ClCompile Include="gsprites.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="node.cpp" />
@@ -178,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Effect.hpp" />
+    <ClInclude Include="enitys.h" />
     <ClInclude Include="gBatchSprite.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="gsprites.h" />
@@ -190,10 +193,29 @@
     <ClInclude Include="obj_writer.h" />
     <ClInclude Include="Ref.h" />
     <ClInclude Include="room.h" />
+    <ClInclude Include="tailq.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SFML_Build\src\SFML\Audio\sfml-audio.vcxproj">
+      <Project>{76dc1e12-962d-311f-b581-6b366814a3c4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\SFML_Build\src\SFML\Graphics\sfml-graphics.vcxproj">
+      <Project>{94d65101-3043-3790-bdd1-b8693fa59de5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\SFML_Build\src\SFML\Main\sfml-main.vcxproj">
+      <Project>{2eed7754-8c33-3917-91c3-b3d2503657f3}</Project>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\SFML_Build\src\SFML\System\sfml-system.vcxproj">
+      <Project>{95c17390-471f-3b96-bb93-b13f66d0fc6b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\SFML_Build\src\SFML\Window\sfml-window.vcxproj">
+      <Project>{6f04bed4-e59a-3372-859f-5711b3415e90}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\UndertaleLib\UndertaleLib.vcxproj">
       <Project>{417b25fa-812f-42a3-9b4b-3da6b3fa481f}</Project>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

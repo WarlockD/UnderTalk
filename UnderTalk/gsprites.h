@@ -81,6 +81,7 @@ public:
 
 
 class GSprite :  public GSpriteFrame {
+protected:
 	Undertale::Sprite _sprite;
 	size_t _image_index;
 public:
@@ -99,5 +100,5 @@ public:
 	const char* getName() const { return _sprite.name().c_str(); }
 	uint32_t getIndex() const { return _sprite.index(); }
 	size_t getImageIndex() const { return _image_index; }
+	bool valid() const { return _sprite.valid(); }
 };
-

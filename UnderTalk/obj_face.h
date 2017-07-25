@@ -3,14 +3,17 @@
 #include "room.h"
 #include "gsprites.h"
 
-class obj_face : RoomObject {
+class obj_face  : public sf::Drawable {
+	ManagerType& _manager;
+	entity_t _faceSprites[3];
 	size_t _emotion;
 	size_t _face;
-	SpriteNode _faceSprite; 
+	// special case for torel as we have multipule sprites to overlap
 	float _time;
 	float _last;
+
 public:
-	obj_face() : RoomObject(), _face(0), _emotion(0), _time(0.0) {  }
+	obj_face(ManagerType& manager;
 	size_t getFace() { return _face; }
 	virtual size_t getEmotion() const { return _emotion;  }
 	bool hasFace() const { return _face != 0; }

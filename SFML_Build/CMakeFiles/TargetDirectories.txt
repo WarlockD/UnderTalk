@@ -1,0 +1,16 @@
+D:/Documents/GitHub/UnderTalk/SFML_Build/CMakeFiles/INSTALL.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/CMakeFiles/ALL_BUILD.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/CMakeFiles/ZERO_CHECK.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/CMakeFiles/INSTALL.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/System/CMakeFiles/sfml-system.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/System/CMakeFiles/INSTALL.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Main/CMakeFiles/INSTALL.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Main/CMakeFiles/sfml-main.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Window/CMakeFiles/sfml-window.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Window/CMakeFiles/INSTALL.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Network/CMakeFiles/sfml-network.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Network/CMakeFiles/INSTALL.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Graphics/CMakeFiles/sfml-graphics.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Graphics/CMakeFiles/INSTALL.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Audio/CMakeFiles/sfml-audio.dir
+D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Audio/CMakeFiles/INSTALL.dir

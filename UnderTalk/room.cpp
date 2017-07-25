@@ -3,53 +3,25 @@ using namespace sf;
 
 
 
-void SpriteNode::setUndertaleSprite(int index) {
-	if (index == -1) {
-		_sprite = Undertale::Sprite();
-		setFrame(Undertale::SpriteFrame());
-	}
-	else {
-		_sprite = GetUndertale().LookupSprite(index);
-		setImageIndex(0);
-	}
-}
-void SpriteNode::setUndertaleSprite(const std::string& name) {
-	assert(false);
-}
-void SpriteNode::setImageIndex(int index) {
-	if (_sprite.valid()) {
-		_image_index = std::abs(index % (int)getImageCount());
-		setFrame(_sprite.frames().at(_image_index));
-	}
+
+entity_t instance_create(float x, float y, int index) {
+
 }
 
-void SpriteNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	if (_sprite.valid()) {
-		states.texture = getTexture().get();
-		states.transform *= getTransform();
-		target.draw(getVertices(), getVerticesCount(), getVerticesType(), states);
-	}
-}
-
-void Node::bodyStep(float dt) {
-	sf::Vector2f pos = getNextPosition(dt);
-	if (_gravity != 0.0f) _velocityVector += _gravityVector * dt;// velocity += timestep * acceleration;	
-}
-RoomObject::RoomObject() : Node(), _visiable(false), _current_frame(0.0f), _image_speed(0.0f) {}
-RoomObject* Room::instance_create(float x, float y, int index) {
-	RoomObject* obj = new RoomObject(); // auto adds to the child system
-	obj->setParent(this);
-	obj->setPosition(x, y);
-	obj->setTag(index); // index is the tag
-	return obj;
-}
 void Room::loadRoom(int index) {
 	_room = GetUndertale().LookupRoom(index);
 	if (_room.valid()) {
 		_tiles.loadRoom(_room);
 	}
 }
-void RoomObject::step(float dt)  {
+void Room::step(float dt)  {
+#if 0
+	_manager.for_each<PositionComponent,VelocityComponent>([](auto ent, auto &id) {
+		
+		std::cout << id.name_ << "\n";
+	});
+
+
 	bodyStep(dt);
 	_current_frame += _image_speed;
 	if ((std::abs(_current_frame) + 0.01f) >= 1.0f) { // we add some flub there
@@ -58,6 +30,7 @@ void RoomObject::step(float dt)  {
 	}
 
 	Node::step(dt);
+#endif
 }
 void RoomObject::draw(sf::RenderTarget& target, sf::RenderStates states) const  {
 	if (_sprite.getUndertaleSprite().valid()) {

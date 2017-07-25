@@ -12,6 +12,19 @@
 #include <map>
 #include <random>
 #include <UndertaleLib.h>
+#include <unordered_map>
+#include <mutex>
+#include <atomic>
+#include <unordered_map>
+#include <unordered_set>
+#include <entityplus/event.h>
+#include <typeinfo>
+
+using input_manager_type = entityplus::event_manager<sf::Event::KeyEvent, sf::Event::MouseButtonEvent, sf::Event::MouseMoveEvent, sf::Event::MouseWheelEvent>;
+input_manager_type& input_manager();
+
+
+
 
 // interfaces used when you need to run before or after the main step
 inline float lengthdir_x(float len, float dir) {

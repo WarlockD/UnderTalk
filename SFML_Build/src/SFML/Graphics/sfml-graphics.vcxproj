@@ -1,0 +1,351 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{94D65101-3043-3790-BDD1-B8693FA59DE5}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>sfml-graphics</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\lib\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">sfml-graphics.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">sfml-graphics-s-d</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\lib\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">sfml-graphics.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">sfml-graphics-s</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\lib\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">sfml-graphics.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">sfml-graphics-s</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\lib\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">sfml-graphics.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">sfml-graphics-s</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\stb_image;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\jpeg;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;STBI_FAILURE_USERMSG;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:\Documents\GitHub\UnderTalk\SFML_Build\lib\Debug\sfml-graphics-s.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;STBI_FAILURE_USERMSG;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\stb_image;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\jpeg;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\stb_image;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\jpeg;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\stb_image;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\jpeg;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;STBI_FAILURE_USERMSG;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat></DebugInformationFormat>
+      <ProgramDataBaseFileName>D:\Documents\GitHub\UnderTalk\SFML_Build\lib\Release\sfml-graphics-s.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;STBI_FAILURE_USERMSG;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\stb_image;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\jpeg;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\stb_image;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\jpeg;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\stb_image;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\jpeg;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;STBI_FAILURE_USERMSG;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat></DebugInformationFormat>
+      <ProgramDataBaseFileName>D:\Documents\GitHub\UnderTalk\SFML_Build\lib\MinSizeRel\sfml-graphics-s.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;STBI_FAILURE_USERMSG;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\stb_image;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\jpeg;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\stb_image;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\jpeg;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\stb_image;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\jpeg;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;STBI_FAILURE_USERMSG;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:\Documents\GitHub\UnderTalk\SFML_Build\lib\RelWithDebInfo\sfml-graphics-s.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;STBI_FAILURE_USERMSG;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\stb_image;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\jpeg;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\stb_image;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\jpeg;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Graphics/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Documents/GitHub/UnderTalk/SFML -BD:/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Graphics/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Graphics/CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.9\Modules\FindOpenGL.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindJPEG.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindFreetype.cmake;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Graphics\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Graphics/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Documents/GitHub/UnderTalk/SFML -BD:/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Graphics/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Graphics/CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.9\Modules\FindOpenGL.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindJPEG.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindFreetype.cmake;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Graphics\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Graphics/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Documents/GitHub/UnderTalk/SFML -BD:/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Graphics/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Graphics/CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.9\Modules\FindOpenGL.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindJPEG.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindFreetype.cmake;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Graphics\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Graphics/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Documents/GitHub/UnderTalk/SFML -BD:/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Graphics/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Graphics/CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.9\Modules\FindOpenGL.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindJPEG.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindFreetype.cmake;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Graphics\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\BlendMode.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\BlendMode.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\Color.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Color.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Export.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\Font.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Font.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\Glsl.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Glsl.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Glsl.inl" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Glyph.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\GLCheck.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\GLCheck.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\GLExtensions.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\GLExtensions.cpp"  />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\Image.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Image.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\ImageLoader.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\ImageLoader.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\PrimitiveType.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Rect.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Rect.inl" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\RenderStates.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\RenderStates.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\RenderTexture.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\RenderTexture.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\RenderTarget.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\RenderTarget.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\RenderWindow.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\RenderWindow.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\Shader.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Shader.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\Texture.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Texture.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\TextureSaver.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\TextureSaver.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\Transform.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Transform.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\Transformable.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Transformable.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\View.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\View.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\Vertex.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Vertex.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\GLLoader.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\GLLoader.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Drawable.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\Shape.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Shape.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\CircleShape.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\CircleShape.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\RectangleShape.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\RectangleShape.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\ConvexShape.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\ConvexShape.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\Sprite.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Sprite.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\Text.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\Text.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\VertexArray.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Graphics\VertexArray.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\RenderTextureImpl.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\RenderTextureImpl.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\RenderTextureImplFBO.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\RenderTextureImplFBO.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\RenderTextureImplDefault.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Graphics\RenderTextureImplDefault.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\Documents\GitHub\UnderTalk\SFML_Build\ZERO_CHECK.vcxproj">
+      <Project>{6C003EA7-0ACB-31E8-A5EE-3974C1700422}</Project>
+      <Name>ZERO_CHECK</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\System\sfml-system.vcxproj">
+      <Project>{95C17390-471F-3B96-BB93-B13F66D0FC6B}</Project>
+      <Name>sfml-system</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Window\sfml-window.vcxproj">
+      <Project>{6F04BED4-E59A-3372-859F-5711B3415E90}</Project>
+      <Name>sfml-window</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

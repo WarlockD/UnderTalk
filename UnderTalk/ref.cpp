@@ -2,19 +2,22 @@
 #include "Global.h"
 #include <type_traits>
 #include <cassert>
+#include <mutex>
+
+
 
 void Ref::retain() { 
-	assert(_refCount > 0); ++_refCount; }
+	++_refCount;
+}
 void Ref::release() { 
 	assert(_refCount > 0);
-	--_refCount; 
+	
 	auto poolManager = PoolManager::getInstance();
 	if (poolManager->isObjectInPools(this))
 	{
 		assert(false);
 	}
-
-	if (_refCount == 0) delete this; 
+	if (_refCount.fetch_sub(1) == 1) delete this;
 }
 
 Ref* Ref::autorelease() {
@@ -29,6 +32,7 @@ AutoreleasePool::AutoreleasePool()
 	, _isClearing(false)
 #endif
 {
+	std::lock_guard<std::mutex> lock(_mutex);
 	_managedObjectArray.reserve(150);
 	PoolManager::getInstance()->push(this);
 }
@@ -39,6 +43,7 @@ AutoreleasePool::AutoreleasePool(const std::string &name)
 	, _isClearing(false)
 #endif
 {
+	std::lock_guard<std::mutex> lock(_mutex);
 	_managedObjectArray.reserve(150);
 	PoolManager::getInstance()->push(this);
 }
@@ -53,23 +58,34 @@ AutoreleasePool::~AutoreleasePool()
 
 void AutoreleasePool::addObject(Ref* object)
 {
+	std::lock_guard<std::mutex> lock(_mutex);
+#ifdef	USING_VECTOR_FOR_POOL
 	_managedObjectArray.push_back(object);
+#else
+	_managedObjectArray.emplace(object);
+#endif
 }
 
 void AutoreleasePool::clear()
 {
-
-	std::vector<Ref*> releasings;
+	std::lock_guard<std::mutex> lock(_mutex);
+	decltype(_managedObjectArray) releasings;
 	releasings.swap(_managedObjectArray);
-	for (const auto &obj : releasings)obj->release();
+	for (const auto &obj : releasings) obj->release();
 }
 
 bool AutoreleasePool::contains(Ref* object) const
 {
+#ifdef	USING_VECTOR_FOR_POOL
 	for (const auto& obj : _managedObjectArray)
 	{
 		if (obj == object) return true;
 	}
+	_managedObjectArray.push_back(object);
+#else
+	auto it = _managedObjectArray.find(object);
+	if (it != _managedObjectArray.end()) return true;
+#endif
 	return false;
 }
 
@@ -92,20 +108,24 @@ void AutoreleasePool::dump()
 //--------------------------------------------------------------------
 
 PoolManager* PoolManager::s_singleInstance = nullptr;
-
+static std::mutex pool_mutex;
 PoolManager* PoolManager::getInstance()
 {
 	if (s_singleInstance == nullptr)
 	{
-		s_singleInstance = new (std::nothrow) PoolManager();
-		// Add the first auto release pool
-		new AutoreleasePool("cocos2d autorelease pool");
+		std::lock_guard<std::mutex> lock(pool_mutex);
+		if (s_singleInstance == nullptr) {
+			s_singleInstance = new (std::nothrow) PoolManager();
+			// Add the first auto release pool
+			new AutoreleasePool("cocos2d autorelease pool");
+		}
 	}
 	return s_singleInstance;
 }
 
 void PoolManager::destroyInstance()
 {
+	std::lock_guard<std::mutex> lock(pool_mutex);
 	delete s_singleInstance;
 	s_singleInstance = nullptr;
 }
@@ -118,13 +138,7 @@ PoolManager::PoolManager()
 PoolManager::~PoolManager()
 {
 	//CCLOGINFO("deallocing PoolManager: %p", this);
-
-	while (!_releasePoolStack.empty())
-	{
-		AutoreleasePool* pool = _releasePoolStack.back();
-
-		delete pool;
-	}
+	_releasePoolStack.clear();
 }
 
 
@@ -135,8 +149,8 @@ AutoreleasePool* PoolManager::getCurrentPool() const
 
 bool PoolManager::isObjectInPools(Ref* obj) const
 {
-	for (const auto& pool : _releasePoolStack)
-	{
+	std::lock_guard<std::mutex> lock(pool_mutex);
+	for (const auto& pool : _releasePoolStack) {
 		if (pool->contains(obj))
 			return true;
 	}
@@ -145,11 +159,13 @@ bool PoolManager::isObjectInPools(Ref* obj) const
 
 void PoolManager::push(AutoreleasePool *pool)
 {
+	std::lock_guard<std::mutex> lock(pool_mutex);
 	_releasePoolStack.push_back(pool);
 }
 
 void PoolManager::pop()
 {
+	std::lock_guard<std::mutex> lock(pool_mutex);
 	assert(!_releasePoolStack.empty());
 	_releasePoolStack.pop_back();
 }

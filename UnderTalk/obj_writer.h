@@ -60,7 +60,7 @@ public:
 	size_t charCount() const { return _charCount; }
 };
 
-class OBJ_WRITER : public RoomObject {
+class OBJ_WRITER : public RoomObject, public NodeEvent<sf::Event> {
 public:
 	typedef std::function<int(OBJ_WRITER&, int)> HaltDelegate;
 
@@ -110,6 +110,7 @@ private:
 	const std::map<int, sf::Glyph>* _fontGlyphs;
 	const sf::Texture* _fontTexture;
 	HaltDelegate _haltdel;
+	entityplus::subscriber_handle<sf::Event::KeyEvent> handle;
 public:
 	void setHaltDelegate(HaltDelegate func) { _haltdel = func; }
 
@@ -117,6 +118,39 @@ public:
 	OBJ_WRITER() : RoomObject(), _fontTexture(nullptr), _size(0), _stringno(0), _halt(0), _fontGlyphs(nullptr) , _glyphVertices(sf::PrimitiveType::TrianglesStrip){ 
 		SetTextType(0); 
 		_glyphVertices.reserve(6 * 200); // shouldn't need more than this?
+
+
+	}
+	bool event(const sf::Event& e) {
+		if (sf::Event::KeyPressed == e.type) {
+			switch (_halt) {
+			case 1:
+				/*
+				self.myletter = " ";
+				self.stringpos = 1;
+				self.stringno++;
+				self.originalstring = self.mystring[self.stringno];
+				self.myx = self.writingx;
+				self.myy = self.writingy;
+				self.lineno = 0;
+				self.halt = 0;
+				self.alarm[0] = self.textspeed;
+				*/
+				return false;
+			case 2:
+				removeSelf();
+				return false;
+			case 4:
+#if 0
+				global.myfight = 0;
+				global.mnfight = 1;
+				keyboard_clear(13/* ENTER */);
+				instance_destroy();
+#endif
+				return false;
+			}
+		}
+		return false;
 	}
 	void AddText(const std::string& text) { _lines.push_back(text);  }
 	void Reset() {
@@ -140,3 +174,41 @@ public:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
+class obj_dialoguer : public RoomObject, public NodeEvent<sf::Event> {
+	int _count;
+	int _side;
+	sf::Vector2f _pos;
+public:
+	obj_dialoguer() {}
+	void on_create() {
+		Room* room = getRoom();
+		//room->instance_create(10, 150);
+
+
+	}
+#if 0
+	self.count = 0;
+	self.side = 0;
+	global.facechange = 1;
+	self.xx = self.view_xview[self.view_current];
+	self.yy = self.view_yview[self.view_current];
+	if (instance_exists(1570/* obj_mainchara */)) {
+		if (obj_mainchara.y > self.yy + 130) {
+			self.side = 0;
+			if (global.facechoice != 0) {
+				self.writer = instance_create(self.xx + 68, self.yy - 5, 782/* OBJ_WRITER */);
+				script_execute(144/* scr_facechoice */);
+			}
+			else  self.writer = instance_create(self.xx + 10, self.yy - 5, 782/* OBJ_WRITER */);
+		}
+		else {
+			self.side = 1;
+			if (global.facechoice != 0) {
+				self.writer = instance_create(self.xx + 68, self.yy + 150, 782/* OBJ_WRITER */);
+				script_execute(144/* scr_facechoice */);
+			}
+			else  self.writer = instance_create(self.xx + 10, self.yy + 150, 782/* OBJ_WRITER */);
+		}
+
+#endif
+};

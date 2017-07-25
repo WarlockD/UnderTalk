@@ -6,6 +6,7 @@
 #include "obj_vaporized_new.h"
 #include "room.h"
 
+
 void windowLoop() {
 #if 0
 	sf::Font debugFont;
@@ -18,8 +19,8 @@ void windowLoop() {
 	sf::View battleView;
 	battleView.reset(sf::FloatRect(0, 0, 640, 480));
 
-	sf::View overLand;
-	overLand.reset(sf::FloatRect(0, 0, 320, 240));
+	sf::View overLand(sf::FloatRect(0, 0, 320, 240));
+
 
 	//sf::Text fpsText;
 //	fpsText.setFont(debugFont);
@@ -38,36 +39,52 @@ void windowLoop() {
 //	obj_vaporized_new vtest(num, false);
 	//vtest.setPosition(100, 100);
 	//vtest.setScale(2.0f, 2.0f);
-	OBJ_WRITER writer;
+	OBJ_WRITER& writer = *testRoom.createChild<OBJ_WRITER>();
+	
 	writer.DebugSetFace(1, 99);
-	writer.AddText("*This is a \\Ytest\\W&* and another \\z%%");
+	///global.msc = 0;
+//	global.typer = 5;
+//	global.facechoice = 0;
+//	global.faceemotion = 0;
+	//writer.setTy
+	writer.SetTextType(5);
+	writer.AddText("* (It\'s a carefully decorated&  tree.)/");
+	writer.AddText("* (Some of the presents are&  addressed from \"Santa\" to&  various locals.)/%%");
+	//writer.AddText("*This is a \\Ytest\\W&* and another \\z%%");
 	writer.setPosition(100, 100);
 	writer.Reset();
-	testRoom.addChild(&writer);
+	//testRoom.addChild(&writer);
 	// Start the game loop
 	sf::Clock clock;
 	// Create the main window
 	sf::RenderWindow window(sf::VideoMode(800, 600), "UnderTalk", sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderTexture render_texture;
+	assert(render_texture.create(640, 480));
 	window.setVerticalSyncEnabled(true);
-
+	sf::View temp = render_texture.getView();
+	temp.zoom(4.0f);
+	render_texture.setView(temp);
+	//window.setViewPort
 	while (window.isOpen())
 	{
 		// Process events
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-			// Close window: exit
-			if (event.type == sf::Event::Closed)
+			switch (event.type) {
+			case sf::Event::Closed:
 				window.close();
-
-			if (event.type == sf::Event::KeyPressed)
-			{
+				printf("window closed done\r\n");
+				return; // all done
+			case sf::Event::KeyPressed:
+				if (NodeEvent<sf::Event>::brodcast(event)) break;
 				switch (event.key.code)
 				{
 					// Escape key: exit
 				case sf::Keyboard::Escape:
 					window.close();
 
+					continue;
 					break;
 				case sf::Keyboard::D:
 					room_num++;
@@ -79,21 +96,31 @@ void windowLoop() {
 					break;
 
 				case sf::Keyboard::Q:
-				//	vtest.debugStart();
+					//	vtest.debugStart();
 					break;
 
 				case sf::Keyboard::Right:
-				//	vtest.move(5.0f, 0.0f);
+					//	vtest.move(5.0f, 0.0f);
 					break;
 				case sf::Keyboard::Num1:
 					num++;
-				//	vtest.setPixels(num, false);
+					//	vtest.setPixels(num, false);
 					break;
 				case sf::Keyboard::Num2:
 					num++;
-				//	vtest.setPixels(test_head, false);
+					//	vtest.setPixels(test_head, false);
 					break;
 				}
+				break;
+			case sf::Event::KeyReleased:
+				NodeEvent<sf::Event>::brodcast(event); break;
+			case sf::Event::MouseButtonPressed:
+				NodeEvent<sf::Event>::brodcast(event); break;
+			case sf::Event::MouseButtonReleased:
+				NodeEvent<sf::Event>::brodcast(event); break;
+			case sf::Event::MouseMoved:
+				NodeEvent<sf::Event>::brodcast(event); break;
+
 			}
 		}
 		float current = clock.getElapsedTime().asSeconds();
@@ -103,29 +130,33 @@ void windowLoop() {
 			testRoom.step(elapsed);
 			//vtest.step(elapsed);
 			float ffps = 1.0f / elapsed;
-		//	fpsText.setString(std::to_string(std::floorf(ffps)));
+			//	fpsText.setString(std::to_string(std::floorf(ffps)));
 		}
+		//window.setView(overLand);
 		// Clear the window
 		window.clear(sf::Color(0, 0, 0));
-
-		window.draw(testRoom);
+		render_texture.clear(sf::Color(0, 0, 0));
+	//	render_texture.setView(window.getView());
+		//render_texture.setView(overLand);
+		render_texture.draw(testRoom);
+		render_texture.display();
+		sf::Sprite sprite(render_texture.getTexture());
+		window.setView(battleView);
+		window.draw(sprite);
+		//window.draw(testRoom);
 		//window.draw(fpsText);
 
 		window.display();
 	}
-	printf("All done\r\n");
-
 }
+
 int main(int argc, const char* argv[])
 {
 	// undertail combat views are in 640x480 but overowrd is in 320 240 fyi
-	ObjectWraper<std::string>* test = new ObjectWraper<std::string>();
-	std::cout << test->hash();
-	sf::View battleView;
-	battleView.reset(sf::FloatRect(0, 0, 640, 480));
+	//String test = "booob!";
 
-	sf::View overLand;
-	overLand.reset(sf::FloatRect(0, 0, 320, 240));
+
+
 
 	//Undertale::UndertaleFile dataWin;
 	if (argc != 2) exit(-1);

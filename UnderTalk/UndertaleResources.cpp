@@ -4,17 +4,7 @@
 #include "gsprites.h"
 #include <cstdarg>
 
-#if _DEBUG
-#pragma comment(lib,"sfml-network-s-d.lib")
-#pragma comment(lib,"sfml-system-s-d.lib")
-#pragma comment(lib,"sfml-window-s-d.lib")
-#pragma comment(lib,"sfml-graphics-s-d.lib")
-#pragma comment(lib,"sfml-audio-s-d.lib")
 
-#else
-
-
-#endif
 
 using json = nlohmann::json;
 

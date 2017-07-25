@@ -172,7 +172,7 @@ private:
   }
 
   void remove (T const* ptr, std::false_type&&) noexcept {
-    if (not ptr) { return; }
+    if ( ptr== nullptr) { return; }
     std::lock_guard<std::mutex> lock { this->mutex };
     this->container.erase(*ptr);
   }

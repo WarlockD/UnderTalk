@@ -21,9 +21,27 @@
     <ClInclude Include="UndertaleLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dsam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gm_lib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UndertaleLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="debug_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="global.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gm_lib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

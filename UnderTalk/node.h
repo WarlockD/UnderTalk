@@ -1,95 +1,101 @@
 #pragma once
 #include "Global.h"
-#include <typeinfo>
-#include "Ref.h"
+
+
 // a hacked implmentation of the node in cocos2d-x
 class Room;
+// super simple event system
 
 
-// All nodes draw, otherwise what would be the point?
-class Node : public Ref , public sf::Drawable , public sf::Transformable {
-	int _tag;
-	int _depth;
+class VelocityComponent {
 	sf::Vector2f _movmentVector;
-	sf::Vector2f _gravityVector;
-	sf::Vector2f _velocityVector;
-	float _gravity;
-	float _gravityDirection;
-	float _direction;
 	float _speed;
-	sf::Vector2f _size;
-	// mabye use above if we want to control the managment of pointers
-//	typedef set_unique_ptr<Ref> t_child;
-	//typedef std::unique_ptr<Ref> t_child;
-	typedef Node* t_child;
-	mutable std::vector<t_child> _children;
-	mutable bool _zOrderDirty;
-	// finds the parent in the chain, if we cannot find it than we are screwed
-	void removeChildHelper(Node* child);
-	void addChildHelper(Node* child);
-	Node* _parent;
+	float _direction;
 public:
-	int getTag() const { return _tag; }
-	void setTag(int tag) { _tag = tag; }
-	int getDepth() const { return _depth; }
-	void setDepth(int depth) { _depth = depth; }
+	VelocityComponent() : _movmentVector(), _speed(0.0f) {}
 	void setDirection(float d) { _movmentVector = CreateMovementVector(_direction = d, _speed); }
 	void setSpeed(float s) { _movmentVector = CreateMovementVector(_direction, _speed = s); }
-	void setGravityDirection(float d) { _gravityVector = CreateMovementVector(_direction = d, _gravity);  _velocityVector = sf::Vector2f(); }
-	void setGravity(float s) { _gravityVector = CreateMovementVector(_direction, _gravity = s); _velocityVector = sf::Vector2f(); }
-	float getGravity() const { return _gravity; }
+	void resetMovment() { _speed = 0.0f; _movmentVector = sf::Vector2f(); }
 	float getSpeed() const { return _speed; }
-
-	const sf::Vector2f& getMovement() const { return _movmentVector; }
-	sf::Vector2f& getMovement() { return _movmentVector; }
-	const sf::Vector2f& getVelocity() const { return _velocityVector; }
-	sf::Vector2f& getVelocity() { return _velocityVector; }
-	const sf::Vector2f& getSize() const { return _size; }
-	void setSize(const sf::Vector2f& size) { _size = size; }
-
-	const sf::Vector2f getNextPosition(float dt) const {
-		sf::Vector2f pos = getPosition();
-		pos += _movmentVector  * dt; // add the movment vector first
-		pos += _velocityVector  * dt; // add the gravity acceration
-		return pos;
+	float getDirection() const { return _direction; }
+	const sf::Vector2f& getMovementVector() const { return _movmentVector; }
+	inline  sf::Vector2f getNextVector(sf::Vector2f position, float delta_time) const {
+		position += _movmentVector  * delta_time; // add the movment vector first
+		return position;
 	}
-	void bodyStep(float dt);
+};
+
+class GravityComponent {
+	sf::Vector2f _gravityVelocityVector;
+	sf::Vector2f _gravityVector;
+	float _gravity;
+	float _gravityDirection;
 public:
+	GravityComponent() : _gravityVelocityVector(), _gravityVector(), _gravity(0.0f), _gravityDirection(0.0f) {}
+	void setGravityDirection(float d) { _gravityVector = CreateMovementVector(_gravityDirection = d, _gravity);  _gravityVelocityVector = sf::Vector2f(); }
+	void setGravity(float s) { _gravityVector = CreateMovementVector(_gravityDirection, _gravity = s); _gravityVelocityVector = sf::Vector2f(); }
+	float getGravity() const { return _gravity; }
+	float getGravityDirection() const { return _gravityDirection; }
+	inline sf::Vector2f getNextVector(sf::Vector2f position, float delta_time)  {
+		if (_gravity != 0.0f) {
+			position += _gravityVelocityVector  * delta_time; // add the gravity acceration
+			_gravityVelocityVector += _gravityVector * delta_time;// velocity += timestep * acceleration;	
+		}	
+		return position;
+	}
+};
 
-	Node() : Ref(), _parent(nullptr), _zOrderDirty(false) {}
-	Node* getParent() const { return _parent; }
-	void setParent(Node* node);
+class DepthComponent {
+	float _depth;
+public:
+	DepthComponent(float depth = 0.0f) : _depth(depth) {}
+	float getDepth() const { return _depth; }
+	void setDepth(float depth) { _depth = depth; }
+};
 
-	const std::vector<t_child>& getChildren() const { resortChildren(); return _children; }
-	void removeAllChildren() { _children.clear(); _zOrderDirty = false; }
-	std::vector<t_child>::iterator begin() { return _children.begin(); }
-	std::vector<t_child>::iterator end() {  return _children.end(); }
-	const std::vector<t_child>::iterator begin() const {  return _children.begin(); }
-	const std::vector<t_child>::iterator end() const {  return _children.end(); }
+template<typename T>
+class ConstantMovement : public VelocityComponent {
+public:
+	using base = T;
+	inline  sf::Vector2f getNextVector(float delta_time) const {
+		T* tf = static_cast<T*>(this);
+		return getNextVector(tf->getPosition(), delta_time)
+	}
+	inline void movePosition(float delta_time) {
+		T* tf = static_cast<T*>(this);
+		tf->setPosition(getNextVector(tf->getPosition(), delta_time));
+	}
+};
+template<typename T>
+class GravityMovement : public GravityComponent {
+public:
+	using base = T;
+	inline  sf::Vector2f getNextVector(float delta_time) const {
+		T* tf = static_cast<T*>(this);
+		return getNextVector(tf->getPosition(), delta_time)
+	}
+	inline void movePosition(float delta_time) {
+		T* tf = static_cast<T*>(this);
+		tf->setPosition(getNextVector(tf->getPosition(), delta_time));
+	}
+};
 
-	void resortChildren() const;
-	
-
-	Room* getRoom() const;
-	
-
-	template<class C> C* findChild(std::function<bool(const Ref*)> pred) const;
-	template<class C> bool findChildren(std::vector<C*>& search, std::function<bool(const C*)> pred) const;
-
-	template<class C> C* findByTag(int tag) const;
-	template<class C> bool findChildrenByTag(std::vector<C*>& search, int tag) const;
-	template<class C> void with(int tag, std::function<void(C*)> func);
-
-	template<class C> void removeChild(std::function<bool(const C*)> pred);
-	template<> void Node::removeChild(std::function<bool(const Node*)> pred);
-
-
-	void addChild(Node* child);
-	void removeChild(int tag);
-	void removeChild(Node* child);
-	void removeChild(const std::type_info& type);
-
-
-	virtual void step(float dt) ;
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+template<typename EVENT>
+class NodeEvent {
+public:
+	using type = NodeEvent<EVENT>;
+	using value_type = EVENT;
+	virtual bool event(const EVENT& e) = 0;
+	static std::unordered_set<type*>& instance() {
+		static std::unordered_set<type*> _instance;
+		return _instance;
+	}
+	NodeEvent() { instance().emplace(this); }
+	virtual ~NodeEvent() {  instance().erase(this); } 
+	static bool brodcast(const EVENT& e) {
+		for (auto& o : instance()) {
+			if (o->event(e)) return true;
+		}
+		return false;
+	}
 };

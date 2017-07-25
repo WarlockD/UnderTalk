@@ -1,0 +1,322 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{95C17390-471F-3B96-BB93-B13F66D0FC6B}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>sfml-system</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\lib\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">sfml-system.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">sfml-system-s-d</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\lib\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">sfml-system.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">sfml-system-s</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\lib\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">sfml-system.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">sfml-system-s</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\lib\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">sfml-system.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">sfml-system-s</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:\Documents\GitHub\UnderTalk\SFML_Build\lib\Debug\sfml-system-s.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat></DebugInformationFormat>
+      <ProgramDataBaseFileName>D:\Documents\GitHub\UnderTalk\SFML_Build\lib\Release\sfml-system-s.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat></DebugInformationFormat>
+      <ProgramDataBaseFileName>D:\Documents\GitHub\UnderTalk\SFML_Build\lib\MinSizeRel\sfml-system-s.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>D:\Documents\GitHub\UnderTalk\SFML_Build\lib\RelWithDebInfo\sfml-system-s.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule D:/Documents/GitHub/UnderTalk/SFML/src/SFML/System/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Documents/GitHub/UnderTalk/SFML -BD:/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/System/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/Documents/GitHub/UnderTalk/SFML/src/SFML/System/CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\System\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule D:/Documents/GitHub/UnderTalk/SFML/src/SFML/System/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Documents/GitHub/UnderTalk/SFML -BD:/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/System/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/Documents/GitHub/UnderTalk/SFML/src/SFML/System/CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\System\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule D:/Documents/GitHub/UnderTalk/SFML/src/SFML/System/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Documents/GitHub/UnderTalk/SFML -BD:/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/System/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/Documents/GitHub/UnderTalk/SFML/src/SFML/System/CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\System\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule D:/Documents/GitHub/UnderTalk/SFML/src/SFML/System/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Documents/GitHub/UnderTalk/SFML -BD:/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/System/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/Documents/GitHub/UnderTalk/SFML/src/SFML/System/CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\System\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Clock.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Clock.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Err.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Err.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Export.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\InputStream.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Lock.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Lock.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Mutex.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Mutex.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\NativeActivity.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\NonCopyable.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Sleep.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Sleep.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\String.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\String.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\String.inl" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Thread.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Thread.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Thread.inl" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\ThreadLocal.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\ThreadLocal.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\ThreadLocalPtr.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\ThreadLocalPtr.inl" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Time.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Time.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Utf.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Utf.inl" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Vector2.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Vector2.inl" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Vector3.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\Vector3.inl" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\FileInputStream.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\FileInputStream.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\MemoryInputStream.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\System\MemoryInputStream.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Win32\ClockImpl.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Win32\ClockImpl.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Win32\MutexImpl.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Win32\MutexImpl.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Win32\SleepImpl.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Win32\SleepImpl.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Win32\ThreadImpl.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Win32\ThreadImpl.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Win32\ThreadLocalImpl.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\System\Win32\ThreadLocalImpl.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\Documents\GitHub\UnderTalk\SFML_Build\ZERO_CHECK.vcxproj">
+      <Project>{6C003EA7-0ACB-31E8-A5EE-3974C1700422}</Project>
+      <Name>ZERO_CHECK</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
