@@ -11,14 +11,14 @@ class TileMap : public sf::Drawable
 {
 	sf::RenderTexture _tiles;
 	sf::Vertex _vertices[4]; // We draw to a render texture and this is the size of it
-	Undertale::Room _room;
+	gm::Room _room;
 	bool _hasTiles;
 public:
 	TileMap() : _hasTiles(false) {}
-	void loadRoom(const Undertale::Room& room);
+	void loadRoom(const gm::Room& room);
 	void unloadRoom();
-	TileMap(size_t index);
-	void loadRoom(size_t index);
+	//TileMap(size_t index);
+	//void loadRoom(size_t index);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
@@ -77,7 +77,7 @@ public:
 	bool checkFrame(float dt) { return _alarm.addTime(dt); }
 	bool checkFrame(float dt, GSprite& sprite) {
 		if (checkFrame(dt)) {
-			int next = sprite.getImageIndex();
+			size_t next = sprite.getImageIndex();
 			if (_forward) {
 				++next;
 				if (next >= sprite.getImageCount()) next = 0;

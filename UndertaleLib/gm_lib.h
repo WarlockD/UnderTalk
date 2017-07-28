@@ -2,6 +2,7 @@
 #include "global.h"
 #include <variant>
 #include <cassert>
+#include <type_traits>
 
 #define OLD_XML_WRITER
 #ifndef OLD_XML_WRITER
@@ -234,45 +235,26 @@ namespace gm {
 		template<typename T>
 		struct is_resource<T, typename std::enable_if<!std::is_same<decltype(T::ResType), void>::value, bool>::type> : std::true_type
 		{
-			typedef decltype(T::ResType) type;
+			typedef decltype(T::traits::ResType) type;
 		};
 	};
-	class Offsets : public util::PointerArray<const uint32_t> {
+	class Offsets {
+		const uint32_t* _list;
+		size_t _size;
 	public:
-		Offsets() : PointerArray() {  }
-		Offsets(const uint8_t* ptr) : PointerArray(reinterpret_cast<const uint32_t*>(ptr + sizeof(uint32_t)), *reinterpret_cast<const uint32_t*>(ptr)) {  }
-		Offsets(const uint8_t* ptr, size_t offset) : Offsets(ptr + offset) {}
-		void to_debug(std::ostream& os) const {
-			PointerArray::to_debug(os);
+		size_t size() const { return _size; }
+		auto begin() const { return _list; }
+		auto end() const { return _list+_size; }
+		Offsets(const uint32_t* list, size_t size) : _list(list), _size(size) {}
+		Offsets(const uint8_t* ptr) : Offsets(reinterpret_cast<const uint32_t*>(ptr + sizeof(uint32_t)), *reinterpret_cast<const uint32_t*>(ptr)) {  }
+		uint32_t at(size_t i) const { return _list[i]; }
+		uint32_t operator[](size_t i) const { return _list[i]; }
+		void to_stream(std::ostream& os) const {
+			os << "(Offsets size=" << size() << ")";
 		}
+
 	};
-	template<typename VALUE_T>
-	class OffsetList {
-		const uint8_t* _data;
-		Offsets _list;
-	public:
-		typedef typename std::bidirectional_iterator_tag iterator_category;
-		typedef typename VALUE_T value_type;
-		typedef typename long difference_type;
-		typedef typename VALUE_T* pointer;
-		typedef typename VALUE_T& reference;
-		typedef typename util::GenericIterator<VALUE_T, OffsetList> iterator;
-		OffsetList(const uint8_t* ptr, size_t offset) : _data(ptr), _list(ptr, offset) {}
-		OffsetList(const uint8_t* ptr, const uint8_t* list) : _data(ptr), _list(list) {}
-		size_t size() const { return _list.size(); }
-		const VALUE_T* at(size_t i) const { return reinterpret_cast<const VALUE_T*>(_data + _list.at(i)); }
-		iterator begin() const { return iterator(*this, 0); }
-		iterator end() const { return iterator(*this, size()); }
-		void to_debug(std::ostream& os) const {
-			for (size_t i = 0; i < size(); i++) {
-				size_t offset = _list.at(i);
-				os.stream() << std::setw(5) << std::left << i << ": ";
-				os << :ext::offset(_list.at(i)) << " = ";
-				os.write(at(i));
-				os << std::end;
-			}
-		}
-	};
+
 
 
 	// class forces a struct/class to be non copyable or creatable
@@ -388,55 +370,24 @@ namespace gm {
 
 	class OffsetInterface : public StreamInterface {
 	protected:
+		const uint8_t* _data;
 		uint32_t _offset;
+		template<typename T>
+		const T* raw() const { return reinterpret_cast<const T*>(_data + _offset); }
 	public:
-		OffsetInterface(uint32_t offset) : _offset(offset) {}
+		OffsetInterface() : _data(nullptr), _offset(0) {}
+		OffsetInterface(const uint8_t* data, uint32_t offset) : _data(data), _offset(offset) {}
 		virtual ~OffsetInterface() {}
+
+		const uint8_t* data() const { return _data + _offset; }
 		uint32_t offset() const { return _offset; } // unique
 		bool operator<(const OffsetInterface& other) const { return offset() < other.offset(); }
-		bool operator==(const OffsetInterface& other) const { return offset() == other.offset(); }
+		bool operator==(const OffsetInterface& other) const { return _data == other._data && offset() == other.offset(); }
 		bool operator!=(const OffsetInterface& other) const { return !(*this == other); }
 		virtual void to_stream(std::ostream& os) const override {
 			os << "[" << std::uppercase << std::setfill('0') << std::setw(6) << std::hex << _offset << ']';
 		}
-	};
-	class IndexInterface : public OffsetInterface {
-	protected:
-		uint32_t _index;
-	public:
-		template<typename T, typename = std::enable_if<std::is_convertible<T, uint32_t>::value>::type>
-		IndexInterface(uint32_t offset, T index) : OffsetInterface(offset), _index(static_cast<uint32_t>(index)) {}
-		virtual ~IndexInterface() {}
-		uint32_t index() const { return _index; } // unique
-		bool operator<(const IndexInterface& other) const { return index() < other.index(); }
-		bool operator==(const IndexInterface& other) const { return index() == other.index(); }
-		bool operator!=(const IndexInterface& other) const { return !(*this == other); }
-		virtual void to_stream(std::ostream& os) const override {
-			OffsetInterface::to_stream(os);
-			os << '(' << std::left << std::setfill(' ') << std::setw(4) << _index << ')';
-		}
-	};
-	class NameInterface : public IndexInterface {
-	protected:
-		constexpr static const char * NONAME = "<EMPTY>";
-		StringView _name;
-	public:
-		NameInterface(uint32_t offset, uint32_t index, StringView name) : _name(name), IndexInterface(offset, index) {}
-		StringView name() const { return _name; }
-		bool valid_name() const { return !_name.empty(); }
-		bool operator<(const NameInterface& other) const { return IndexInterface::operator<(other); }
-		bool operator==(const IndexInterface& other) const { return IndexInterface::operator==(other); }
-		bool operator!=(const IndexInterface& other) const { return IndexInterface::operator!=(other); }
-		virtual ~NameInterface() {}
-		virtual void to_stream(std::ostream& os) const override {
-			OffsetInterface::to_stream(os);
-			os << '(' << std::setfill(' ') << std::setw(4) << _index << ':';
-			if (valid_name())
-				os << _name;
-			else
-				os << NONAME;
-			os << ')';
-		}
+		bool valid() const { return _data != nullptr; }
 	};
 	//http://stackoverflow.com/questions/36936584/how-to-write-constexpr-swap-function-to-change-endianess-of-an-integer
 	template<class T>
@@ -464,36 +415,118 @@ namespace gm {
 		constexpr ChunkType resource_type() const { return ResType; }
 		constexpr const char* resource_name() const { return ResTypeName; }
 	};
-	template<typename RAW_T>
-	class RawResource : public  OffsetInterface {
-	protected:
-		const RAW_T* _raw;
-	public:
-		RawResource(const uint8_t* data, size_t offset) : OffsetInterface(offset), _raw(reinterpret_cast<const RAW_T*>(data + offset)) {}
-		bool valid() const { return _raw != nullptr; }
-		const RAW_T& raw() const { return _raw; }
-	};
-
 	template<typename RAW_T, ChunkType CT>
-	class Resource : public std::conditional<ResourceTraits<RAW_T, CT>::HasNameOffset, NameInterface, IndexInterface>::type, public ResourceTraits<RAW_T, CT> {
+	class Resource : public  OffsetInterface {
 	protected:
-		typedef typename std::conditional<ResourceTraits<RAW_T, CT>::HasNameOffset, NameInterface, IndexInterface>::type base_type;
-		const RAW_T* _raw;
-		struct _index_test {};
-		struct _name_test : _index_test {};
-		template<typename T = RAW_T, typename = std::enable_if<!HasNameOffset>::type>
-		Resource(uint32_t index, const uint8_t* data, uint32_t offset, _name_test) : _raw(reinterpret_cast<const RAW_T*>(data + offset)), base_type(offset, index) { }
-		template<typename T = RAW_T, typename = std::enable_if<HasNameOffset>::type>
-		Resource(uint32_t index, const uint8_t* data, uint32_t offset, _index_test) : _raw(reinterpret_cast<const RAW_T*>(data + offset)), base_type(offset, index, reinterpret_cast<const char*>(data + reinterpret_cast<const RAW_T*>(data + offset)->name_offset)) { }
+		uint32_t _index;
+		template<typename T, typename E=void>
+		struct _get_name_t {
+			StringView operator()(const uint8_t* data, const T* obj) const {
+				assert(0);
+				//static_assert(0, "has no name offset");
+				return StringView();
+			}
+		};
+		template<typename T>
+		struct _get_name_t<T, priv::has_name_offset<T>> {
+			StringView operator()(const uint8_t* data, const T* obj) const {
+				assert(data != nullptr);
+				// so, some reason resources have the pointer to the start of the string
+				// not to the string reserouce
+				// so we move back 4 bytes to get its length
+				return StringView(reinterpret_cast<const char*>(data + offset), *reinterpret_cast<const uint32_t*>(data + obj->name_offset - 4));
+			}
+		};
 	public:
-		Resource() : _name(), _index(-1), _raw(nullptr) {}
-		bool valid() const { return _raw != nullptr; }
-		const RAW_T* raw() const { return _raw; }
-		template<typename T, typename = std::enable_if<std::is_convertible<T, uint32_t>::value>::type> // index handles the conversion
-		Resource(T index, const uint8_t* data, uint32_t offset) : Resource(static_cast<uint32_t>(index), data, offset, _name_test{}) {}
+		using traits = ResourceTraits<RAW_T, CT>;
+		using raw_type = std::add_const_t<std::decay_t<RAW_T>>;
+		using pointer = std::add_pointer_t<raw_type>;
+		using reference = std::add_lvalue_reference_t<raw_type>;
+		constexpr ChunkType chunk_type() const { return CT; }
+		Resource() = default;
+		Resource(uint32_t index, const uint8_t* data, size_t offset) : OffsetInterface(data, offset), _index(index) {}
+		Resource(int index, const uint8_t* data, size_t offset) : Resource(static_cast<uint32_t>(index),data,offset) {}
+		reference raw() const { return *reinterpret_cast<pointer>(data()); }
+		//	reference operator*() const { return raw(); }
+		//	pointer operator->() const { *reinterpret_cast<pointer>(data()); }
+		uint32_t index() const { return _index; }
+		bool operator<(const Resource& other) const { return IndexInterface::operator<(other); }
+		bool operator==(const Resource& other) const { return OffsetInterface::operator<(other) && other._index == _index; }
+		bool operator!=(const Resource& other) const { return !(*this == other); }
+		template<typename F = RAW_T>
+		StringView name() const {
+			_get_name_t<F> get_name;
+			return get_name(data(), &raw());
+		}
+		virtual void to_stream(std::ostream& os) const override {
+			OffsetInterface::to_stream(os);
+			os << '(' << std::setfill(' ') << std::setw(4) << _index;
+			if (priv::has_name_offset<RAW_T>::value) {
+				os << ':' << name();
+			}
+				
+			os << ')';
+		}
+
 	};
 
+	template<typename VALUE_T>
+	class OffsetList {
+		const uint8_t* _data;
+		Offsets _list;
+	public:
+		using difference_type = std::ptrdiff_t;
+		using value_type = std::decay_t<VALUE_T>;
+		using pointer = value_type*;
+		using reference = value_type&;
+		using const_pointer = const value_type*;
+		using const_reference = const value_type&;
+		OffsetList(const uint8_t* ptr, size_t offset) : _data(ptr), _list(ptr+ offset) {}
+		OffsetList(const uint8_t* ptr, const uint8_t* list) : _data(ptr), _list(list) {}
+		size_t size() const { return _list.size(); }
+		const_reference at(size_t i) const { return *reinterpret_cast<const_pointer>(_data + _list.at(i)); }
+		const_reference operator[](size_t i) const { return at(i); }
 
+		class OffsetIterator {
+		public:
+			using iterator_category = typename std::bidirectional_iterator_tag;
+			using difference_type = typename std::ptrdiff_t;
+			using value_type = std::decay_t<VALUE_T>;
+			using pointer = value_type*;
+			using reference = value_type&;
+			using const_pointer = const value_type*;
+			using const_reference = const value_type&;
+
+			OffsetIterator(const OffsetList& vec, size_t pos) : _list(vec), _pos(pos) {}
+			OffsetIterator(const OffsetList& vec) : _list(vec), _pos(0) {}
+			OffsetIterator& operator++() { ++_pos; return *this; }
+			OffsetIterator& operator--() { --_pos; return *this; }
+			OffsetIterator operator++(int) { return GenericIterator(_list, _pos++); }
+			OffsetIterator operator--(int) { return GenericIterator(_list, _pos--); }
+			OffsetIterator operator+(difference_type value) const { return OffsetIterator(_list, _pos + value); }
+			OffsetIterator operator-(difference_type value) const { return OffsetIterator(_list, _pos - value); }
+			
+			const_reference operator*() const { return _list.at(_pos); }
+			const_pointer operator->() const { return &_list.at(_pos); }
+			const_reference operator[](const difference_type& n) const { return _list.at(n); }
+			bool operator==(const OffsetIterator& r) const { return _pos == r._pos; }
+			bool operator!=(const OffsetIterator& r) const { return _pos != r._pos; }
+			bool operator<(const OffsetIterator& r) const { return _pos < r._pos; }
+			bool operator>(const OffsetIterator& r) const { return _pos > r._pos; }
+			bool operator>=(const OffsetIterator& r) const { return _pos >= r._pos; }
+			bool operator<=(const OffsetIterator& r) const { return _pos <= r._pos; }
+
+
+		protected:
+			const OffsetList& _list;
+			size_t _pos;
+		};
+		using const_iterator = OffsetIterator;
+
+
+		const_iterator begin() const { return const_iterator(*this, 0); }
+		const_iterator end() const { return const_iterator(*this, size()); }
+	};
 	class XMLResourceExportInterface {
 	public:
 		virtual ~XMLResourceExportInterface() {}
@@ -526,7 +559,7 @@ namespace gm {
 
 		// All strings ARE null terminated within a data.win file.  However when you read offsets the point to 
 		// the string itself and NOT to this structure.  This structure is only in the STNG chunk
-		struct String : CannotCreate<raw_type::String> {
+		struct String : CannotCreate<String> {
 			uint32_t length;
 			const char u_str[1];
 		};
@@ -707,6 +740,10 @@ namespace gm {
 			//uint32_t frame_count;
 			//uint32_t frame_offsets[1];
 		};
+
+		struct Texture : CannotCreate<Texture> {
+			int png_offset;
+		};
 		struct OldCode : CannotCreate<OldCode> {
 			int name_offset;
 			int list_size;
@@ -734,6 +771,8 @@ namespace gm {
 			return ((pixel >> bit) & 1) != 0;
 		}
 	};
+	
+
 	class String : public Resource<raw_type::String, ChunkType::STRG> {
 	public:
 		String(int index, const uint8_t* data, uint32_t offset) : Resource(index, data, offset) {}
@@ -741,19 +780,20 @@ namespace gm {
 			std::hash<StringView> _hasher;
 			size_t operator()(const String& s) const { return _hasher(s); }
 		};
-		StringView strv() const { return StringView(_raw->u_str, _raw->length); }
-		size_t size() const noexcept { return _raw->length; }
-		size_t length() const noexcept { return _raw->length; }
+		StringView strv() const { return StringView(     raw().u_str, raw().length); }
+		size_t size() const noexcept { return raw().length; }
+		size_t length() const noexcept { return raw().length; }
 		operator StringView() const noexcept { return strv(); } // main conversion function
-		bool operator==(const String& r) const noexcept { return _raw == r._raw; }
+		bool operator==(const String& r) const noexcept { return data() == r.data(); }
 		bool operator==(const StringView& r) const noexcept { return strv() == r; }
 		bool operator==(const std::string& r) const noexcept { return strv() == r; }
 		template<typename T> bool operator!=(const T& r) const noexcept { return !(*this == r); }
-		const char* begin() const { return _raw->u_str; }
-		const char* end() const { return _raw->u_str + _raw->length; }
+		const char* begin() const { return raw().u_str; }
+		const char* end() const { return raw().u_str + raw().length; }
 	};
 	// we have to cut the namespace here to use std::hash
 };
+
 template<typename C, typename E>
 static inline std::basic_ostream<C, E>& operator<<(std::basic_ostream<C, E>& os, const gm::String& s) noexcept {
 	os << s.strv();
@@ -769,67 +809,93 @@ namespace std {
 
 namespace gm {
 
-	class Texture {
-		const uint8_t* _data;
-		size_t _len;
+	class Texture : public Resource<raw_type::Texture, ChunkType::TXTR> {
+		const uint8_t* _png_data;
+		size_t _png_size;
+		static inline void ChunkToChar(const uint8_t*ptr, char chars[5]) {
+			chars[0] = ptr[0]; chars[1] = ptr[1]; chars[2] = ptr[2]; chars[3] = ptr[3]; chars[4] = 0;
+		}
+		static constexpr uint8_t pngSig[] = { 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a };
 	public:
-		Texture() : _data(nullptr), _len(0) {}
-		Texture(const uint8_t* data, size_t len) :_data(data), _len(len) {}
-		const uint8_t* data() const { return _data; }
-		size_t len() const { return _len; }
+		Texture() = default;
+		Texture(int index, const uint8_t* data, uint32_t offset) : Resource(index, data, offset) {
+			const uint8_t* ptr = data + raw().png_offset;
+			_png_data = ptr;
+			const uint8_t* start = ptr;
+			assert(memcmp(ptr, pngSig, 8) == 0);
+			ptr += 8;
+			// caculate png size of file
+			bool done = false;
+			while (!done) {
+				int len = (ptr[0] << 24) | (ptr[1] << 16) | (ptr[2] << 8) | (ptr[3]); ptr += sizeof(uint32_t);
+				uint32_t chunk = (ptr[0] << 24) | (ptr[1] << 16) | (ptr[2] << 8) | (ptr[3]);
+				char debug[5]; //memcpy(debug, ptr, 4); debug[4] = 0;
+				ChunkToChar(ptr, debug);
+				ptr += sizeof(uint32_t);
+				assert(len >= 0);
+				if (memcmp(debug, "IEND", 4) == 0)
+					done = true;
+				ptr += len + sizeof(uint32_t); // + the crc
+			}
+			_png_size = ptr - start;
+		}
+		const uint8_t* png_data() const { return _png_data; }
+		size_t png_size() const { return _png_size; }
 	};
+
 	class Background : public Resource<raw_type::Background, ChunkType::BGND> {
 		friend class UndertaleFile;
 	protected:
-		const raw_type::SpriteFrame* _frame;
+		const gm::raw_type::SpriteFrame* _frame;
 	public:
 		Background(int index, const uint8_t* data, uint32_t offset) :
 			Resource(index, data, offset)
 		{
-			_frame = dynamic_cast<const raw_type::SpriteFrame*>(_frame + _raw->frame_offset);
+			_frame = dynamic_cast<const gm::raw_type::SpriteFrame*>(_frame + raw().frame_offset);
 		}
-		bool trasparent() const { return _raw->trasparent != 0;  }
-		bool smooth() const { return _raw->smooth != 0; }
-		bool preload() const { return _raw->preload != 0; }
-		const raw_type::SpriteFrame& frame() const { return *_frame; }
+		bool trasparent() const { return raw().trasparent != 0;  }
+		bool smooth() const { return raw().smooth != 0; }
+		bool preload() const { return raw().preload != 0; }
+		const gm::raw_type::SpriteFrame& frame() const { return *_frame; }
 	};
 	class Room : public Resource<raw_type::Room, ChunkType::ROOM> {
 	protected:
 		const char* _caption;
 	public:
+		Room() = default;
 		Room(int index, const uint8_t* data, uint32_t offset) : Resource(index, data, offset) {}
 		const char* caption() const { return _caption; }
-		int width() const { return _raw->width; }
-		int height() const { return _raw->height; }
-		int speed() const { return _raw->speed; }
-		bool persistent() const { return _raw->persistent != 0; }
-		int color() const { return _raw->color; }
-		bool show_color() const { return _raw->show_color != 0; }
-		int code_offset() const { return _raw->code_offset; }
-		bool enable_views() const { return (_raw->flags & 1) != 0; }
-		bool view_clear_screen() const { return (_raw->flags & 2) != 0; }
-		bool clear_display_buffer() const { return (_raw->flags & 14) != 0; }
-		OffsetList<raw_type::RoomView> views() const { return OffsetList<raw_type::RoomView>(_raw->ptr_begin() - _offset, _raw->view_offset); }
-		OffsetList<raw_type::RoomBackground> backgrounds() const { return OffsetList<raw_type::RoomBackground>(_raw->ptr_begin() - _offset, _raw->background_offset); }
-		OffsetList<raw_type::RoomObject> objects() const { return OffsetList<raw_type::RoomObject>(_raw->ptr_begin() - _offset, _raw->object_offset); }
-		OffsetList<raw_type::RoomTile> tiles() const { return OffsetList<raw_type::RoomTile>(_raw->ptr_begin() - _offset, _raw->tiles_offset); }
+		int width() const { return raw().width; }
+		int height() const { return raw().height; }
+		int speed() const { return raw().speed; }
+		bool persistent() const { return raw().persistent != 0; }
+		int color() const { return raw().color; }
+		bool show_color() const { return raw().show_color != 0; }
+		int code_offset() const { return raw().code_offset; }
+		bool enable_views() const { return (raw().flags & 1) != 0; }
+		bool view_clear_screen() const { return (raw().flags & 2) != 0; }
+		bool clear_display_buffer() const { return (raw().flags & 14) != 0; }
+		OffsetList<gm::raw_type::RoomView> views() const { return OffsetList<gm::raw_type::RoomView>(raw().ptr_begin() - _offset, raw().view_offset); }
+		OffsetList<gm::raw_type::RoomBackground> backgrounds() const { return OffsetList<gm::raw_type::RoomBackground>(raw().ptr_begin() - _offset, raw().background_offset); }
+		OffsetList<gm::raw_type::RoomObject> objects() const { return OffsetList<gm::raw_type::RoomObject>(raw().ptr_begin() - _offset, raw().object_offset); }
+		OffsetList<gm::raw_type::RoomTile> tiles() const { return OffsetList<gm::raw_type::RoomTile>(raw().ptr_begin() - _offset, raw().tiles_offset); }
 	};
 	class Sound : public Resource<raw_type::Sound, ChunkType::SOND> {
 	private:
-		const raw_type::AudioData* _data;
+		const gm::raw_type::AudioData* _data;
 		const char*  _extension;
 		const char*   _filename;
 	public:
 		Sound(int index, const uint8_t* data, uint32_t offset) : Resource(index, data, offset) {}
 
-		int audio_type() const { return _raw->audio_type; }
+		int audio_type() const { return raw().audio_type; }
 		const char*   extension() const { return _extension; }
 		const char*   filename() const { return _filename; }
-		int effects() const { return _raw->effects; }
-		float volume() const { return _raw->volume; }
-		float pan() const { return _raw->pan; }
-		int other() const { return _raw->other; }
-		const raw_type::AudioData* data() const { return _data; }
+		int effects() const { return raw().effects; }
+		float volume() const { return raw().volume; }
+		float pan() const { return raw().pan; }
+		int other() const { return raw().other; }
+		const gm::raw_type::AudioData* data() const { return _data; }
 	};
 	class Font : public Resource<raw_type::Font, ChunkType::FONT> {
 	public:
@@ -851,25 +917,25 @@ namespace gm {
 			//	uint32_t offsets[1];
 		};
 	private:
-		const raw_type::SpriteFrame* _frame;
+		const gm::raw_type::SpriteFrame* _frame;
 		const char* _description;
 		OffsetList<Glyph> _glyphs;
 	public:
 		Font(int index, const uint8_t* data, uint32_t offset) : Resource(index, data, offset)
-			,_description(reinterpret_cast<const char*>(data + _raw->description_offset))
-			, _frame(reinterpret_cast<const raw_type::SpriteFrame*>(data + _raw->frame_offset))
-			, _glyphs(data, offset + sizeof(RawResourceType)){}
-		int size() const { return _raw->size; }
-		bool bold() const { return _raw->bold != 0; }
-		bool italic() const { return _raw->italic != 0; }
-		bool antiAlias() const { return ((_raw->flags >> 24) & 0xFF) != 0; }
-		int charSet() const { return (_raw->flags >> 16) & 0xFF; }
-		uint16_t firstChar() const { return (_raw->flags) & 0xFFFF; }
-		uint16_t lastChar() const { return _raw->lastChar; }
-		const raw_type::SpriteFrame& frame() const { return *_frame; }
-		float scaleWidth() const { return _raw->scale_width; }
-		float scaleHeight() const { return _raw->scale_height; }
-	//	OffsetList<Glyph> glyphs() const { return OffsetList<Glyph>(_raw->ptr_begin()-_offset, _raw_glyphs; }
+			,_description(reinterpret_cast<const char*>(data + raw().description_offset))
+			, _frame(reinterpret_cast<const gm::raw_type::SpriteFrame*>(data + raw().frame_offset))
+			, _glyphs(data, offset + sizeof(raw_type)){}
+		int size() const { return raw().size; }
+		bool bold() const { return raw().bold != 0; }
+		bool italic() const { return raw().italic != 0; }
+		bool antiAlias() const { return ((raw().flags >> 24) & 0xFF) != 0; }
+		int charSet() const { return (raw().flags >> 16) & 0xFF; }
+		uint16_t firstChar() const { return (raw().flags) & 0xFFFF; }
+		uint16_t lastChar() const { return raw().lastChar; }
+		const gm::raw_type::SpriteFrame& frame() const { return *_frame; }
+		float scaleWidth() const { return raw().scale_width; }
+		float scaleHeight() const { return raw().scale_height; }
+	//	OffsetList<Glyph> glyphs() const { return OffsetList<Glyph>(raw().ptr_begin()-_offset, _raw_glyphs; }
 	};
 
 	class Action : public Resource<raw_type::ObjectAction, ChunkType::BAD> {
@@ -877,42 +943,37 @@ namespace gm {
 	public:
 		Action(const EventType& type, const uint8_t* data, uint32_t offset)
 			: Resource(type.raw(),data, offset)
-			, _code(_raw->code_offset > 0 ? reinterpret_cast<const uint32_t*>(data + _raw->code_offset):nullptr) {}
+			, _code(raw().code_offset > 0 ? reinterpret_cast<const uint32_t*>(data + raw().code_offset):nullptr) {}
 		const uint32_t* code() const { return _code; }
-		int lib_id() const { return _raw->lib_id; }
-		int id() const { return _raw->id; }
-		int kind() const { return _raw->kind; }
-		int use_relative() const { return _raw->use_relative; }
-		int is_question() const { return _raw->is_question; }
-		int use_apply_to() const { return _raw->use_apply_to; }
-		int exe_type() const { return _raw->exe_type; }
-		int argument_count() const { return _raw->argument_count; }
-		int who() const { return _raw->who; }
-		int is_relative() const { return _raw->is_relative; }
-		int is_not() const { return _raw->is_not; }
-		int is_compiled() const { return _raw->is_compiled; }
+		int lib_id() const { return raw().lib_id; }
+		int id() const { return raw().id; }
+		int kind() const { return raw().kind; }
+		int use_relative() const { return raw().use_relative; }
+		int is_question() const { return raw().is_question; }
+		int use_apply_to() const { return raw().use_apply_to; }
+		int exe_type() const { return raw().exe_type; }
+		int argument_count() const { return raw().argument_count; }
+		int who() const { return raw().who; }
+		int is_relative() const { return raw().is_relative; }
+		int is_not() const { return raw().is_not; }
+		int is_compiled() const { return raw().is_compiled; }
 		virtual void to_stream(std::ostream& os) const override {
 			OffsetInterface::to_stream(os);
 			os << "{ event : " << EventType::from_index(_index) << ", id : " << id() << " }";
 		}
 	};
-	class GString : public Resource<raw_type::String, ChunkType::STRG> {
-	public:
-		GString(int index, const uint8_t* data, uint32_t offset)
-			: Resource(index, data, offset) {}
-
-	};
 
 	class Object : public Resource<raw_type::Object, ChunkType::OBJT> {
-		const raw_type::ObjectPhysicsVert* _physics_verts;
+		const gm::raw_type::ObjectPhysicsVert* _physics_verts;
 		std::unordered_map<EventType, Action> _events;
 	public:
+		Object() = default;
 		Object(int index, const uint8_t* data, uint32_t offset)
 			: Resource(index, data, offset)
-			, _physics_verts(_raw->physics_vert_count > 0 ? raw_type::ObjectPhysicsVert::cast(_raw->ptr_end()) : nullptr)
+			, _physics_verts(raw().physics_vert_count > 0 ? gm::raw_type::ObjectPhysicsVert::cast(raw().ptr_end()) : nullptr)
 		{
-			auto ptr = _raw->ptr_end();
-			if (_raw->physics_vert_count > 0) ptr += _raw->physics_vert_count * sizeof(raw_type::ObjectPhysicsVert);
+			auto ptr = raw().ptr_end();
+			if (raw().physics_vert_count > 0) ptr += raw().physics_vert_count * sizeof(gm::raw_type::ObjectPhysicsVert);
 			Offsets root(ptr);
 			//debug::debug_ptr<uint32_t> d(data,RawResourceSize+offset, 24);
 			if (root.size() != 12) throw; // should always = 12?
@@ -931,7 +992,7 @@ namespace gm {
 				debug::cerr << std::endl;
 				for (uint32_t e : list) {
 					int sub_event = util::cast<int>(data + e);
-					Offsets events(data, e+sizeof(uint32_t));
+					Offsets events(data+ e+sizeof(uint32_t));
 					if (events.size() == 0) continue; // skip
 					for (uint32_t a : events)  {
 						EventType evt(i, sub_event);
@@ -944,16 +1005,16 @@ namespace gm {
 			}
 		}
 		const std::unordered_map<EventType, Action>& events() const { return _events; }
-		int sprite_index() const { return _raw->sprite_index; }
-		bool visible() const { return _raw->visible != 0; }
-		bool solid() const { return _raw->solid != 0; }
-		int depth() const { return _raw->depth; }
-		bool persistent() const { return _raw->persistent != 0; }
-		int parent_index() const { return _raw->parent_index; }
-		bool mask() const { return _raw->mask != 0; }
-		bool physics_enabled() const { return _raw->physics_enabled != 0; }
+		int sprite_index() const { return raw().sprite_index; }
+		bool visible() const { return raw().visible != 0; }
+		bool solid() const { return raw().solid != 0; }
+		int depth() const { return raw().depth; }
+		bool persistent() const { return raw().persistent != 0; }
+		int parent_index() const { return raw().parent_index; }
+		bool mask() const { return raw().mask != 0; }
+		bool physics_enabled() const { return raw().physics_enabled != 0; }
 	};
-	using SpriteFrame = raw_type::SpriteFrame;
+	using SpriteFrame = gm::raw_type::SpriteFrame;
 	class Sprite : public Resource<raw_type::Sprite, ChunkType::SPRT>, public XMLResourceExportInterface {
 		const uint8_t* _masks;
 		// kind of a hack.  First number is an int of the size, after that
@@ -963,23 +1024,23 @@ namespace gm {
 		Sprite() = default;
 		Sprite(int index, const uint8_t* data, uint32_t offset) :
 			Resource(index, data, offset) {
-			size_t frames = util::cast<uint32_t>(_raw->ptr_end());
+			size_t frames = util::cast<uint32_t>(raw().ptr_end());
 			_masks = data +  sizeof(uint32_t) + sizeof(uint32_t) * frames;
 		}
-		int width() const { return _raw->width; }
-		int height() const { return _raw->height; }
-		int left() const { return _raw->left; }
-		int right() const { return _raw->right; }
-		int bottom() const { return _raw->bottom; }
-		int top() const { return _raw->top; }
-		bool trasparent() const { return _raw->trasparent != 0; }
-		bool smooth() const { return _raw->smooth != 0; }
-		bool preload() const { return _raw->width != 0; }
-		int mode() const { return _raw->mode; }
-		int colcheck() const { return _raw->colcheck; }
-		int origin_x() const { return _raw->original_x; }
-		int origin_y() const { return _raw->original_y; }
-		OffsetList<raw_type::SpriteFrame> frames() const { return OffsetList<raw_type::SpriteFrame>(_raw->ptr_begin()-_offset, _raw->ptr_end()); }
+		int width() const { return raw().width; }
+		int height() const { return raw().height; }
+		int left() const { return raw().left; }
+		int right() const { return raw().right; }
+		int bottom() const { return raw().bottom; }
+		int top() const { return raw().top; }
+		bool trasparent() const { return raw().trasparent != 0; }
+		bool smooth() const { return raw().smooth != 0; }
+		bool preload() const { return raw().width != 0; }
+		int mode() const { return raw().mode; }
+		int colcheck() const { return raw().colcheck; }
+		int origin_x() const { return raw().original_x; }
+		int origin_y() const { return raw().original_y; }
+		OffsetList< gm::raw_type::SpriteFrame> frames() const { return OffsetList< gm::raw_type::SpriteFrame>(raw().ptr_begin()-_offset, raw().ptr_end()); }
 		size_t mask_count() const { return *reinterpret_cast<const int*>(_masks); }
 		size_t mask_stride() const { return (width() + 7) / 8; }
 		BitMask mask_at(size_t index) const {
@@ -988,22 +1049,22 @@ namespace gm {
 		virtual void xml_export(std::ostream& os) const {
 			SimpleXmlWriter xml;
 			auto& sprite = xml.AddElement("sprite");
-			sprite.AddElement("type", _raw->mode);
-			sprite.AddElement("xorg", _raw->original_x);
-			sprite.AddElement("yorigin", _raw->original_y);
-			sprite.AddElement("colkind", _raw->colcheck);
+			sprite.AddElement("type", raw().mode);
+			sprite.AddElement("xorg", raw().original_x);
+			sprite.AddElement("yorigin", raw().original_y);
+			sprite.AddElement("colkind", raw().colcheck);
 			sprite.AddElement("sepmasks", 0);
-			sprite.AddElement("bbox_left", _raw->left);
-			sprite.AddElement("bbox_right", _raw->right);
-			sprite.AddElement("bbox_top", _raw->top);
-			sprite.AddElement("bbox_bottom", _raw->bottom);
+			sprite.AddElement("bbox_left", raw().left);
+			sprite.AddElement("bbox_right", raw().right);
+			sprite.AddElement("bbox_top", raw().top);
+			sprite.AddElement("bbox_bottom", raw().bottom);
 			sprite.AddElement("HTile", 0);
 			sprite.AddElement("VTile", 0);
 			auto& texturegroups = sprite.AddElement("TextureGroups");
-			texturegroups.AddElement("TextureGroup0", frames().at(0)->texture_index);
+			texturegroups.AddElement("TextureGroup0", frames().at(0).texture_index);
 			sprite.AddElement("For3D", 0);
-			sprite.AddElement("width", _raw->width);
-			sprite.AddElement("height", _raw->height);
+			sprite.AddElement("width", raw().width);
+			sprite.AddElement("height", raw().height);
 			auto& e_frames = sprite.AddElement("frames");
 			std::string n;
 			auto& ff = frames();
@@ -1098,7 +1159,7 @@ namespace gm {
 		}
 		template<class C, class = std::enable_if<priv::is_resource<C>::value>>
 		C resource_at(uint32_t index) const {
-			auto it = get_chunk<C::ResType>();
+			auto it = get_chunk<C::traits::ResType>();
 			return C(index, _data.data(), it->offsets[index]);
 		}
 	};

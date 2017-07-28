@@ -1,4 +1,4 @@
-# Install script for directory: D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Network
+# Install script for directory: C:/Users/Paul/Documents/GitHub/UnderTalk/SFML/src/SFML/Network
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -29,13 +29,13 @@ endif()
 
 if("${CMAKE_INSTALL_COMPONENT}" STREQUAL "devel" OR NOT CMAKE_INSTALL_COMPONENT)
   if("${CMAKE_INSTALL_CONFIG_NAME}" MATCHES "^([Dd][Ee][Bb][Uu][Gg])$")
-    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "D:/Documents/GitHub/UnderTalk/SFML_Build/lib/Debug/sfml-network-s-d.lib")
+    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/lib/Debug/sfml-network-s-d.lib")
   elseif("${CMAKE_INSTALL_CONFIG_NAME}" MATCHES "^([Rr][Ee][Ll][Ee][Aa][Ss][Ee])$")
-    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "D:/Documents/GitHub/UnderTalk/SFML_Build/lib/Release/sfml-network-s.lib")
+    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/lib/Release/sfml-network-s.lib")
   elseif("${CMAKE_INSTALL_CONFIG_NAME}" MATCHES "^([Mm][Ii][Nn][Ss][Ii][Zz][Ee][Rr][Ee][Ll])$")
-    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "D:/Documents/GitHub/UnderTalk/SFML_Build/lib/MinSizeRel/sfml-network-s.lib")
+    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/lib/MinSizeRel/sfml-network-s.lib")
   elseif("${CMAKE_INSTALL_CONFIG_NAME}" MATCHES "^([Rr][Ee][Ll][Ww][Ii][Tt][Hh][Dd][Ee][Bb][Ii][Nn][Ff][Oo])$")
-    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "D:/Documents/GitHub/UnderTalk/SFML_Build/lib/RelWithDebInfo/sfml-network-s.lib")
+    file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/lib/RelWithDebInfo/sfml-network-s.lib")
   endif()
 endif()
 

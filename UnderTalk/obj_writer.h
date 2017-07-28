@@ -115,7 +115,7 @@ public:
 	void setHaltDelegate(HaltDelegate func) { _haltdel = func; }
 
 	void DebugSetFace(int face, int emotion) { _face.setFace(face); _face.setEmotion(emotion);  }
-	OBJ_WRITER() : RoomObject(), _fontTexture(nullptr), _size(0), _stringno(0), _halt(0), _fontGlyphs(nullptr) , _glyphVertices(sf::PrimitiveType::TrianglesStrip){ 
+	OBJ_WRITER(Room& room) : RoomObject(room), _fontTexture(nullptr), _size(0), _stringno(0), _halt(0), _fontGlyphs(nullptr) , _glyphVertices(sf::PrimitiveType::TrianglesStrip){
 		SetTextType(0); 
 		_glyphVertices.reserve(6 * 200); // shouldn't need more than this?
 
@@ -157,7 +157,6 @@ public:
 		_halt = 0;
 		_writing = sf::Vector2f((float)setup.writingx, (float)setup.writingy);
 		_glyphVertices.clear();
-		removeAllChildren();
 		_updaters.clear();
 		_currentColor = sf::Color(setup.color);
 		_textpause = setup.textspeed;

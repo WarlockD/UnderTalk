@@ -8,50 +8,137 @@ entity_t instance_create(float x, float y, int index) {
 
 }
 
-void Room::loadRoom(int index) {
-	_room = GetUndertale().LookupRoom(index);
+void Room::loadRoom(uint32_t index) {
+	_room = _file.resource_at < gm::Room>(index);
 	if (_room.valid()) {
 		_tiles.loadRoom(_room);
 	}
 }
-void Room::step(float dt)  {
-#if 0
-	_manager.for_each<PositionComponent,VelocityComponent>([](auto ent, auto &id) {
-		
-		std::cout << id.name_ << "\n";
-	});
+void Room::deleteObject(RoomObject* object) {
 
-
-	bodyStep(dt);
-	_current_frame += _image_speed;
-	if ((std::abs(_current_frame) + 0.01f) >= 1.0f) { // we add some flub there
-		int next_frame = (int)std::modf(_current_frame + 0.01f, &_current_frame); // this should work
-		_sprite.setImageIndex(next_frame);
-	}
-
-	Node::step(dt);
-#endif
 }
+bool Room::removeObject(RoomObject& obj) {
+	if (obj._room != nullptr) { 
+		auto& owned = _objects.find(&obj);
+		if (owned != _objects.end()) {
+			_objects_to_delete.emplace_back(std::move(owned));
+			_objects.erase(owned);
+			obj._room = nullptr;
+			return true;
+		}
+	}
+	return false;
+}
+
+size_t Room::removeObject(uint32_t index) {
+	auto& range = _objects.equal_range(index);
+	if (range.first != _objects.end()) {
+		size_t count = std::distance(range.first, range.second);
+		if (count == 1) {
+			removeObject(*const_cast<RoomObject*>(range.first->object()));
+		} else {
+			for (auto it = range.first; it != range.second;) {
+				auto next = it;
+				removeObject(*const_cast<RoomObject*>(it->object()));
+				next++;
+			}
+			_object_list.clear(); // just clear it all as it might be a bunch of junk
+			_objects_to_delete.insert(_objects_to_delete.end(), std::make_move_iterator(range.first), std::make_move_iterator(range.second));
+		}
+	}
+	return 0;
+}
+
+
+RoomSprite& RoomObject::create_sprite(int index) {
+	_sprites.emplace_back(_room->_file, index);
+	return _sprites.back();
+}
+
+RoomObject::RoomObject(Room& room, gm::Object object) :_room(&room), _object(object) {
+	_room->_objects.emplace(this);
+}
+
+RoomObject::RoomObject(Room& room, uint32_t index) :_room(&room), _object(room._file.resource_at<gm::Object>(index)) {
+	_room->_objects.emplace(this);
+}
+
+RoomObject::~RoomObject() {
+	if (_room) {
+		_room->_objects.erase(this);
+		_room = nullptr;
+	}
+}
+
+void RoomObject::setDepth(float depth) { 
+	if (getDepth() != depth) {
+		_room->_object_list.clear();
+		VisablitySettings::setDepth(depth);
+	}
+}
+void RoomObject::removeSelf() {
+	_room->removeObject(*this);
+}
+void RoomObject::setUndertaleSprite(uint32_t index) {
+	RoomSprite::setUndertaleSprite(_room->_file, index);
+}
+void RoomObject::removeSprite(uint32_t index) {
+	_sprites.remove_if([index](RoomSprite& s) { return s.getIndex() == index; });
+}
+void RoomObject::removeSprite(RoomSprite& sprite) {
+	_sprites.remove_if([sprite](RoomSprite& s) { return &s== &sprite; });
+}
+
+
+void RoomSprite::step(float dt) {
+	MovementSettings::step(dt);
+	if (_frameSpeed != 0.0f) {
+		_currentFrameTime += dt;
+		if (_currentFrameTime >= std::abs(_frameSpeed)) {
+			if (_frameSpeed > 0.0f)
+				nextFrame();
+			else
+				prevFrame();
+		}
+	}
+}
+struct object_list_sort {
+	bool operator()(const RoomSprite& l, const RoomSprite& r) const { return l.getDepth() < r.getDepth(); }
+};
+void RoomObject::step(float dt) {
+	RoomSprite::step(dt);
+	if (!_sprites.empty()) {
+		_sprites.sort(object_list_sort{});
+		for (auto& s : _sprites)
+			s.step(dt);
+	}
+}
+
 void RoomObject::draw(sf::RenderTarget& target, sf::RenderStates states) const  {
-	if (_sprite.getUndertaleSprite().valid()) {
-		// we use OUR transform
-		states.transform *= getTransform();
-		states.texture = _sprite.getTexture().get();
-		target.draw(_sprite.getVertices(), _sprite.getVerticesCount(), _sprite.getVerticesType(), states);
+	RoomSprite::draw(target, states);
+	if (!_sprites.empty()) {
+		states.transform *= getTransform(); // make sure the sprites are realitive to us
+		for (const auto& s : _sprites)
+			s.draw(target, states);
 	}
 }
-
-
-TileMap::TileMap(size_t index) {
-	loadRoom(GetUndertale().LookupRoom(index));
+void Room::step(float dt) {
+	if (!_objects.empty()) {
+		bool resort = _object_list.empty();
+		for (auto& a : _objects) {
+			RoomObject& obj = *a.object();
+			if (resort) _object_list.emplace(obj);
+			obj.step(dt);
+		}
+	}
+	if (!_objects_to_delete.empty()) 
+		_objects_to_delete.clear(); // delete all objects that need deleting after step
 }
-void TileMap::loadRoom(size_t index) {
-	loadRoom(GetUndertale().LookupRoom(index));
-}
+
 void TileMap::unloadRoom() {
 	_hasTiles = false;  // dosn't delete the resource though
 }
-void TileMap::loadRoom(const Undertale::Room& room) {
+void TileMap::loadRoom(const gm::Room& room) {
 	if (room.tiles().size() > 0) {
 		_hasTiles = true;
 		if (!_tiles.create(room.width(), room.height(), true)) {

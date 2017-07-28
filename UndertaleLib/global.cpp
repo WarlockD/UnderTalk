@@ -2,8 +2,9 @@
 #include <chrono>
 #include <array>
 #include <mutex>
-#include <windows.h>
+
 #include <cassert>
+#include <Windows.h>
 
 namespace std {
 	// https://kjellkod.wordpress.com/2013/01/22/exploring-c11-part-2-localtime-and-time-again/

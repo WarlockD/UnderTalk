@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{086CED21-7140-3BA3-8239-6006CE78C838}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{BAFF810B-CDF6-3CB3-B10A-D076FDF1B83B}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
     <Platform>Win32</Platform>
     <ProjectName>INSTALL</ProjectName>
@@ -63,7 +63,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
-      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -85,7 +85,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
-      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -107,7 +107,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
     <Midl>
-      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -129,7 +129,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
     <Midl>
-      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -150,7 +150,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="D:\Documents\GitHub\UnderTalk\SFML_Build\CMakeFiles\936c375c49ff4c40529681ec94e2211a\INSTALL_force.rule">
+    <CustomBuild Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\CMakeFiles\7a570a43f90297c9c8daa1114b0e8d5c\INSTALL_force.rule">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"> </Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
 cd .
@@ -161,8 +161,8 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/Documents/GitHub/UnderTalk/SFML_Build/CMakeFiles/936c375c49ff4c40529681ec94e2211a/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Main\CMakeFiles\INSTALL_force</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/CMakeFiles/7a570a43f90297c9c8daa1114b0e8d5c/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Main\CMakeFiles\INSTALL_force</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"> </Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
@@ -174,8 +174,8 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/Documents/GitHub/UnderTalk/SFML_Build/CMakeFiles/936c375c49ff4c40529681ec94e2211a/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Main\CMakeFiles\INSTALL_force</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/CMakeFiles/7a570a43f90297c9c8daa1114b0e8d5c/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Main\CMakeFiles\INSTALL_force</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
       <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'"> </Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
@@ -187,8 +187,8 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/Documents/GitHub/UnderTalk/SFML_Build/CMakeFiles/936c375c49ff4c40529681ec94e2211a/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Main\CMakeFiles\INSTALL_force</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/CMakeFiles/7a570a43f90297c9c8daa1114b0e8d5c/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Main\CMakeFiles\INSTALL_force</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
       <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'"> </Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
@@ -200,18 +200,18 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/Documents/GitHub/UnderTalk/SFML_Build/CMakeFiles/936c375c49ff4c40529681ec94e2211a/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Main\CMakeFiles\INSTALL_force</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/CMakeFiles/7a570a43f90297c9c8daa1114b0e8d5c/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Main\CMakeFiles\INSTALL_force</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="D:\Documents\GitHub\UnderTalk\SFML_Build\ZERO_CHECK.vcxproj">
-      <Project>{6C003EA7-0ACB-31E8-A5EE-3974C1700422}</Project>
+    <ProjectReference Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\ZERO_CHECK.vcxproj">
+      <Project>{EFBE58B2-027A-3331-A617-08E06978D77F}</Project>
       <Name>ZERO_CHECK</Name>
     </ProjectReference>
-    <ProjectReference Include="D:\Documents\GitHub\UnderTalk\SFML_Build\ALL_BUILD.vcxproj">
-      <Project>{AACBA1FD-3CE6-31ED-AF65-AC5F9D82B69B}</Project>
+    <ProjectReference Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\ALL_BUILD.vcxproj">
+      <Project>{82294808-8B4A-3D5B-B9AC-B2F6241F7880}</Project>
       <Name>ALL_BUILD</Name>
     </ProjectReference>
   </ItemGroup>

@@ -602,28 +602,16 @@ namespace util {
 					ptr->mark = 2;
 				}
 				else {
+					size_t len = strv.size();
 					char* rptr = new char[strv.size() + sizeof(isymbol) + 1];
 					char* nstr = rptr + sizeof(isymbol);
-					// stupid windows, yes yes its an raw pointer
-#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS) 
-#ifdef USE_PRAGMA_WARNING_PUSH
-#pragma warning( push )
-#pragma warning( disable : 4996)
+#ifdef _WIN32
+					::memcpy_s(nstr, len, strv.data(), len);
 #else
-#define _CRT_SECURE_NO_WARNINGS
+					::memcpy(nstr, strv.data(), len);
 #endif
-#define _BACKUP_CRT_SECURE_NO_WARNINGS
-#endif
-					std::copy(strv.begin(), strv.end(), nstr);
-#ifdef _BACKUP_CRT_SECURE_NO_WARNINGS 
-#ifdef USE_PRAGMA_WARNING_PUSH
-#pragma warning( pop ) 
-#else
-#undef _CRT_SECURE_NO_WARNINGS
-#endif // 
-#undef _BACKUP_CRT_SECURE_NO_WARNINGS
-#endif
-					ptr = new(rptr) isymbol(nstr, strv.size(), hash);
+					nstr[len] = 0;
+					ptr = new(rptr) isymbol(nstr, len, hash);
 				}
 				return std::unique_ptr<isymbol>(ptr);
 			}
@@ -1057,7 +1045,7 @@ namespace util {
 	template<typename T_VALUE, typename T_ARRAY, typename = std::enable_if<priv::has_at_func<T_ARRAY>::value>>
 	class GenericIterator {
 	public:
-		using iterator_category = typename std::random_access_iterator_tag;
+		using iterator_category = typename std::bidirectional_iterator_tag;
 		using difference_type = typename std::ptrdiff_t;
 		using value_type = typename std::remove_const<T_VALUE>::type;
 		using pointer = typename value_type*;
@@ -1071,7 +1059,7 @@ namespace util {
 		GenericIterator& operator--() { --_pos; return *this; }
 		GenericIterator operator++(int) { return GenericIterator(_list, _pos++); }
 		GenericIterator operator--(int) { return GenericIterator(_list, _pos--); }
-		reference operator*() const { return _vec.at(_pos); }
+		reference operator*() const { return _list.at(_pos); }
 		pointer operator->() const { return &_list.at(_pos); }
 		reference operator[](const difference_type& n) const { return _list.at(n); }
 		template<typename T, typename A> friend bool operator==(const GenericIterator<T, A>& r1, const GenericIterator<T, A>& r2);

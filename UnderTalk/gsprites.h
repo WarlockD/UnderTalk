@@ -92,7 +92,6 @@ public:
 	void setUndertaleSprite(gm::DataWinFile& file, int index) {
 		if (index == -1) {
 			_sprite = gm::Sprite();
-			setFrame(gm::SpriteFrame());
 		}
 		else {
 			_sprite = file.resource_at<gm::Sprite>(index);

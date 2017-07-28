@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="D:\Documents\GitHub\UnderTalk\SFML\CMakeLists.txt" />
+    <CustomBuild Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

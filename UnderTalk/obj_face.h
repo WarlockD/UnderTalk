@@ -1,11 +1,8 @@
 #pragma once
 #include "Global.h"
 #include "room.h"
-#include "gsprites.h"
 
-class obj_face  : public sf::Drawable {
-	ManagerType& _manager;
-	entity_t _faceSprites[3];
+class obj_face  : public RoomObject {
 	size_t _emotion;
 	size_t _face;
 	// special case for torel as we have multipule sprites to overlap
@@ -13,7 +10,7 @@ class obj_face  : public sf::Drawable {
 	float _last;
 
 public:
-	obj_face(ManagerType& manager;
+	obj_face(Room& room) : RoomObject(room, 774) {} // obj face is 774
 	~obj_face();
 	size_t getFace() { return _face; }
 	virtual size_t getEmotion() const { return _emotion;  }
