@@ -6,9 +6,7 @@ using namespace sf;
 
 //GSpriteFrame* cframe = new GSpriteFrame;
 //cframe->_texRect = IntRect(frame->x, frame->y, frame->width, frame->height);
-
 void GSpriteFrame::updateVertices() {
-	_texture = Undertale::GetTexture(_frame->texture_index);
 	_texRect = IntRect(_frame->x, _frame->y, _frame->width, _frame->height);
 	_origin = Vector2u(_frame->offset_x, _frame->offset_y);
 	{
@@ -31,6 +29,13 @@ void GSpriteFrame::updateVertices() {
 		_vertices[3] = Vertex(Vector2f(right, bottom), Color::White, Vector2f(u2, v2));
 	}
 }
+
+void GSpriteFrame::updateTexture(gm::DataWinFile& file) {
+	if (_texture && _texture->texture_index() == _frame->texture_index) return;
+	_texture = Undertale::GetTexture(file, _frame->texture_index);
+}
+
+
 SpriteVertices::SpriteVertices() : _vertices(nullptr), _owned(false) {  }
 SpriteVertices::SpriteVertices(const sf::Vector2f& pos, const sf::Color& color) : _vertices(new sf::Vertex[6]), _owned(true) { set(FloatRect(pos, Vector2f(1.0f,1.0f)), IntRect(0, 0, 1, 1), color); }
 SpriteVertices::SpriteVertices( const sf::Vector2f& pos, const sf::IntRect& textRect, const sf::Color& color) : _vertices(new sf::Vertex[6]), _owned(true) { set(FloatRect(pos, Vector2f((float)textRect.width, (float)textRect.height)), textRect, color); }
@@ -123,17 +128,22 @@ void SpriteVertices::setTextureRect(const sf::IntRect& rect, bool setsize) {
 	_vertices[3].texCoords = Vector2f(u2, v1);
 	_vertices[4].texCoords = Vector2f(u1, v2);
 	_vertices[5].texCoords = Vector2f(u2, v2);
-	if (setsize) setVertexSize(Vector2f(rect.width, rect.height));
+	if (setsize) setVertexSize(Vector2f((float)rect.width, (float)rect.height));
 }
 sf::Vector2f SpriteVertices::getVertexSize() const { return _vertices[2].position - _vertices[0].position; } // size is set by texture rect
 
-GSpriteFrame::GSpriteFrame(const gm::SpriteFrame& frame) : _frame(&frame) {
+GSpriteFrame::GSpriteFrame(gm::DataWinFile& file, const gm::SpriteFrame& frame) : _frame(&frame) {
 	updateVertices();
+	updateTexture(file);
 }
 
-void GSpriteFrame::setFrame(const gm::SpriteFrame& frame) {
-	_frame = &frame;
-	updateVertices();
+void GSpriteFrame::setFrame(gm::DataWinFile& file, const gm::SpriteFrame& frame) {
+	if (_frame != &frame) {
+		_frame = &frame;
+		updateVertices();
+		updateTexture(file);
+	}
+
 }
 
 
@@ -177,8 +187,8 @@ void GSpriteFrame::insertIntoVertexList(std::vector<sf::Vertex>& list, sf::Primi
 	}
 	else throw std::exception("Bad type to insert");
 }
-#if 0
 
+#if 0
 void GSprite::setUndertaleSprite(int index) {
 	if (index == -1) {
 		_sprite = gm::Sprite();
@@ -192,10 +202,14 @@ void GSprite::setUndertaleSprite(int index) {
 void GSprite::setUndertaleSprite(const std::string& name) {
 	assert(false);
 }
+#endif
 void GSprite::setImageIndex(int index) {
 	_image_index = std::abs(index %  (int)getImageCount());
-	setFrame(_sprite.frames().at(_image_index));
+	const auto& frame = _sprite.frames().at(_image_index);
+	updateVertices();
+}
+void GSprite::setImageIndex(int index, gm::DataWinFile& file) {
+	setImageIndex(index);
+	updateTexture(file);
 }
 
-
-#endif

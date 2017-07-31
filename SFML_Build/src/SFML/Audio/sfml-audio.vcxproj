@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{DD67FBD3-9D2A-3A1C-8B4A-B1E00E864498}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{76DC1E12-962D-311F-B581-6B366814A3C4}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
     <Platform>Win32</Platform>
     <ProjectName>sfml-audio</ProjectName>
@@ -56,26 +56,26 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\lib\Debug\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\lib\Debug\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">sfml-audio.dir\Debug\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">sfml-audio-s-d</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\lib\Release\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\lib\Release\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">sfml-audio.dir\Release\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">sfml-audio-s</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\lib\MinSizeRel\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\lib\MinSizeRel\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">sfml-audio.dir\MinSizeRel\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">sfml-audio-s</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\lib\RelWithDebInfo\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\lib\RelWithDebInfo\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">sfml-audio.dir\RelWithDebInfo\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">sfml-audio-s</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -89,14 +89,14 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;OV_EXCLUDE_STATIC_CALLBACKS;FLAC__NO_DLL;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\lib\Debug\sfml-audio-s.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>D:\Documents\GitHub\UnderTalk\SFML_Build\lib\Debug\sfml-audio-s.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;OV_EXCLUDE_STATIC_CALLBACKS;FLAC__NO_DLL;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -109,7 +109,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -122,14 +122,14 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;OV_EXCLUDE_STATIC_CALLBACKS;FLAC__NO_DLL;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DebugInformationFormat></DebugInformationFormat>
-      <ProgramDataBaseFileName>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\lib\Release\sfml-audio-s.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>D:\Documents\GitHub\UnderTalk\SFML_Build\lib\Release\sfml-audio-s.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;OV_EXCLUDE_STATIC_CALLBACKS;FLAC__NO_DLL;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -142,7 +142,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -155,14 +155,14 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;OV_EXCLUDE_STATIC_CALLBACKS;FLAC__NO_DLL;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <DebugInformationFormat></DebugInformationFormat>
-      <ProgramDataBaseFileName>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\lib\MinSizeRel\sfml-audio-s.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>D:\Documents\GitHub\UnderTalk\SFML_Build\lib\MinSizeRel\sfml-audio-s.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;OV_EXCLUDE_STATIC_CALLBACKS;FLAC__NO_DLL;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -175,7 +175,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -188,14 +188,14 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;OV_EXCLUDE_STATIC_CALLBACKS;FLAC__NO_DLL;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\lib\RelWithDebInfo\sfml-audio-s.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>D:\Documents\GitHub\UnderTalk\SFML_Build\lib\RelWithDebInfo\sfml-audio-s.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;SFML_STATIC;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;OV_EXCLUDE_STATIC_CALLBACKS;FLAC__NO_DLL;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Documents\GitHub\UnderTalk\SFML\include;D:\Documents\GitHub\UnderTalk\SFML\src;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers\AL;D:\Documents\GitHub\UnderTalk\SFML\extlibs\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -207,10 +207,10 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule C:/Users/Paul/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt</Message>
+    <CustomBuild Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -HC:/Users/Paul/Documents/GitHub/UnderTalk/SFML -BC:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Audio/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Documents/GitHub/UnderTalk/SFML -BD:/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Audio/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -218,12 +218,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:/Users/Paul/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.9\Modules\FindOpenAL.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindVorbis.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindFLAC.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Audio\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.9\Modules\FindOpenAL.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindVorbis.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindFLAC.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Audio\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule C:/Users/Paul/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -HC:/Users/Paul/Documents/GitHub/UnderTalk/SFML -BC:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Audio/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Documents/GitHub/UnderTalk/SFML -BD:/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Audio/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -231,12 +231,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:/Users/Paul/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.9\Modules\FindOpenAL.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindVorbis.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindFLAC.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Audio\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.9\Modules\FindOpenAL.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindVorbis.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindFLAC.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Audio\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule C:/Users/Paul/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -HC:/Users/Paul/Documents/GitHub/UnderTalk/SFML -BC:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Audio/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Documents/GitHub/UnderTalk/SFML -BD:/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Audio/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -244,12 +244,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">C:/Users/Paul/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.9\Modules\FindOpenAL.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindVorbis.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindFLAC.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Audio\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.9\Modules\FindOpenAL.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindVorbis.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindFLAC.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Audio\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule C:/Users/Paul/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -HC:/Users/Paul/Documents/GitHub/UnderTalk/SFML -BC:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Audio/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -HD:/Documents/GitHub/UnderTalk/SFML -BD:/Documents/GitHub/UnderTalk/SFML_Build --check-stamp-file D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Audio/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -257,64 +257,64 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">C:/Users/Paul/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.9\Modules\FindOpenAL.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindVorbis.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindFLAC.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Audio\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:/Documents/GitHub/UnderTalk/SFML/src/SFML/Audio/CMakeLists.txt;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.9\Modules\FindOpenAL.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindVorbis.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\cmake\Modules\FindFLAC.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\Audio\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\ALCheck.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\ALCheck.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\AlResource.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\AlResource.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\AudioDevice.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\AudioDevice.hpp" />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\Export.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\Listener.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\Listener.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\Music.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\Music.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\Sound.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\Sound.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundBuffer.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundBuffer.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundBufferRecorder.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundBufferRecorder.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\InputSoundFile.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\InputSoundFile.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\OutputSoundFile.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\OutputSoundFile.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundRecorder.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundRecorder.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundSource.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundSource.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundStream.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundStream.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileFactory.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundFileFactory.hpp" />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundFileFactory.inl" />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundFileReader.hpp" />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileReaderFlac.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileReaderFlac.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileReaderOgg.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileReaderOgg.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileReaderWav.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileReaderWav.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundFileWriter.hpp" />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileWriterFlac.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileWriterFlac.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileWriterOgg.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileWriterOgg.cpp"  />
-    <ClInclude Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileWriterWav.hpp" />
-    <ClCompile Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileWriterWav.cpp"  />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\ALCheck.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\ALCheck.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\AlResource.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\AlResource.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\AudioDevice.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\AudioDevice.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\Export.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\Listener.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\Listener.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\Music.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\Music.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\Sound.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\Sound.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundBuffer.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundBuffer.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundBufferRecorder.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundBufferRecorder.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\InputSoundFile.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\InputSoundFile.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\OutputSoundFile.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\OutputSoundFile.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundRecorder.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundRecorder.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundSource.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundSource.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundStream.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundStream.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileFactory.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundFileFactory.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundFileFactory.inl" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundFileReader.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileReaderFlac.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileReaderFlac.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileReaderOgg.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileReaderOgg.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileReaderWav.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileReaderWav.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\include\SFML\Audio\SoundFileWriter.hpp" />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileWriterFlac.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileWriterFlac.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileWriterOgg.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileWriterOgg.cpp"  />
+    <ClInclude Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileWriterWav.hpp" />
+    <ClCompile Include="D:\Documents\GitHub\UnderTalk\SFML\src\SFML\Audio\SoundFileWriterWav.cpp"  />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\ZERO_CHECK.vcxproj">
-      <Project>{EFBE58B2-027A-3331-A617-08E06978D77F}</Project>
+    <ProjectReference Include="D:\Documents\GitHub\UnderTalk\SFML_Build\ZERO_CHECK.vcxproj">
+      <Project>{6C003EA7-0ACB-31E8-A5EE-3974C1700422}</Project>
       <Name>ZERO_CHECK</Name>
     </ProjectReference>
-    <ProjectReference Include="C:\Users\Paul\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\System\sfml-system.vcxproj">
-      <Project>{45D16D95-F9E0-394F-90AE-32D938F0C9A8}</Project>
+    <ProjectReference Include="D:\Documents\GitHub\UnderTalk\SFML_Build\src\SFML\System\sfml-system.vcxproj">
+      <Project>{95C17390-471F-3B96-BB93-B13F66D0FC6B}</Project>
       <Name>sfml-system</Name>
     </ProjectReference>
   </ItemGroup>

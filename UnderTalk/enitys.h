@@ -15,7 +15,7 @@ class TileMap : public sf::Drawable
 	bool _hasTiles;
 public:
 	TileMap() : _hasTiles(false) {}
-	void loadRoom(const gm::Room& room);
+	void loadRoom(gm::DataWinFile& file, const gm::Room& room);
 	void unloadRoom();
 	//TileMap(size_t index);
 	//void loadRoom(size_t index);

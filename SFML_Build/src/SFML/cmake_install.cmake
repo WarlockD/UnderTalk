@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/Paul/Documents/GitHub/UnderTalk/SFML/src/SFML
+# Install script for directory: D:/Documents/GitHub/UnderTalk/SFML/src/SFML
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -29,12 +29,12 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/System/cmake_install.cmake")
-  include("C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Main/cmake_install.cmake")
-  include("C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Window/cmake_install.cmake")
-  include("C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Network/cmake_install.cmake")
-  include("C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Graphics/cmake_install.cmake")
-  include("C:/Users/Paul/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Audio/cmake_install.cmake")
+  include("D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/System/cmake_install.cmake")
+  include("D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Main/cmake_install.cmake")
+  include("D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Window/cmake_install.cmake")
+  include("D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Network/cmake_install.cmake")
+  include("D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Graphics/cmake_install.cmake")
+  include("D:/Documents/GitHub/UnderTalk/SFML_Build/src/SFML/Audio/cmake_install.cmake")
 
 endif()
 

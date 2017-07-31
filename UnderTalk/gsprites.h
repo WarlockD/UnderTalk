@@ -1,6 +1,6 @@
 #pragma once
 #include "Global.h"
-
+#include "VertexHelper.h"
 // simple class that converts a frame into
 // vertexes
 // The catch is that the offset position moves the center of the frame
@@ -55,18 +55,19 @@ class GSpriteFrame  {
 protected:
 	const gm::SpriteFrame* _frame; // to save space this could just be a pointer
 	sf::Vertex  _vertices[4]; ///< Vertices defining the sprite's geometry, should we use quads?
-	std::shared_ptr<sf::Texture> _texture;
+	SharedTexture _texture;
 	sf::IntRect _texRect;
 	sf::Vector2u _size;
 	sf::Vector2u _origin;
 
-	void updateVertices(gm::DataWinFile& file);
+	void updateVertices();
+	void updateTexture(gm::DataWinFile& file);
 public:
 	GSpriteFrame() : _frame(nullptr) {}
-	GSpriteFrame(const gm::SpriteFrame& frame);
+	GSpriteFrame(gm::DataWinFile& file, const gm::SpriteFrame& frame);
 	void insertIntoVertexList(sf::VertexArray& list) const;
 	void insertIntoVertexList(std::vector<sf::Vertex>& list, sf::PrimitiveType type) const;
-	void setFrame(const gm::SpriteFrame& frame);
+	void setFrame(gm::DataWinFile& file, const gm::SpriteFrame& frame);
 	const gm::SpriteFrame& getFrame() const { return *_frame; }
 	
 	const sf::IntRect& getTextureRect() const { return _texRect; }
@@ -108,8 +109,35 @@ public:
 	sf::FloatRect getLocalBounds() const { return sf::FloatRect((float)_sprite.left(), (float)_sprite.top(), (float)_sprite.left() - (float)_sprite.right(), (float)_sprite.bottom() - (float)_sprite.top()); }
 	size_t getImageCount() const { return _sprite.frames().size(); }
 	void setImageIndex(int index);
+	void setImageIndex(int index, gm::DataWinFile& file);
 	const gm::StringView& getName() const { return _sprite.name(); }
 	uint32_t getIndex() const { return _sprite.index(); }
 	size_t getImageIndex() const { return _image_index; }
 	bool valid() const { return _sprite.valid(); }
+};
+class FontCache {
+
+public:
+	class GlyphSprite : public sf::Transformable, public sf::Drawable {
+		sf::Vertex  _vertices[4]; ///< Vertices defining the sprite's geometry, should we use quads?
+	public:
+		GlyphSprite() = default;
+		GlyphSprite(gm::Font::Glyph glyph);
+		const sf::Vertex* getVertices() const { return _vertices; }
+		size_t size() const { return 4; }
+	};
+	FontCache(gm::DataWinFile& file, gm::Font font) :_font(font) {}
+
+	const GlyphVerts& glyph_at(size_t index) const {
+		auto it = _glyphs.find(index);
+		if (it != _glyphs.end()) {
+			GlyphVerts(_font.glyph_at(index)
+		}
+		return it->second;
+	}
+	bool valid() const { return _font.valid(); }
+private:
+	gm::Font _font;
+	mutable std::unordered_map<size_t, GlyphSprite> _glyphs;
+	SharedTexture _texture;
 };

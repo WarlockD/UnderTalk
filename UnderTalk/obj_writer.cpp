@@ -333,10 +333,10 @@ void OBJ_WRITER::step(float dt) {
 					_currentColor = Color(_pos->value());
 					break;
 				case UndertaleText::Token::Emotion:
-					_face.setEmotion(_pos->value());
+	//				_face.setEmotion(_pos->value());
 					break;
 				case UndertaleText::Token::Face:
-					_face.setFace(_pos->value());
+//					_face.setFace(_pos->value());
 					break;
 				case UndertaleText::Token::Typer:
 					switch (_pos->value()) {
@@ -438,6 +438,6 @@ void OBJ_WRITER::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
 	states.texture = _fontTexture;
 	target.draw(_glyphVertices.data(), _glyphVertices.size(), PrimitiveType::Triangles, states);
-	Node::draw(target, states); 
+	RoomObject::draw(target, states);
 
 }

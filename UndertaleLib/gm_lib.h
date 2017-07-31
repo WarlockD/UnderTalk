@@ -373,13 +373,13 @@ namespace gm {
 		const uint8_t* _data;
 		uint32_t _offset;
 		template<typename T>
-		const T* raw() const { return reinterpret_cast<const T*>(_data + _offset); }
+		const T* _raw() const { return reinterpret_cast<const T*>(_data + _offset); }
 	public:
 		OffsetInterface() : _data(nullptr), _offset(0) {}
 		OffsetInterface(const uint8_t* data, uint32_t offset) : _data(data), _offset(offset) {}
 		virtual ~OffsetInterface() {}
-
-		const uint8_t* data() const { return _data + _offset; }
+		const uint8_t* offset_data() const { return _data + _offset; }
+		const uint8_t* data() const { return _data; }
 		uint32_t offset() const { return _offset; } // unique
 		bool operator<(const OffsetInterface& other) const { return offset() < other.offset(); }
 		bool operator==(const OffsetInterface& other) const { return _data == other._data && offset() == other.offset(); }
@@ -415,28 +415,23 @@ namespace gm {
 		constexpr ChunkType resource_type() const { return ResType; }
 		constexpr const char* resource_name() const { return ResTypeName; }
 	};
-	template<typename RAW_T, ChunkType CT>
+	template<typename RAW_T, ChunkType CT = ChunkType::BAD>
 	class Resource : public  OffsetInterface {
 	protected:
 		uint32_t _index;
-		template<typename T, typename E=void>
-		struct _get_name_t {
-			StringView operator()(const uint8_t* data, const T* obj) const {
-				assert(0);
-				//static_assert(0, "has no name offset");
-				return StringView();
-			}
-		};
-		template<typename T>
-		struct _get_name_t<T, priv::has_name_offset<T>> {
-			StringView operator()(const uint8_t* data, const T* obj) const {
-				assert(data != nullptr);
-				// so, some reason resources have the pointer to the start of the string
-				// not to the string reserouce
-				// so we move back 4 bytes to get its length
-				return StringView(reinterpret_cast<const char*>(data + offset), *reinterpret_cast<const uint32_t*>(data + obj->name_offset - 4));
-			}
-		};
+		struct _no_name {};
+		struct _has_name : _no_name {};
+		static inline StringView _get_string(const uint8_t* data, uint32_t offset) {
+			return StringView(reinterpret_cast<const char*>(data + offset), *reinterpret_cast<const uint32_t*>(data + offset - 4));
+		}
+		static inline StringView _get_name(const uint8_t* data, const RAW_T* obj, _no_name)  {
+			assert(0);
+			//static_assert(0, "has no name offset");
+			return StringView();
+		}
+		static inline  StringView _get_name(const uint8_t* data, const RAW_T* obj, _has_name)  {
+			return _get_string(data + obj->name_offset - 4);
+		}
 	public:
 		using traits = ResourceTraits<RAW_T, CT>;
 		using raw_type = std::add_const_t<std::decay_t<RAW_T>>;
@@ -446,7 +441,7 @@ namespace gm {
 		Resource() = default;
 		Resource(uint32_t index, const uint8_t* data, size_t offset) : OffsetInterface(data, offset), _index(index) {}
 		Resource(int index, const uint8_t* data, size_t offset) : Resource(static_cast<uint32_t>(index),data,offset) {}
-		reference raw() const { return *reinterpret_cast<pointer>(data()); }
+		reference raw() const { return *reinterpret_cast<pointer>(OffsetInterface::offset_data()); }
 		//	reference operator*() const { return raw(); }
 		//	pointer operator->() const { *reinterpret_cast<pointer>(data()); }
 		uint32_t index() const { return _index; }
@@ -455,8 +450,8 @@ namespace gm {
 		bool operator!=(const Resource& other) const { return !(*this == other); }
 		template<typename F = RAW_T>
 		StringView name() const {
-			_get_name_t<F> get_name;
-			return get_name(data(), &raw());
+			std::conditional_t< priv::has_name_offset<RAW_T>::value, _has_name, _no_name> name_test;
+			return _get_name(data(), &raw(), name_test);
 		}
 		virtual void to_stream(std::ostream& os) const override {
 			OffsetInterface::to_stream(os);
@@ -469,12 +464,46 @@ namespace gm {
 		}
 
 	};
+	template<typename VALUE_T, typename LIST_T>
+	class GenericAtConstIliterator {
+	public:
+		using iterator_category = typename std::bidirectional_iterator_tag;
+		using difference_type = typename std::ptrdiff_t;
+		using value_type = std::decay_t<VALUE_T>;
+		using pointer = value_type*;
+		using reference = value_type&;
+		using const_pointer = const value_type*;
+		using const_reference = const value_type&;
 
+		GenericAtConstIliterator(const LIST_T& vec, size_t pos) : _list(vec), _pos(pos) {}
+		GenericAtConstIliterator(const LIST_T& vec) : _list(vec), _pos(0) {}
+		GenericAtConstIliterator& operator++() { ++_pos; return *this; }
+		GenericAtConstIliterator& operator--() { --_pos; return *this; }
+		GenericAtConstIliterator operator++(int) { return GenericAtConstIliterator(_list, _pos++); }
+		GenericAtConstIliterator operator--(int) { return GenericAtConstIliterator(_list, _pos--); }
+		GenericAtConstIliterator operator+(difference_type value) const { return GenericAtConstIliterator(_list, _pos + value); }
+		GenericAtConstIliterator operator-(difference_type value) const { return GenericAtConstIliterator(_list, _pos - value); }
+
+		const_reference operator*() const { return _list.at(_pos); }
+		const_pointer operator->() const { return &_list.at(_pos); }
+		const_reference operator[](const difference_type& n) const { return _list.at(n); }
+		bool operator==(const GenericAtConstIliterator& r) const { return _pos == r._pos; }
+		bool operator!=(const GenericAtConstIliterator& r) const { return _pos != r._pos; }
+		bool operator<(const GenericAtConstIliterator& r) const { return _pos < r._pos; }
+		bool operator>(const GenericAtConstIliterator& r) const { return _pos > r._pos; }
+		bool operator>=(const GenericAtConstIliterator& r) const { return _pos >= r._pos; }
+		bool operator<=(const GenericAtConstIliterator& r) const { return _pos <= r._pos; }
+	protected:
+		const LIST_T& _list;
+		size_t _pos;
+	};
+	// list of raw resources
 	template<typename VALUE_T>
 	class OffsetList {
 		const uint8_t* _data;
 		Offsets _list;
 	public:
+		using type = OffsetList<VALUE_T>;
 		using difference_type = std::ptrdiff_t;
 		using value_type = std::decay_t<VALUE_T>;
 		using pointer = value_type*;
@@ -483,50 +512,49 @@ namespace gm {
 		using const_reference = const value_type&;
 		OffsetList(const uint8_t* ptr, size_t offset) : _data(ptr), _list(ptr+ offset) {}
 		OffsetList(const uint8_t* ptr, const uint8_t* list) : _data(ptr), _list(list) {}
+		OffsetList(const Offsets& ptr, size_t offset) : _data(ptr), _list(ptr + offset) {}
 		size_t size() const { return _list.size(); }
 		const_reference at(size_t i) const { return *reinterpret_cast<const_pointer>(_data + _list.at(i)); }
 		const_reference operator[](size_t i) const { return at(i); }
 
-		class OffsetIterator {
-		public:
-			using iterator_category = typename std::bidirectional_iterator_tag;
-			using difference_type = typename std::ptrdiff_t;
-			using value_type = std::decay_t<VALUE_T>;
-			using pointer = value_type*;
-			using reference = value_type&;
-			using const_pointer = const value_type*;
-			using const_reference = const value_type&;
-
-			OffsetIterator(const OffsetList& vec, size_t pos) : _list(vec), _pos(pos) {}
-			OffsetIterator(const OffsetList& vec) : _list(vec), _pos(0) {}
-			OffsetIterator& operator++() { ++_pos; return *this; }
-			OffsetIterator& operator--() { --_pos; return *this; }
-			OffsetIterator operator++(int) { return GenericIterator(_list, _pos++); }
-			OffsetIterator operator--(int) { return GenericIterator(_list, _pos--); }
-			OffsetIterator operator+(difference_type value) const { return OffsetIterator(_list, _pos + value); }
-			OffsetIterator operator-(difference_type value) const { return OffsetIterator(_list, _pos - value); }
-			
-			const_reference operator*() const { return _list.at(_pos); }
-			const_pointer operator->() const { return &_list.at(_pos); }
-			const_reference operator[](const difference_type& n) const { return _list.at(n); }
-			bool operator==(const OffsetIterator& r) const { return _pos == r._pos; }
-			bool operator!=(const OffsetIterator& r) const { return _pos != r._pos; }
-			bool operator<(const OffsetIterator& r) const { return _pos < r._pos; }
-			bool operator>(const OffsetIterator& r) const { return _pos > r._pos; }
-			bool operator>=(const OffsetIterator& r) const { return _pos >= r._pos; }
-			bool operator<=(const OffsetIterator& r) const { return _pos <= r._pos; }
-
-
-		protected:
-			const OffsetList& _list;
-			size_t _pos;
-		};
-		using const_iterator = OffsetIterator;
+		using const_iterator = GenericAtConstIliterator<VALUE_T, type>;
 
 
 		const_iterator begin() const { return const_iterator(*this, 0); }
 		const_iterator end() const { return const_iterator(*this, size()); }
 	};
+	template<typename RESOURCE_T>
+	class ResourceList {
+		const uint8_t* _data;
+		Offsets _list;
+		std::unordered_map<uint32_t, RESOURCE_T> _cache;
+	public:
+		using type = OffsetList<RESOURCE_T>;
+		using difference_type = std::ptrdiff_t;
+		using value_type = std::decay_t<RESOURCE_T>;
+		using pointer = value_type*;
+		using reference = value_type&;
+		using const_pointer = const value_type*;
+		using const_reference = const value_type&;
+		ResourceList(const uint8_t* ptr, size_t offset) : _data(ptr), _list(ptr + offset) {}
+		ResourceList(const uint8_t* ptr, const uint8_t* list) : _data(ptr), _list(list) {}
+		ResourceList(const Offsets& ptr, size_t offset) : _data(ptr), _list(ptr + offset) {}
+		size_t size() const { return _list.size(); }
+		const_reference at(size_t i) const {
+			auto it = _cache.find(i);
+			if (it == _cache.end()) {
+				return m.emplace(std::make_pair(i, RESOURCE_T(i, _data, _list.at(i)))).first->second;
+			}
+			return it.second;
+		}
+		const_reference operator[](size_t i) const { return at(i); }
+		using const_iterator = GenericAtConstIliterator<RESOURCE_T, type>;
+
+		const_iterator begin() const { return const_iterator(*this, 0); }
+		const_iterator end() const { return const_iterator(*this, size()); }
+	};
+
+
 	class XMLResourceExportInterface {
 	public:
 		virtual ~XMLResourceExportInterface() {}
@@ -742,6 +770,7 @@ namespace gm {
 		};
 
 		struct Texture : CannotCreate<Texture> {
+			int unkonwn_filler;
 			int png_offset;
 		};
 		struct OldCode : CannotCreate<OldCode> {
@@ -819,8 +848,10 @@ namespace gm {
 	public:
 		Texture() = default;
 		Texture(int index, const uint8_t* data, uint32_t offset) : Resource(index, data, offset) {
-			const uint8_t* ptr = data + raw().png_offset;
+			const uint8_t* ptr = this->data() + raw().png_offset;
 			_png_data = ptr;
+			debug::debug_ptr<const uint32_t> meh(ptr, 16);
+			std::cerr << meh << std::endl;
 			const uint8_t* start = ptr;
 			assert(memcmp(ptr, pngSig, 8) == 0);
 			ptr += 8;
@@ -851,17 +882,21 @@ namespace gm {
 		Background(int index, const uint8_t* data, uint32_t offset) :
 			Resource(index, data, offset)
 		{
-			_frame = dynamic_cast<const gm::raw_type::SpriteFrame*>(_frame + raw().frame_offset);
+			_frame = reinterpret_cast<const gm::raw_type::SpriteFrame*>(this->data() + raw().frame_offset);
 		}
 		bool trasparent() const { return raw().trasparent != 0;  }
 		bool smooth() const { return raw().smooth != 0; }
 		bool preload() const { return raw().preload != 0; }
 		const gm::raw_type::SpriteFrame& frame() const { return *_frame; }
 	};
+
 	class Room : public Resource<raw_type::Room, ChunkType::ROOM> {
 	protected:
 		const char* _caption;
 	public:
+	//	class RoomBackground : public Resource<gm::raw_type::RoomBackground> {
+
+		//};
 		Room() = default;
 		Room(int index, const uint8_t* data, uint32_t offset) : Resource(index, data, offset) {}
 		const char* caption() const { return _caption; }
@@ -918,13 +953,14 @@ namespace gm {
 		};
 	private:
 		const gm::raw_type::SpriteFrame* _frame;
-		const char* _description;
-		OffsetList<Glyph> _glyphs;
+		StringView _description;
+		//OffsetList<Glyph> _glyphs;
 	public:
-		Font(int index, const uint8_t* data, uint32_t offset) : Resource(index, data, offset)
-			,_description(reinterpret_cast<const char*>(data + raw().description_offset))
-			, _frame(reinterpret_cast<const gm::raw_type::SpriteFrame*>(data + raw().frame_offset))
-			, _glyphs(data, offset + sizeof(raw_type)){}
+		Font(int index, const uint8_t* data, uint32_t offset) : Resource(index, data, offset) {
+			_description = _get_string(data,raw().description_offset); //reinterpret_cast<const char*>(_data.data() + font->_raw->description_offset);
+			_frame = (reinterpret_cast<const gm::raw_type::SpriteFrame*>(data + raw().frame_offset));
+		}
+		const StringView& description() const { return _description; }
 		int size() const { return raw().size; }
 		bool bold() const { return raw().bold != 0; }
 		bool italic() const { return raw().italic != 0; }
@@ -935,7 +971,7 @@ namespace gm {
 		const gm::raw_type::SpriteFrame& frame() const { return *_frame; }
 		float scaleWidth() const { return raw().scale_width; }
 		float scaleHeight() const { return raw().scale_height; }
-	//	OffsetList<Glyph> glyphs() const { return OffsetList<Glyph>(raw().ptr_begin()-_offset, _raw_glyphs; }
+		OffsetList<Glyph> glyphs() const { return OffsetList<Glyph>(data(), offset_data()+sizeof(raw_type)); }
 	};
 
 	class Action : public Resource<raw_type::ObjectAction, ChunkType::BAD> {

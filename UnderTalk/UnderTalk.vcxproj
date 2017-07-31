@@ -73,7 +73,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\UndertaleLib;$(SolutionDir)SFML\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\include;$(ProjectDir)..\UndertaleLib;$(SolutionDir)SFML\include;$(SolutionDir)SFML_Build\lib\Debug;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)SFML\extlibs\libs-msvc-universal\x86;$(SolutionDir)SFML_Build\lib\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -105,7 +105,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>winmm.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;opengl32.lib;sfml-audio-s-d.lib;sfml-system-s-d.lib;sfml-graphics-s-d.lib;sfml-main-d.lib;sfml-window-s-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>
       </OptimizeReferences>
     </Link>
@@ -194,9 +194,11 @@
     <ClInclude Include="obj_gobject.h" />
     <ClInclude Include="obj_vaporized_new.h" />
     <ClInclude Include="obj_writer.h" />
+    <ClInclude Include="queue.h" />
     <ClInclude Include="Ref.h" />
     <ClInclude Include="room.h" />
     <ClInclude Include="tailq.hpp" />
+    <ClInclude Include="VertexHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFML_Build\src\SFML\Audio\sfml-audio.vcxproj">

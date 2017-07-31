@@ -135,7 +135,13 @@ public:
 		internalReset();
 		std::fstream file(filename, std::ios::in | std::ios::binary);
 		if (!file || file.bad()) {
+#ifdef _MSC_VER 
+			char debug_message[64];
+			::strerror_s(debug_message, sizeof(debug_message), errno);
+			std::cerr << "File '" << filename.c_str() << "' could not be opened.  Code: " << debug_message << std::endl;
+#else
 			std::cerr << "File '" << filename.c_str() << "' could not be opened.  Code: " << std::strerror(errno) << std::endl;
+#endif
 			return false;
 		}
 

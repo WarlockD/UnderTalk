@@ -106,7 +106,7 @@ private:
 	int _textpause;
 	sf::Color _currentColor;
 	// text position
-	obj_face _face;
+//	obj_face _face;
 	const std::map<int, sf::Glyph>* _fontGlyphs;
 	const sf::Texture* _fontTexture;
 	HaltDelegate _haltdel;
@@ -114,8 +114,10 @@ private:
 public:
 	void setHaltDelegate(HaltDelegate func) { _haltdel = func; }
 
-	void DebugSetFace(int face, int emotion) { _face.setFace(face); _face.setEmotion(emotion);  }
-	OBJ_WRITER(Room& room) : RoomObject(room), _fontTexture(nullptr), _size(0), _stringno(0), _halt(0), _fontGlyphs(nullptr) , _glyphVertices(sf::PrimitiveType::TrianglesStrip){
+	void DebugSetFace(int face, int emotion) { 
+	//	_face.setFace(face); _face.setEmotion(emotion); 
+	}
+	OBJ_WRITER(Room& room) : RoomObject(room,0), _fontTexture(nullptr), _size(0), _stringno(0), _halt(0), _fontGlyphs(nullptr) , _glyphVertices(sf::PrimitiveType::TrianglesStrip){
 		SetTextType(0); 
 		_glyphVertices.reserve(6 * 200); // shouldn't need more than this?
 
@@ -172,7 +174,7 @@ public:
 	virtual void step(float dt) override; // update frame
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
-
+#if 0
 class obj_dialoguer : public RoomObject, public NodeEvent<sf::Event> {
 	int _count;
 	int _side;
@@ -180,7 +182,7 @@ class obj_dialoguer : public RoomObject, public NodeEvent<sf::Event> {
 public:
 	obj_dialoguer() {}
 	void on_create() {
-		Room* room = getRoom();
+		//Room* room = getRoom();
 		//room->instance_create(10, 150);
 
 
@@ -211,3 +213,5 @@ public:
 
 #endif
 };
+
+#endif

@@ -7,7 +7,8 @@
 #include "room.h"
 
 
-void windowLoop() {
+void windowLoop(gm::DataWinFile& undertale_file) {
+	
 #if 0
 	sf::Font debugFont;
 	if (!debugFont.loadFromFile("resources\\DTM-Mono.otf"))
@@ -29,7 +30,7 @@ void windowLoop() {
 	auto res = GetUndertale();
 	size_t room_num = 20;
 
-	Room testRoom;
+	Room testRoom(undertale_file);
 	testRoom.loadRoom(room_num);
 	size_t num = 0;
 
@@ -39,7 +40,7 @@ void windowLoop() {
 //	obj_vaporized_new vtest(num, false);
 	//vtest.setPosition(100, 100);
 	//vtest.setScale(2.0f, 2.0f);
-	OBJ_WRITER& writer = *testRoom.createChild<OBJ_WRITER>();
+	OBJ_WRITER writer(testRoom);
 	
 	writer.DebugSetFace(1, 99);
 	///global.msc = 0;
@@ -154,15 +155,20 @@ int main(int argc, const char* argv[])
 {
 	// undertail combat views are in 640x480 but overowrd is in 320 240 fyi
 	//String test = "booob!";
+	gm::DataWinFile undertale_file;
+	
 
 
 
 
 	//Undertale::UndertaleFile dataWin;
 	if (argc != 2) exit(-1);
-	LoadUndertaleResources(argv[1]);
-
-	windowLoop();
+	undertale_file.load(argv[1]);
+	gm::Room test = undertale_file.resource_at<gm::Room>(34);
+	gm::Sprite stest = undertale_file.resource_at<gm::Sprite>(34);
+	std::cerr << "room: " << test << std::endl;
+	std::cerr << "sprite: " << stest << std::endl;
+	windowLoop(undertale_file);
 
 	return 0;
 }

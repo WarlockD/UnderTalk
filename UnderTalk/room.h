@@ -46,12 +46,39 @@ public:
 };
 #endif
 
+template<typename T>
+struct ListEntry {
+	using type = T;
+	type *le_next;	/* next element */
+	type **le_prev;	/* address of previous next element */
+	ListEntry() : le_next(nullptr), le_prev(&le_next) {}
+};
+template<typename T>
+struct ListHead {
+	using type = T;
+	type *lh_first;	/* first element */
+	ListHead() : lh_first(nullptr) {}
+};
+
 class RoomSprite : public GSprite, public sf::Drawable, public MovementSettings, public VisablitySettings {
+protected:
 	float _frameSpeed;
 	float _currentFrameTime;
+	Room* _room;
+	RoomSprite* _parentTrasform;
+	ListEntry<RoomSprite> _sorted_list;
+	void _insert_sort();
+	friend class Room;
+	friend class RoomObject;
+
+	RoomSprite() : _room(nullptr) {}
 public:
-	RoomSprite() : GSprite(), VisablitySettings() , MovementSettings(){}
-	RoomSprite(gm::DataWinFile& file, uint32_t sprite_index) : GSprite(file, sprite_index), VisablitySettings(), MovementSettings(){}
+	RoomSprite(Room& room, float depth = 0.0f);
+	RoomSprite(Room& room, uint32_t sprite_index, float depth = 0.0f);
+	~RoomSprite();
+	void setUndertaleSprite(uint32_t index);
+
+	virtual void setDepth(float depth) override;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
 		if (valid() && getVisible()) {
 			states.texture = getTexture().get();
@@ -59,6 +86,7 @@ public:
 			target.draw(getVertices(), getVerticesCount(), getVerticesType(), states);
 		}
 	}
+	void setFrame(const gm::SpriteFrame& frame);
 	void nextFrame() {
 		if (getImageCount() > 1) {
 			size_t index = getImageIndex();
@@ -76,49 +104,60 @@ public:
 		}
 	}
 
-	
 	void setFrameSpeed(float frameSpeed) { frameSpeed = frameSpeed; _currentFrameTime = 0.0f; }
 	float getFrameSpeed() const { return _frameSpeed; }
 	virtual void step(float dt);
 };
+// we use these templates for queue.h so we don't have to taint the 
+// header files with all the macros queue.h has
+
 
 
 class RoomObject : public RoomSprite  {
+private:
+	ListEntry<RoomObject> _index_hash;
+	
+	int _object_flags;
+	RoomObject() = default;
 protected:
-	Room* _room;
 	gm::Object _object;
 	std::list<RoomSprite> _sprites; // extra sprites
 	friend class Room;
-	void deleteObject(RoomObject* object);
 public:
 	RoomObject(Room& room, gm::Object object);
 	RoomObject(Room& room, uint32_t index);
 	virtual ~RoomObject();
 	void removeSelf();
-	void setObject(gm::Object obj) { _object = obj; }
+	void setObject(gm::Object obj);
 	const gm::Object& getObject() const { return _object; }
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	RoomSprite& createSprite(uint32_t index);
 	void removeSprite(uint32_t index);
 	void removeSprite(RoomSprite& sprite);
-	void setUndertaleSprite(uint32_t index);
-	virtual void setDepth(float depth) override; 
+	
+
 	RoomSprite& create_sprite(int index);
-	virtual void step(float dt);
+	virtual void step(float dt) override;
 };
 
 
-class Room  : public sf::Drawable {
+
+class Room : public sf::Drawable {
+	enum RoomObjectFlags {
+		DYNAMIC_FLAG = 1,
+	};
 	friend class RoomObject;
+	friend class RoomSprite;
 	gm::DataWinFile& _file;
 	ManagerType _manager;
 	// helper for simple game maker objects
-	
+
 	sf::View _view;
 	bool _objectsChanged;
 	float _speed;
 	TileMap _tiles;
 	gm::Room _room;
+#if 0
 	class key {
 		uint32_t _index;
 		RoomObject* _object;
@@ -128,11 +167,11 @@ class Room  : public sf::Drawable {
 		key(const key& copy) = delete;
 		key(key&& move) :_index(move._index), _object(move._object), _owned(move._owned) { move._object = nullptr; }
 		key(uint32_t i) : _index(i), _object(nullptr) {}
-		key(RoomObject* o,bool owned=false) : _index(o->getIndex()), _object(o), _owned(owned) {}
+		key(RoomObject* o, bool owned = false) : _index(o->getIndex()), _object(o), _owned(owned) {}
 		~key() { if (_object &&_owned) delete _object; }
 		uint32_t index() const { return  _index; }
 		const RoomObject* object() const { return _object; }
-		RoomObject* object()  { return _object; }
+		RoomObject* object() { return _object; }
 		bool operator==(const key& v) const {
 			return (_object != nullptr && v._object != nullptr && _object == v._object) || index() == v.index();
 		}
@@ -141,24 +180,38 @@ class Room  : public sf::Drawable {
 	struct hasher {
 		size_t operator()(const key& k) const { return k.index(); }
 	};
-	std::set<std::reference_wrapper<VisablitySettings>> _object_list; // sorted list
 	std::unordered_multiset<key, hasher> _objects;
 	std::vector<key> _objects_to_delete;
+#endif
+	std::vector<ListHead<RoomObject>> _objects;
+	std::vector<RoomObject*> _objects_to_delete;
+	ListHead<RoomSprite> _sprite_list;
+
+	bool deleteObject(RoomObject* obj);
+
+	void insertObject(RoomObject* obj);
+	RoomObject* findObject(RoomObject* obj);
+	RoomObject* findObject(uint32_t index);
+	const RoomObject* findObject(RoomObject* obj) const;
+	const RoomObject* findObject(uint32_t index) const;
 public:
-	Room(gm::DataWinFile& file) : _file(file), _view(sf::FloatRect(0.0f, 0.0f, 640.0f, 480.0f)) {}
+	Room(gm::DataWinFile& file);
+	~Room();
 	void step(float dt);
 	sf::View& getView() { return _view; }
 	const sf::View& getView() const { return _view; }
 	float getSpeed() const { return _speed; }
 	void setSpeed(float speed) { _speed = speed; }
-	size_t instanceCount(uint32_t index) const { return _objects.count(index); }
-	bool instanceExists(uint32_t index) const { return instanceCount(index) > 0; }
+	size_t instanceCount(uint32_t index) const;
+	bool instanceExists(uint32_t index) const { return findObject(index) != nullptr; }
 	void loadRoom(uint32_t index);
-	size_t removeObject(uint32_t index); // returns count deleted
+	void unloadRoom();
+	size_t removeObjects(uint32_t index); // returns count deleted
 	bool removeObject(RoomObject& obj);
+	bool removeObject(uint32_t index);
 
 	template<typename T>
-	typename std::enable_if<std::is_base_of<RoomObject,T>::value && !std::is_same<RoomObject,T>::value,T&>
+	typename std::enable_if<std::is_base_of<RoomObject, T>::value && !std::is_same<RoomObject, T>::value, T&>
 		instance_create(float x, float y, int index) {
 		T* obj = new T(*this);
 		_objects.emplace(static_cast<RoomObject*>(obj), true);
@@ -167,15 +220,13 @@ public:
 		return *obj;
 	}
 	RoomObject& instance_create(float x, float y, int index) {
-		RoomObject* obj = new RoomObject(*this, index);
-		_objects.emplace(obj, true);
-		_object_list.clear();
+		RoomObject* obj = new RoomObject();
+		obj->_room = this;
+		obj->setObject(_file.resource_at<gm::Object>(index));
+		obj->_object_flags |= DYNAMIC_FLAG;
+		insertObject(obj);
 		obj->setPosition(x, y);
 		return *obj;
 	}
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const  override {
-		target.setView(_view);
-		target.draw(_tiles, states);
-
-	}
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const  override;
 };

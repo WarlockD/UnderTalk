@@ -253,11 +253,29 @@ void LoadUndertaleResources(const std::string& filename) {
 
 
 
-
-
-static std::unordered_map<uint32_t, std::weak_ptr<Texture>> simple_textures;
+static std::unordered_map<uint32_t, WeakSharedTexture> simple_textures;
 static std::unordered_map<uint32_t, std::unique_ptr<Image>> simple_images;
 
+
+SharedTexture SharedTextureBase::GetTexture(gm::DataWinFile& file, uint32_t index) {
+	SharedTexture texture = simple_textures[index].lock(); // I still don't get if make shared is better here or not?
+	if (!texture) {
+
+		texture = SharedTexture(new SharedTextureBase(index), [](SharedTextureBase* t) {
+			simple_textures.erase(t->texture_index());
+		});
+		if (!texture->loadFromImage(Undertale::GetTextureImage(file,index))) {
+			printf("Cannot load texture index %i", index);
+			exit(1);
+		}
+		simple_textures[index] = texture;
+	}
+	return std::move(texture);
+}
+SharedTexture SharedTextureBase::GetTexture(uint32_t index) {
+	assert(0);
+	return SharedTexture();
+}
 namespace Undertale {
 	const sf::Image& GetTextureImage(int index) {
 		auto& ptr = simple_images[index];
@@ -272,19 +290,26 @@ namespace Undertale {
 		}
 		return *ptr.get();
 	}
-	SharedTexture GetTexture(uint32_t index) {
-		std::shared_ptr<sf::Texture> texture = simple_textures[index].lock(); // I still don't get if make shared is better here or not?
-		if (!texture) {
-			texture = std::make_shared<sf::Texture>();
-			if (!texture->loadFromImage(GetTextureImage(index))) {
+	const sf::Image& GetTextureImage(gm::DataWinFile& file, int index) {
+		auto& ptr = simple_images[index];
+		if (!ptr) {
+			Image* image = new Image;
+			auto utexture = file.resource_at<gm::Texture>(index);
+			if (!image->loadFromMemory(utexture.png_data(), utexture.png_size())) {
 				printf("Cannot load texture index %i", index);
 				exit(1);
 			}
-			simple_textures[index] = texture;
+			ptr.reset(image);
 		}
-		return std::move(texture);
+		return *ptr.get();
 	}
-\
+	SharedTexture GetTexture(gm::DataWinFile& file, uint32_t index) {
+		return SharedTextureBase::GetTexture(file, index);
+	}
+	
+	SharedTexture GetTexture(uint32_t index) {
+		return SharedTextureBase::GetTexture(index);
+	}
 
 	const std::map<int, sf::Glyph>& GetFontGlyphs(int font_index) {
 		return fonts[font_index].glyphs;
