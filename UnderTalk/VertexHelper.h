@@ -24,10 +24,12 @@ struct SpriteVerticesInterface {
 	virtual ~SpriteVerticesInterface() {}
 	// helpers
 	size_t getVerticesCount() const { return 6; } // basied off triangles
+	sf::PrimitiveType getVerticesType() const { return sf::PrimitiveType::Triangles; }
 	const sf::Color&  getColor() const { return getVertices()[0].color; }
 	const sf::Vector2f& TopLeft() const { return getVertices()[0].position; }
 	const sf::Vector2f& BottomRight() const { return getVertices()[2].position; }
 	inline sf::Vector2f getVertexSize() const { return BottomRight() - TopLeft(); } // size is set by texture rect
+	inline bool valid() const { return getVertices() != nullptr; }
 	virtual void draw_vertices(sf::RenderTarget& target, sf::RenderStates states) const {
 		target.draw(getVertices(), getVerticesCount(), sf::PrimitiveType::Triangles, states);
 	}
@@ -40,7 +42,6 @@ public:
 	using type = std::decay_t<T>;
 	void set(const sf::FloatRect& rect, const sf::IntRect& textRect, sf::Color color) {
 		sf::Vertex* vertices = getVertices();
-		if (vertices == nullptr) { _vertices = new Vertex[6]; _owned = true; }
 		float u1 = static_cast<float>(textRect.left);
 		float u2 = u1 + static_cast<float>(textRect.width);
 		float v1 = static_cast<float>(textRect.top);
@@ -55,12 +56,15 @@ public:
 		vertices[1] = sf::Vertex(sf::Vector2f(left, bottom), sf::Color::White, sf::Vector2f(u1, v2));
 		vertices[2] = sf::Vertex(sf::Vector2f(right, bottom), sf::Color::White, sf::Vector2f(u2, v2));
 
-		vvertices[3] = sf::Vertex(sf::Vector2f(right, top), sf::Color::White, sf::Vector2f(u2, v1));
-		vvertices[4] = sf::Vertexsf::(Vector2f(left, bottom), sf::Color::White, sf::Vector2f(u1, v2));
-		vvertices[5] = sf::Vertex(sf::Vector2f(right, bottom), sf::Color::White, sf::Vector2f(u2, v2));
+		vertices[3] = sf::Vertex(sf::Vector2f(right, top), sf::Color::White, sf::Vector2f(u2, v1));
+		vertices[4] = sf::Vertex(sf::Vector2f(left, bottom), sf::Color::White, sf::Vector2f(u1, v2));
+		vertices[5] = sf::Vertex(sf::Vector2f(right, bottom), sf::Color::White, sf::Vector2f(u2, v2));
 	}
+	void set(const sf::Vector2f& pos, const sf::Color& color) { set(sf::FloatRect(pos, sf::Vector2f(1.0f, 1.0f)), sf::IntRect(0, 0, 1, 1), color); }
+	void set(const sf::Vector2f& pos, const sf::IntRect& textRect, const sf::Color& color) { set(sf::FloatRect(pos, sf::Vector2f((float)textRect.width, (float)textRect.height)), textRect, color); }
+	void set() {} // for var templates with no args
 
-	void SpriteVertices::setColor(const sf::Color& color) {
+	void setColor(const sf::Color& color) {
 		sf::Vertex* vertices = getVertices();
 		vertices[0].color = color;
 		vertices[1].color = color;
@@ -70,7 +74,7 @@ public:
 		vertices[5].color = color;
 	}
 
-	void SpriteVertices::setVertexPosition(const sf::FloatRect& rect) {
+	void setVertexPosition(const sf::FloatRect& rect) {
 		sf::Vertex* vertices = getVertices();
 		float left = rect.left;
 		float right = left + rect.width;
@@ -84,8 +88,8 @@ public:
 		vertices[4].position = sf::Vector2f(left, bottom);
 		vertices[5].position = sf::Vector2f(right, bottom);
 	}
-	void SpriteVertices::setVertexSize(const sf::Vector2f& size) { setVertexPosition(sf::FloatRect(getVertexPosition(), size)); }
-	void SpriteVertices::setVertexPosition(const sf::Vector2f& pos) { setVertexPosition(sf::FloatRect(pos, getVertexSize())); }
+	void setVertexSize(const sf::Vector2f& size) { setVertexPosition(sf::FloatRect(getVertexPosition(), size)); }
+	void setVertexPosition(const sf::Vector2f& pos) { setVertexPosition(sf::FloatRect(pos, getVertexSize())); }
 
 	void setTextureRect(const sf::IntRect& rect, bool setsize) {
 		sf::Vertex* vertices = getVertices();
@@ -102,35 +106,74 @@ public:
 		vertices[5].texCoords = Vector2f(u2, v2);
 		if (setsize) setVertexSize(sf::Vector2f((float)rect.width, (float)rect.height));
 	}
-	inline sf::Vector2f getVertexSize() const override { return getVertices()[2].position - getVertices()[0].position; } // size is set by texture rect
 	inline const sf::Vertex* getVertices() const override { return self().getVertices(); }
 private:
-	friend class T;
+	friend T;
 	inline sf::Vertex* getVertices() { return self().getVertices(); }
 	inline type& self() { return static_cast<type&>(*this); }
 	inline const type& self() const { return static_cast<const type&>(*this); }
 };
 
-class SpriteVerticesRef : public SpriteVerticesInterface {
+class SpriteVerticesConstRef : public SpriteVerticesInterface {
 public:
-	SpriteVerticesRef() : _vertices(nullptr) {}
-	SpriteVerticesRef(const sf::Vertex* vertices) : _vertices(vertices) {}
-	virtual ~SpriteVerticesRef() {}
+	SpriteVerticesConstRef() : _vertices(nullptr) {}
+	SpriteVerticesConstRef(const sf::Vertex* vertices) : _vertices(vertices) {}
+	SpriteVerticesConstRef(const SpriteVerticesInterface& vertices) : _vertices(vertices.getVertices()) {}
+	virtual ~SpriteVerticesConstRef() {}
 	inline const sf::Vertex* getVertices() const override final { return _vertices; }
-	bool valid() const { return _vertices != nullptr; }
-protected:
+private:
 	const sf::Vertex* _vertices;
 };
+
 class SpriteVertices : public SpriteVerticesHealper<SpriteVertices> {
+public:
 	SpriteVertices() = default;
+	SpriteVertices(const SpriteVerticesInterface& i) {
+		std::memcpy(_vertices, i.getVertices(), getVerticesCount());
+	}
 	SpriteVertices(const sf::Vector2f& pos, const sf::Color& color) { set(sf::FloatRect(pos, sf::Vector2f(1.0f, 1.0f)), sf::IntRect(0, 0, 1, 1), color); }
 	SpriteVertices(const sf::Vector2f& pos, const sf::IntRect& textRect, const sf::Color& color)  { set(sf::FloatRect(pos, sf::Vector2f((float)textRect.width, (float)textRect.height)), textRect, color); }
 	SpriteVertices(const sf::FloatRect& posRect, const sf::IntRect& textRect, const sf::Color& color) { set(posRect, textRect, color); }
 	inline const sf::Vertex* getVertices() const override final { return _vertices; }
-
-protected:
-	friend SpriteVerticesHealper<SpriteVertices>;
+private:
+	friend class SpriteVerticesHealper<SpriteVertices>;
+	friend class SpriteVerticesRef;
 	inline sf::Vertex* getVertices()  { return _vertices; }
 	sf::Vertex _vertices[6];
 };
 
+class SpriteVerticesRef : public SpriteVerticesHealper<SpriteVerticesRef> {
+public:
+	using helper = SpriteVerticesHealper<SpriteVerticesRef>;
+	template<typename ... Args>
+	SpriteVerticesRef(sf::Vertex* vertices, Args&& ... args) : _vertices(vertices) { set(std::forward<Args>(args)...); }
+	SpriteVerticesRef(SpriteVertices& v) : _vertices(v.getVertices()) {}
+	virtual ~SpriteVerticesRef() {}
+	inline const sf::Vertex* getVertices() const override final { return _vertices; }
+private:
+	friend class SpriteVerticesHealper<SpriteVerticesRef>;
+	inline sf::Vertex* getVertices() { return _vertices; }
+	sf::Vertex* _vertices;
+};
+
+
+
+// unbatched simple sprite
+class Sprite : public sf::Transformable, public sf::Drawable, public SpriteVertices {
+public:
+	Sprite() = default;
+	Sprite(const SharedTexture& texture, const SpriteVerticesInterface& i): SpriteVertices(i), _texture(texture) { }
+	Sprite(const SharedTexture& texture, const sf::Vector2f& pos, const sf::Color& color) : SpriteVertices(pos, color) , _texture(texture) {}
+	Sprite(const SharedTexture& texture, const sf::Vector2f& pos, const sf::IntRect& textRect, const sf::Color& color) : SpriteVertices(pos, textRect, color), _texture(texture) {}
+	Sprite(const SharedTexture& texture, const sf::FloatRect& posRect, const sf::IntRect& textRect, const sf::Color& color) : SpriteVertices(posRect,textRect, color), _texture(texture) {}
+	Sprite(const SharedTexture& texture, const sf::IntRect& textRect) : SpriteVertices(sf::Vector2f(0.0f,0.0f), textRect, sf::Color::White), _texture(texture) {}
+	const SharedTexture& getTexture() const { return _texture; }
+
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
+		states.texture = getTexture().get();
+		states.transform *= getTransform();
+		target.draw(getVertices(), getVerticesCount(), getVerticesType(), states);
+	}
+private:
+	SharedTexture _texture;
+};

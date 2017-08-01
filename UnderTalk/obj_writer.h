@@ -59,7 +59,20 @@ public:
 	size_t size() const { return _parsed.size(); }
 	size_t charCount() const { return _charCount; }
 };
+class TextBox : public RoomObject {
 
+	TextBox(Room& room) : RoomObject(room) {
+		//SetTextType(0);
+		_glyphVertices.reserve(6 * 200); // shouldn't need more than this?
+
+
+	}
+	virtual void step(float dt) override; // update frame
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+public:
+	std::vector<sf::Vertex> _glyphVertices;
+	FontCache _fontCache;
+};
 class OBJ_WRITER : public RoomObject, public NodeEvent<sf::Event> {
 public:
 	typedef std::function<int(OBJ_WRITER&, int)> HaltDelegate;
@@ -85,12 +98,12 @@ private:
 		int spacing;
 		int vspacing;
 	};
-	class GlyphUpdater :  public SpriteVertices{
+	class GlyphUpdater :  public SpriteVerticesRef {
 		float _shake;
 		sf::Vector2f _home;
 	public:
 		GlyphUpdater(std::vector<sf::Vertex>& verteices, size_t index, float shake, const sf::IntRect& rect, const sf::Vector2f& pos, sf::Color color) : _home(pos),
-			SpriteVertices(verteices.data() + index, pos, rect,color), _shake(shake) {}
+			SpriteVerticesRef(verteices.data() + index, pos, rect,color), _shake(shake) {}
 		// we don't care about dt, as OBJ_WRITER caculates the frame for us
 		virtual void step(float dt) ;
 	};
@@ -107,8 +120,7 @@ private:
 	sf::Color _currentColor;
 	// text position
 //	obj_face _face;
-	const std::map<int, sf::Glyph>* _fontGlyphs;
-	const sf::Texture* _fontTexture;
+	FontCache _fontCache;
 	HaltDelegate _haltdel;
 	entityplus::subscriber_handle<sf::Event::KeyEvent> handle;
 public:
@@ -117,7 +129,7 @@ public:
 	void DebugSetFace(int face, int emotion) { 
 	//	_face.setFace(face); _face.setEmotion(emotion); 
 	}
-	OBJ_WRITER(Room& room) : RoomObject(room,0), _fontTexture(nullptr), _size(0), _stringno(0), _halt(0), _fontGlyphs(nullptr) , _glyphVertices(sf::PrimitiveType::TrianglesStrip){
+	OBJ_WRITER(Room& room) : RoomObject(room,0),  _size(0), _stringno(0), _halt(0),  _glyphVertices(sf::PrimitiveType::Triangles) { // ::TrianglesStrip){
 		SetTextType(0); 
 		_glyphVertices.reserve(6 * 200); // shouldn't need more than this?
 

@@ -257,7 +257,7 @@ static std::unordered_map<uint32_t, WeakSharedTexture> simple_textures;
 static std::unordered_map<uint32_t, std::unique_ptr<Image>> simple_images;
 
 
-SharedTexture SharedTextureBase::GetTexture(gm::DataWinFile& file, uint32_t index) {
+SharedTexture SharedTextureBase::GetTexture(const gm::DataWinFile& file, uint32_t index) {
 	SharedTexture texture = simple_textures[index].lock(); // I still don't get if make shared is better here or not?
 	if (!texture) {
 
@@ -290,7 +290,7 @@ namespace Undertale {
 		}
 		return *ptr.get();
 	}
-	const sf::Image& GetTextureImage(gm::DataWinFile& file, int index) {
+	const sf::Image& GetTextureImage( const gm::DataWinFile& file, int index) {
 		auto& ptr = simple_images[index];
 		if (!ptr) {
 			Image* image = new Image;
@@ -303,7 +303,7 @@ namespace Undertale {
 		}
 		return *ptr.get();
 	}
-	SharedTexture GetTexture(gm::DataWinFile& file, uint32_t index) {
+	SharedTexture GetTexture(const gm::DataWinFile& file, uint32_t index) {
 		return SharedTextureBase::GetTexture(file, index);
 	}
 	

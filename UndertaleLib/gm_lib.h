@@ -430,7 +430,7 @@ namespace gm {
 			return StringView();
 		}
 		static inline  StringView _get_name(const uint8_t* data, const RAW_T* obj, _has_name)  {
-			return _get_string(data + obj->name_offset - 4);
+			return _get_string(data,  obj->name_offset);
 		}
 	public:
 		using traits = ResourceTraits<RAW_T, CT>;
@@ -956,6 +956,7 @@ namespace gm {
 		StringView _description;
 		//OffsetList<Glyph> _glyphs;
 	public:
+		Font() = default;
 		Font(int index, const uint8_t* data, uint32_t offset) : Resource(index, data, offset) {
 			_description = _get_string(data,raw().description_offset); //reinterpret_cast<const char*>(_data.data() + font->_raw->description_offset);
 			_frame = (reinterpret_cast<const gm::raw_type::SpriteFrame*>(data + raw().frame_offset));
@@ -1189,13 +1190,13 @@ namespace gm {
 		size_t size() const { return _full_size; }
 		template<class C, class = std::enable_if<priv::is_resource<C>::value>>
 		size_t resource_count() const {
-			auto it = _chunks.find(chunk_traits<C::ResType>::swap_value());
-			if (it == _chunks.end())  throw; // not found
-			else return it->second->count;
+			auto it = get_chunk<C::traits::ResType>();
+			return it->count;
 		}
 		template<class C, class = std::enable_if<priv::is_resource<C>::value>>
 		C resource_at(uint32_t index) const {
 			auto it = get_chunk<C::traits::ResType>();
+			assert(index < it->count);
 			return C(index, _data.data(), it->offsets[index]);
 		}
 	};

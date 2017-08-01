@@ -118,14 +118,17 @@ private:
 	ListEntry<RoomObject> _index_hash;
 	
 	int _object_flags;
+	uint32_t _index;
 	RoomObject() = default;
 protected:
 	gm::Object _object;
 	std::list<RoomSprite> _sprites; // extra sprites
 	friend class Room;
+	RoomObject(Room& room);
 public:
 	RoomObject(Room& room, gm::Object object);
 	RoomObject(Room& room, uint32_t index);
+	
 	virtual ~RoomObject();
 	void removeSelf();
 	void setObject(gm::Object obj);
@@ -134,7 +137,7 @@ public:
 	RoomSprite& createSprite(uint32_t index);
 	void removeSprite(uint32_t index);
 	void removeSprite(RoomSprite& sprite);
-	
+	uint32_t index() const { return _index; }
 
 	RoomSprite& create_sprite(int index);
 	virtual void step(float dt) override;
@@ -183,6 +186,8 @@ class Room : public sf::Drawable {
 	std::unordered_multiset<key, hasher> _objects;
 	std::vector<key> _objects_to_delete;
 #endif
+	std::unordered_multimap<uint32_t, std::unique_ptr<RoomObject>> _object_map;
+
 	std::vector<ListHead<RoomObject>> _objects;
 	std::vector<RoomObject*> _objects_to_delete;
 	ListHead<RoomSprite> _sprite_list;
@@ -197,6 +202,7 @@ class Room : public sf::Drawable {
 public:
 	Room(gm::DataWinFile& file);
 	~Room();
+	const gm::DataWinFile& file() { return _file; }
 	void step(float dt);
 	sf::View& getView() { return _view; }
 	const sf::View& getView() const { return _view; }
@@ -219,14 +225,6 @@ public:
 		obj->setPosition(x, y);
 		return *obj;
 	}
-	RoomObject& instance_create(float x, float y, int index) {
-		RoomObject* obj = new RoomObject();
-		obj->_room = this;
-		obj->setObject(_file.resource_at<gm::Object>(index));
-		obj->_object_flags |= DYNAMIC_FLAG;
-		insertObject(obj);
-		obj->setPosition(x, y);
-		return *obj;
-	}
+	RoomObject& instance_create(float x, float y, int index);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const  override;
 };

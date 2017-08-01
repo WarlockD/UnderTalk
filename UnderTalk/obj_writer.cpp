@@ -310,8 +310,9 @@ void OBJ_WRITER::GlyphUpdater::step(float dt)  {
 	}
 }
 void OBJ_WRITER::setFont(int index) {
-	_fontGlyphs = &Undertale::GetFontGlyphs(index);
-	_fontTexture = Undertale::GetFontTexture(6);
+	gm::Font font = _room->file().resource_at<gm::Font>(index);
+
+	_fontCache = FontCache(_room->file(), font);
 }
 void OBJ_WRITER::step(float dt) {
 
@@ -380,7 +381,7 @@ void OBJ_WRITER::step(float dt) {
 					}
 					// adding glyph part
 					{
-						auto& g = _fontGlyphs->at(ch);
+						auto& g = _fontCache.glyph_at(ch);
 						sf::Vertex* ptr = _glyphVertices.data();
 						_glyphVertices.resize(_glyphVertices.size() + 6);
 						GlyphUpdater glyph(_glyphVertices, _glyphVertices.size() - 6, setup.shake, g.textureRect, _writing, _currentColor);
@@ -436,7 +437,7 @@ void OBJ_WRITER::step(float dt) {
 
 void OBJ_WRITER::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
-	states.texture = _fontTexture;
+	states.texture = _fontCache.getTexture().get();
 	target.draw(_glyphVertices.data(), _glyphVertices.size(), PrimitiveType::Triangles, states);
 	RoomObject::draw(target, states);
 

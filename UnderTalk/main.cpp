@@ -49,6 +49,7 @@ void windowLoop(gm::DataWinFile& undertale_file) {
 //	global.faceemotion = 0;
 	//writer.setTy
 	writer.SetTextType(5);
+	//writer.SetTextType(17);
 	writer.AddText("* (It\'s a carefully decorated&  tree.)/");
 	writer.AddText("* (Some of the presents are&  addressed from \"Santa\" to&  various locals.)/%%");
 	//writer.AddText("*This is a \\Ytest\\W&* and another \\z%%");

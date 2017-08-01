@@ -139,7 +139,7 @@ struct SharedTextureBase : public sf::Texture {
 	using WeakSharedTexture = std::weak_ptr<SharedTextureBase>;
 public:
 	uint32_t texture_index() const { return _index; }
-	static SharedTexture GetTexture(gm::DataWinFile& file, uint32_t index);
+	static SharedTexture GetTexture(const gm::DataWinFile& file, uint32_t index);
 	static SharedTexture GetTexture(uint32_t index);
 private:
 	SharedTextureBase(uint32_t index) : sf::Texture(), _index(index) {}
@@ -155,9 +155,9 @@ namespace Undertale {
 	const std::map<int, sf::Glyph>& GetFontGlyphs(int font_index);
 	const sf::Texture* GetFontTexture(int font_index);
 	int GetFontSize(int font_index);
-	const sf::Image& GetTextureImage(gm::DataWinFile& file, int index);
+	const sf::Image& GetTextureImage(const gm::DataWinFile& file, int index);
 	const sf::Image& GetTextureImage(int index);
-	SharedTexture GetTexture(gm::DataWinFile& file, uint32_t index);
+	SharedTexture GetTexture(const gm::DataWinFile& file, uint32_t index);
 	SharedTexture GetTexture(uint32_t index);
 	const std::string& LookupSound(int index);
 	void LoadAllFonts();

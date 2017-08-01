@@ -36,14 +36,39 @@ void Room::unloadRoom() {
 			if (o->_object_flags & DYNAMIC_FLAG)
 				delete o;
 		}
+		a.lh_first = nullptr;
 	}
+	{
+		RoomSprite* o, *to;
+		LIST_FOREACH_SAFE(o, &_sprite_list, _sorted_list, to) {
+			LIST_REMOVE(o, _sorted_list);
+			o->_room = nullptr;
+		}
+		_sprite_list.lh_first = nullptr; // all sprites should of been released
+	}
+
+}	
+RoomObject& Room::instance_create(float x, float y, int index) {
+	RoomObject* obj = new RoomObject();
+	obj->_room = this;
+	obj->setObject(_file.resource_at<gm::Object>(index));
+	obj->_object_flags |= DYNAMIC_FLAG;
+	insertObject(obj);
+	obj->setPosition(x, y);
+	return *obj;
 }
+
 void Room::loadRoom(uint32_t index) {
 	if (index != _room.index()) {
 		unloadRoom();
 		_room = _file.resource_at<gm::Room>(index);
 		if (_room.valid()) {
 			_tiles.loadRoom(_file,_room);
+		}
+		for (auto& object : _room.objects()) {
+			RoomObject& obj = instance_create(object.x, object.y, object.object_index);
+			obj.setScale(sf::Vector2f(object.scale_x, object.scale_y));
+			obj.setRotation(object.rotation);
 		}
 	}
 }
@@ -218,12 +243,23 @@ void RoomObject::setObject(gm::Object obj) {
 		_sprites.clear();
 	}
 }
-
-RoomObject::RoomObject(Room& room, gm::Object object) : RoomSprite(room, object.sprite_index(), (float)object.depth()), _object(object) {
+RoomObject::RoomObject(Room& room) : _index((uint32_t)-1) { _room->insertObject(this); }
+RoomObject::RoomObject(Room& room, gm::Object object) : RoomSprite(room, object.sprite_index(), (float)object.depth()), _object(object), _index(object.index()) {
 	_room->insertObject(this);
 }
 
-RoomObject::RoomObject(Room& room, uint32_t index) : RoomObject(room,room._file.resource_at<gm::Object>(index)) {}
+RoomObject::RoomObject(Room& room, uint32_t index) : RoomSprite(room), _index(index) {
+	size_t count = room.file().resource_count<gm::Object>();
+	if (index < room.file().resource_count<gm::Object>()) {
+		_object = room._file.resource_at<gm::Object>(index);
+		setUndertaleSprite(_object.sprite_index());
+		setDepth((float)_object.depth());
+	}
+	else {
+		_index += count;
+	}
+	_room->insertObject(this);
+}  
 
 RoomObject::~RoomObject() {
 	if (_room) {
@@ -285,7 +321,7 @@ void TileMap::loadRoom(gm::DataWinFile& file, const gm::Room& room) {
 		}
 		std::unordered_map<size_t, sf::Texture> textures;
 		uint32_t texture_index = -1;
-		Sprite drawing_tile;
+		sf::Sprite drawing_tile;
 		for (auto& tile : room.tiles()) {
 			auto& tile_map = textures[tile.background_index];
 			if (tile_map.getNativeHandle() == 0) { // cache the textures if we have several of them
